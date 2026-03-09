@@ -111,7 +111,7 @@ async function checkUserCredits(userId) {
       used_today: 0,
       last_reset: today
     });
-    return { canEdit: true, remaining: 5 };
+    return { canEdit: true, remaining: 3 };
   }
 
   // Reset if new day
@@ -120,10 +120,10 @@ async function checkUserCredits(userId) {
       used_today: 0,
       last_reset: today
     }).eq('user_id', userId);
-    return { canEdit: true, remaining: 5 };
+    return { canEdit: true, remaining: 3 };
   }
 
-  const remaining = 5 - data.used_today;
+  const remaining = 3 - data.used_today;
   return { canEdit: remaining > 0, remaining: Math.max(0, remaining) };
 }
 
@@ -264,7 +264,7 @@ app.get('/api/credits', async (req, res) => {
 
   if (user) {
     const credits = await checkUserCredits(user.id);
-    res.json({ type: 'user', ...credits, daily_limit: 5 });
+    res.json({ type: 'user', ...credits, daily_limit: 3 });
   } else {
     const credits = await checkAnonymousCredit(sessionId || 'unknown');
     res.json({ type: 'anonymous', canEdit: credits.canEdit, remaining: credits.canEdit ? 1 : 0, daily_limit: 1 });
@@ -328,7 +328,7 @@ app.post('/api/edit', upload.single('image'), async (req, res) => {
         return res.status(403).json({
           error: 'Daily limit reached',
           error_ar: 'انتهت الكريديتس اليومية',
-          message: 'You have used all 5 daily credits. Come back tomorrow!',
+          message: 'You have used all 3 daily credits. Come back tomorrow!',
           remaining: 0
         });
       }
@@ -341,7 +341,7 @@ app.post('/api/edit', upload.single('image'), async (req, res) => {
         return res.status(403).json({
           error: 'Free credit used',
           error_ar: 'استهلكت الكريديت المجاني',
-          message: 'Create a free account to get 5 daily credits!',
+          message: 'Create a free account to get 3 daily credits!',
           requiresAuth: true,
           remaining: 0
         });
