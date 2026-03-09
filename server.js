@@ -13,7 +13,7 @@ app.set('trust proxy', 1);
 const PORT = process.env.PORT || 3000;
 
 // ─── Clients ───────────────────────────────────────────────────────────────
-const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY, httpOptions: { apiVersion: 'v1alpha' } });
+const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
 const supabase = createClient(
   process.env.SUPABASE_URL,
   process.env.SUPABASE_SERVICE_KEY // service key for server-side operations
@@ -224,27 +224,50 @@ app.post('/api/edit', upload.single('image'), async (req, res) => {
     // Build the prompt - enhanced for product photography
     const enhancedPrompt = buildProductPrompt(prompt);
 
-    const response = await ai.models.generateContent({
-      model: 'gemini-2.0-flash-preview-image-generation',
-      contents: [
-        {
-          role: 'user',
-          parts: [
-            { inlineData: { mimeType: mimeType, data: imageBase64 } },
-            { text: enhancedPrompt }
-          ]
-        }
-      ],
-      config: {
-        responseModalities: ['Text', 'Image'],
+    // Call Gemini with image generation
+    const contents = [
+      {
+        role: 'user',
+        parts: [
+          {
+            inlineData: {
+              mimeType: mimeType,
+              data: imageBase64
+            }
+          },
+          { text: enhancedPrompt }
+        ]
       }
-    });
+    ];
+
+    let response;
+    // Try gemini-2.0-flash-exp first, fallback to preview model
+    try {
+      response = await ai.models.generateContent({
+        model: 'gemini-2.0-flash-exp',
+        contents: contents,
+        config: {
+          responseModalities: ['Text', 'Image'],
+        }
+      });
+    } catch (modelErr) {
+      console.log('Trying fallback model...', modelErr.message);
+      response = await ai.models.generateContent({
+        model: 'gemini-2.0-flash-preview-image-generation',
+        contents: contents,
+        config: {
+          responseModalities: ['Text', 'Image'],
+        }
+      });
+    }
 
     let editedImageBase64 = null;
     let textResponse = '';
 
-    for (const part of response.candidates[0].content.parts) {
-      if (part.inlineData) {
+    // Parse response - handle both response structures
+    const parts = response?.candidates?.[0]?.content?.parts || [];
+    for (const part of parts) {
+      if (part.inlineData?.data) {
         editedImageBase64 = part.inlineData.data;
       } else if (part.text) {
         textResponse = part.text;
@@ -282,7 +305,11 @@ app.post('/api/edit', upload.single('image'), async (req, res) => {
     }
 
   } catch (err) {
-    console.error('Edit error:', err);
+    console.error('Edit error full:', JSON.stringify({
+      message: err.message,
+      status: err.status,
+      cause: err.cause
+    }));
 
     if (err.message?.includes('SAFETY')) {
       return res.status(400).json({ error: 'The image or prompt was flagged. Please try a different one.' });
