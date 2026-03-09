@@ -393,7 +393,7 @@ footer{position:relative;z-index:1;border-top:1px solid var(--border);padding:36
           <div class="cmpc res"><span class="cmplabel" data-ar="المعدّل ✦" data-en="Edited ✦">المعدّل ✦</span><img id="rimg" src="" alt=""/></div>
         </div>
         <div class="upbanner" id="upbanner">
-          <p id="upTxt" data-ar="🎉 استمتعت بصورتك المجانية! سجّل الآن واحصل على 3 صور يومياً مجاناً" data-en="🎉 You used your free edit! Sign up for 5 free edits every day">🎉 استمتعت بصورتك المجانية! سجّل الآن واحصل على 5 صور يومياً</p>
+          <p id="upTxt" data-ar="🎉 استمتعت بصورتك المجانية! سجّل الآن واحصل على 3 صور يومياً مجاناً" data-en="🎉 You used your free edit! Sign up for 3 free edits every day">🎉 استمتعت بصورتك المجانية! سجّل الآن واحصل على 3 صور يومياً</p>
           <button class="upbtn" onclick="openM()"><span data-ar="إنشاء حساب مجاني ✦" data-en="Create free account ✦">إنشاء حساب مجاني ✦</span></button>
         </div>
       </div>
@@ -679,8 +679,16 @@ async function gen(){
     const resp=await fetch(API+'/api/edit',{method:'POST',headers:h,body:fd});
     const data=await resp.json();
     if(!resp.ok){
-      if(data.requiresAuth){showMsg('info',lang==='ar'?'🎉 استهلكت الكريديت المجاني — سجّل للحصول على 5 صور يومياً!':'🎉 Free credit used — sign up for 5 free daily edits!');setTimeout(()=>openM(),8000)}
-      else showMsg('err',data.error_ar||data.error||(lang==='ar'?'حدث خطأ':'Something went wrong'));
+      if(data.requiresAuth){
+        // Anonymous user used their free credit
+        showMsg('info',lang==='ar'?'🎉 استهلكت الكريديت المجاني — سجّل للحصول على 3 صور يومياً!':'🎉 Free credit used — sign up for 3 free daily edits!');
+        setTimeout(()=>openM(),8000);
+      } else if(data.error === 'Daily limit reached') {
+        // Logged-in user finished daily credits
+        showMsg('info',lang==='ar'?'✅ استهلكت صورك الـ 3 لليوم — تعالى بكرا للمزيد!':'✅ You used all 3 daily edits — come back tomorrow!');
+      } else {
+        showMsg('err',data.error_ar||data.error||(lang==='ar'?'حدث خطأ':'Something went wrong'));
+      }
       return;
     }
     res64=data.image;
