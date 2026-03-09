@@ -181,7 +181,48 @@ app.get('/api/credits', async (req, res) => {
   }
 });
 
-// ─── Main: Edit Image ────────────────────────────────────────────────────────
+// ─── Enhance Prompt ──────────────────────────────────────────────────────────
+app.post('/api/enhance', async (req, res) => {
+  const { prompt } = req.body;
+  if (!prompt) return res.status(400).json({ error: 'Prompt required' });
+
+  const GEMINI_KEY = process.env.GEMINI_API_KEY;
+  const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.1-flash-image-preview:generateContent?key=${GEMINI_KEY}`;
+
+  try {
+    const geminiRes = await fetch(apiUrl, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        contents: [{
+          role: 'user',
+          parts: [{ text: `You are an expert AI image editing prompt engineer specializing in product photography.
+Take this simple prompt and rewrite it into a detailed, professional prompt for AI image editing.
+Rules:
+- Keep the same core intent
+- Add professional photography details (lighting, shadows, background quality, composition)
+- Be specific and descriptive
+- Keep it under 80 words
+- Respond ONLY with the improved prompt, no explanations, no quotation marks
+- If the input is in Arabic, respond in Arabic. If English, respond in English.
+
+Prompt to enhance: "${prompt}"` }]
+        }],
+        generationConfig: { maxOutputTokens: 200 }
+      })
+    });
+
+    const data = await geminiRes.json();
+    const enhanced = data?.candidates?.[0]?.content?.parts?.[0]?.text?.trim();
+    if (!enhanced) return res.status(500).json({ error: 'Enhancement failed' });
+    res.json({ enhanced });
+  } catch (err) {
+    console.error('Enhance error:', err);
+    res.status(500).json({ error: 'Enhancement failed' });
+  }
+});
+
+
 app.post('/api/edit', upload.single('image'), async (req, res) => {
   try {
     const { prompt, sessionId } = req.body;
