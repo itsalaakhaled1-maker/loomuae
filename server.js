@@ -224,29 +224,40 @@ app.post('/api/edit', upload.single('image'), async (req, res) => {
     // Build the prompt - enhanced for product photography
     const enhancedPrompt = buildProductPrompt(prompt);
 
-    // Exact code from Google's official GitHub repo
-    const model = genAI.getGenerativeModel({
-      model: 'gemini-2.0-flash-exp',
-      generationConfig: {
-        responseModalities: ['Text', 'Image']
-      }
+    const GEMINI_KEY = process.env.GEMINI_API_KEY;
+    const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.1-flash-image-preview:generateContent?key=${GEMINI_KEY}`;
+
+    const geminiRes = await fetch(apiUrl, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        contents: [{
+          role: 'user',
+          parts: [
+            { text: enhancedPrompt },
+            { inline_data: { mime_type: mimeType, data: imageBase64 } }
+          ]
+        }],
+        generationConfig: {
+          responseModalities: ['TEXT', 'IMAGE']
+        }
+      })
     });
 
-    const result = await model.generateContent([
-      { text: enhancedPrompt },
-      { inlineData: { mimeType: mimeType, data: imageBase64 } }
-    ]);
+    const geminiData = await geminiRes.json();
+    console.log('Gemini status:', geminiRes.status);
+    if (!geminiRes.ok) {
+      console.error('Gemini error:', JSON.stringify(geminiData?.error));
+      return res.status(500).json({ error: 'Image generation failed', details: geminiData?.error?.message });
+    }
 
-    const response = result.response;
     let editedImageBase64 = null;
     let textResponse = '';
-
-    for (const part of response.candidates[0].content.parts) {
-      if (part.inlineData?.data) {
-        editedImageBase64 = part.inlineData.data;
-      } else if (part.text) {
-        textResponse = part.text;
-      }
+    const parts = geminiData?.candidates?.[0]?.content?.parts || [];
+    for (const part of parts) {
+      if (part.inline_data?.data) editedImageBase64 = part.inline_data.data;
+      else if (part.inlineData?.data) editedImageBase64 = part.inlineData.data;
+      else if (part.text) textResponse = part.text;
     }
 
     if (!editedImageBase64) {
