@@ -2,17 +2,18 @@ require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const multer = require('multer');
-const { GoogleGenerativeAI } = require('@google/generative-ai');
+const { GoogleGenAI } = require('@google/genai');
 const { createClient } = require('@supabase/supabase-js');
 const rateLimit = require('express-rate-limit');
 const { v4: uuidv4 } = require('uuid');
 const path = require('path');
 
 const app = express();
+app.set('trust proxy', 1);
 const PORT = process.env.PORT || 3000;
 
 // ─── Clients ───────────────────────────────────────────────────────────────
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
 const supabase = createClient(
   process.env.SUPABASE_URL,
   process.env.SUPABASE_SERVICE_KEY // service key for server-side operations
@@ -223,24 +224,21 @@ app.post('/api/edit', upload.single('image'), async (req, res) => {
     // Build the prompt - enhanced for product photography
     const enhancedPrompt = buildProductPrompt(prompt);
 
-    const model = genAI.getGenerativeModel({
+    const response = await ai.models.generateContent({
       model: 'gemini-2.0-flash-preview-image-generation',
-      generationConfig: {
+      contents: [
+        {
+          parts: [
+            { inlineData: { mimeType: mimeType, data: imageBase64 } },
+            { text: enhancedPrompt }
+          ]
+        }
+      ],
+      config: {
         responseModalities: ['Text', 'Image'],
       }
     });
 
-    const result = await model.generateContent([
-      {
-        inlineData: {
-          mimeType: mimeType,
-          data: imageBase64
-        }
-      },
-      { text: enhancedPrompt }
-    ]);
-
-    const response = result.response;
     let editedImageBase64 = null;
     let textResponse = '';
 
