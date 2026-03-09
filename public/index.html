@@ -193,30 +193,56 @@ h2.stitle-ar{font-family:'Tajawal',sans-serif;font-size:clamp(26px,4.2vw,46px);f
 .stepd{font-size:12.5px;color:var(--muted2);line-height:1.65}
 
 /* ── AUTH MODAL ── */
-.overlay{position:fixed;inset:0;z-index:500;background:rgba(0,0,0,.88);backdrop-filter:blur(10px);display:flex;align-items:center;justify-content:center;padding:20px;opacity:0;pointer-events:none;transition:opacity var(--t)}
+.overlay{position:fixed;inset:0;z-index:500;background:rgba(0,0,0,.92);backdrop-filter:blur(16px);display:flex;align-items:center;justify-content:center;padding:20px;opacity:0;pointer-events:none;transition:opacity .3s}
 .overlay.open{opacity:1;pointer-events:all}
-.modal{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r-xl);padding:38px;width:100%;max-width:390px;position:relative;transform:translateY(14px);transition:transform var(--t)}
-.overlay.open .modal{transform:translateY(0)}
-.mx{position:absolute;top:16px;left:16px;width:30px;height:30px;border-radius:50%;background:var(--bg3);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--muted);font-size:14px;transition:all var(--t)}
-[data-lang="en"] .mx{left:auto;right:16px}
-.mx:hover{color:var(--white)}
-.mlogo{font-family:'Josefin Sans',sans-serif;font-weight:700;letter-spacing:5px;font-size:22px;color:var(--amber);text-align:center;margin-bottom:5px}
-.mtag{text-align:center;font-size:12.5px;color:var(--muted);margin-bottom:24px}
-.perks{background:var(--amber-dim);border:1px solid var(--border-hi);border-radius:var(--r);padding:13px 15px;margin-bottom:20px}
-.perks-t{font-size:11.5px;font-weight:800;color:var(--amber);margin-bottom:9px;letter-spacing:.3px}
-.perk{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--muted2);margin-bottom:6px}
+.modal{background:var(--bg2);border:1px solid var(--border);border-radius:24px;padding:32px 30px;width:100%;max-width:400px;position:relative;transform:translateY(16px) scale(.97);transition:transform .3s;overflow:hidden}
+.modal::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--amber),transparent)}
+.overlay.open .modal{transform:translateY(0) scale(1)}
+.mx{position:absolute;top:14px;left:14px;width:28px;height:28px;border-radius:50%;background:var(--bg3);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--muted);font-size:13px;transition:all var(--t);z-index:2}
+[data-lang="en"] .mx{left:auto;right:14px}
+.mx:hover{color:var(--white);border-color:rgba(255,255,255,.2)}
+.mlogo{font-family:'Josefin Sans',sans-serif;font-weight:700;letter-spacing:5px;font-size:20px;color:var(--amber);text-align:center;margin-bottom:4px}
+.mtag{text-align:center;font-size:12px;color:var(--muted);margin-bottom:20px}
+.perks{background:var(--amber-dim);border:1px solid var(--border-hi);border-radius:var(--r);padding:11px 14px;margin-bottom:20px}
+.perks-t{font-size:11px;font-weight:800;color:var(--amber);margin-bottom:8px;letter-spacing:.3px}
+.perk{display:flex;align-items:center;gap:7px;font-size:11.5px;color:var(--muted2);margin-bottom:5px}
 .perk:last-child{margin-bottom:0}
-.mtabs{display:flex;background:var(--bg3);border-radius:11px;padding:3px;gap:3px;margin-bottom:20px}
-.mtab{flex:1;padding:8px;text-align:center;border-radius:9px;cursor:pointer;font-size:12.5px;font-weight:600;color:var(--muted);border:none;background:transparent;transition:all var(--t);font-family:inherit}
+
+/* Google btn */
+.gbtn{width:100%;padding:11px 16px;background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);display:flex;align-items:center;justify-content:center;gap:10px;cursor:pointer;transition:all var(--t);font-family:inherit;font-size:13.5px;font-weight:600;color:var(--white);margin-bottom:18px}
+.gbtn:hover{border-color:rgba(255,255,255,.18);background:var(--bg4)}
+.gbtn svg{flex-shrink:0}
+
+/* divider */
+.mdiv{display:flex;align-items:center;gap:10px;margin-bottom:18px}
+.mdiv::before,.mdiv::after{content:'';flex:1;height:1px;background:var(--border)}
+.mdiv span{font-size:11px;color:var(--muted);white-space:nowrap}
+
+/* method tabs */
+.mtabs{display:flex;background:var(--bg3);border-radius:10px;padding:3px;gap:2px;margin-bottom:18px}
+.mtab{flex:1;padding:7px 6px;text-align:center;border-radius:8px;cursor:pointer;font-size:12px;font-weight:600;color:var(--muted);border:none;background:transparent;transition:all var(--t);font-family:inherit}
 .mtab.on{background:var(--amber-dim);color:var(--amber);border:1px solid var(--border-hi)}
-.fg{margin-bottom:13px}
-.fl{display:block;font-size:11.5px;color:var(--muted);margin-bottom:6px;font-family:'DM Sans',sans-serif}
-.fi{width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);padding:10px 14px;color:var(--white);font-family:'DM Sans',sans-serif;font-size:13.5px;outline:none;transition:border-color var(--t);direction:ltr}
+
+/* auth views */
+.aview{display:none}.aview.on{display:block}
+
+/* form */
+.fg{margin-bottom:12px}
+.fl{display:block;font-size:11px;color:var(--muted);margin-bottom:5px;font-family:'DM Sans',sans-serif}
+.fi{width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);padding:10px 13px;color:var(--white);font-family:'DM Sans',sans-serif;font-size:13px;outline:none;transition:border-color var(--t);direction:ltr}
 .fi:focus{border-color:rgba(245,200,66,.38)}
-.mbtn{width:100%;padding:12px;background:linear-gradient(135deg,var(--amber),var(--amber2));color:#090600;border:none;border-radius:var(--r);font-family:inherit;font-size:14.5px;font-weight:900;cursor:pointer;transition:all var(--t);margin-top:5px}
-.mbtn:hover{transform:translateY(-1px);box-shadow:0 8px 22px rgba(245,200,66,.28)}
-.mmsg{font-size:12px;text-align:center;margin-top:10px;min-height:16px}
+.fi-ph{display:flex;gap:8px}.fi-ph .fi{flex:1}
+.fi-code{width:80px;text-align:center;letter-spacing:4px;font-weight:700}
+.mbtn{width:100%;padding:11px;background:linear-gradient(135deg,var(--amber),var(--amber2));color:#090600;border:none;border-radius:var(--r);font-family:inherit;font-size:14px;font-weight:900;cursor:pointer;transition:all var(--t);margin-top:4px}
+.mbtn:hover:not(:disabled){transform:translateY(-1px);box-shadow:0 7px 20px rgba(245,200,66,.3)}
+.mbtn:disabled{opacity:.6;cursor:not-allowed}
+.mbtn-ghost{background:transparent;border:1px solid var(--border);color:var(--muted2)}
+.mbtn-ghost:hover:not(:disabled){border-color:rgba(255,255,255,.18);color:var(--white);transform:translateY(-1px)}
+.mmsg{font-size:11.5px;text-align:center;margin-top:10px;min-height:16px}
 .mmsg.err{color:var(--error)}.mmsg.ok{color:var(--success)}
+.mswitch{text-align:center;font-size:11.5px;color:var(--muted);margin-top:14px}
+.mswitch a{color:var(--amber);cursor:pointer;text-decoration:none}
+.otp-hint{font-size:11px;color:var(--muted);text-align:center;margin-bottom:12px}
 
 /* ── FOOTER ── */
 footer{position:relative;z-index:1;border-top:1px solid var(--border);padding:36px 36px 28px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:18px}
@@ -457,19 +483,47 @@ footer{position:relative;z-index:1;border-top:1px solid var(--border);padding:36
     <span class="mx" onclick="closeM()">✕</span>
     <div class="mlogo">LOOM</div>
     <p class="mtag" data-ar="منصة تعديل صور المنتجات" data-en="Product Image Studio">منصة تعديل صور المنتجات</p>
+
     <div class="perks">
       <div class="perks-t">✦ <span data-ar="مزايا الحساب المجاني" data-en="Free account perks">مزايا الحساب المجاني</span></div>
       <div class="perk">🎨 <span data-ar="5 صور يومياً مجاناً" data-en="5 free edits daily">5 صور يومياً مجاناً</span></div>
       <div class="perk">⚡ <span data-ar="أولوية في المعالجة" data-en="Priority processing">أولوية في المعالجة</span></div>
       <div class="perk">🛠️ <span data-ar="وصول مبكر لأدوات Maven" data-en="Early access to Maven tools">وصول مبكر لأدوات Maven</span></div>
     </div>
-    <div class="mtabs">
-      <button class="mtab on" id="tin" onclick="mTab('in')"><span data-ar="دخول" data-en="Sign in">دخول</span></button>
+
+    <!-- Google -->
+    <button class="gbtn" onclick="signInGoogle()">
+      <svg width="18" height="18" viewBox="0 0 48 48"><path fill="#FFC107" d="M43.6 20H24v8h11.3C33.7 32.8 29.3 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.9 1.1 8 3l5.7-5.7C34.1 6.5 29.3 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20c11 0 20-8 20-20 0-1.3-.1-2.7-.4-4z"/><path fill="#FF3D00" d="M6.3 14.7l6.6 4.8C14.5 16 19 12 24 12c3.1 0 5.9 1.1 8 3l5.7-5.7C34.1 6.5 29.3 4 24 4 16.3 4 9.7 8.4 6.3 14.7z"/><path fill="#4CAF50" d="M24 44c5.2 0 9.9-1.9 13.5-5l-6.2-5.2C29.5 35.5 26.9 36 24 36c-5.2 0-9.7-3.2-11.3-8H6.2C9.5 35.5 16.3 44 24 44z"/><path fill="#1976D2" d="M43.6 20H24v8h11.3c-.8 2.3-2.3 4.3-4.3 5.8l6.2 5.2C41 35.4 44 30.1 44 24c0-1.3-.1-2.7-.4-4z"/></svg>
+      <span data-ar="المتابعة بحساب Google" data-en="Continue with Google">المتابعة بحساب Google</span>
+    </button>
+
+    <div class="mdiv"><span data-ar="أو" data-en="or">أو</span></div>
+
+    <!-- Method tabs: Email only -->
+    <div class="mtabs" id="methodTabs">
+      <button class="mtab on" id="tin" onclick="mTab('in')"><span data-ar="تسجيل دخول" data-en="Sign in">تسجيل دخول</span></button>
       <button class="mtab" id="tup" onclick="mTab('up')"><span data-ar="حساب جديد" data-en="Sign up">حساب جديد</span></button>
     </div>
-    <div class="fg"><label class="fl"><span data-ar="البريد الإلكتروني" data-en="Email address">البريد الإلكتروني</span></label><input type="email" class="fi" id="ae" placeholder="you@example.com"/></div>
-    <div class="fg"><label class="fl"><span data-ar="كلمة المرور" data-en="Password">كلمة المرور</span></label><input type="password" class="fi" id="ap" placeholder="••••••••"/></div>
-    <button class="mbtn" onclick="doAuth()"><span id="mbtxt" data-ar="تسجيل الدخول" data-en="Sign in">تسجيل الدخول</span></button>
+
+    <!-- Email View -->
+    <div class="aview on" id="vEmail">
+      <div class="fg" id="nameFieldEmail" style="display:none">
+        <label class="fl"><span data-ar="الاسم الكامل" data-en="Full name">الاسم الكامل</span></label>
+        <input type="text" class="fi" id="aname" placeholder="اسمك الكامل" autocomplete="name"/>
+      </div>
+      <div class="fg">
+        <label class="fl"><span data-ar="البريد الإلكتروني" data-en="Email address">البريد الإلكتروني</span></label>
+        <input type="email" class="fi" id="ae" placeholder="you@example.com" autocomplete="email"/>
+      </div>
+      <div class="fg">
+        <label class="fl"><span data-ar="كلمة المرور" data-en="Password">كلمة المرور</span></label>
+        <input type="password" class="fi" id="ap" placeholder="••••••••" autocomplete="current-password"/>
+      </div>
+      <button class="mbtn" id="emailBtn" onclick="doAuth()">
+        <span id="mbtxt" data-ar="تسجيل الدخول" data-en="Sign in">تسجيل الدخول</span>
+      </button>
+    </div>
+
     <div class="mmsg" id="mmsgM"></div>
   </div>
 </div>
@@ -634,30 +688,96 @@ function clrMsg(){document.getElementById('mmsg').className='msg'}
 function openM(){document.getElementById('ov').classList.add('open')}
 function closeM(){document.getElementById('ov').classList.remove('open')}
 function clovOuter(e){if(e.target===document.getElementById('ov'))closeM()}
+
+let curTab='in';
+
 function mTab(t){
-  ctab=t;
+  curTab=t;
   document.getElementById('tin').classList.toggle('on',t==='in');
   document.getElementById('tup').classList.toggle('on',t==='up');
   const btxt=document.getElementById('mbtxt');
-  btxt.textContent=lang==='ar'?(t==='in'?'تسجيل الدخول':'إنشاء حساب'):(t==='in'?'Sign in':'Create account');
-  document.getElementById('mmsgM').textContent='';document.getElementById('mmsgM').className='mmsg';
+  const nameF=document.getElementById('nameFieldEmail');
+  if(t==='up'){
+    btxt.dataset.ar='إنشاء حساب'; btxt.dataset.en='Create account';
+    btxt.textContent=lang==='ar'?'إنشاء حساب':'Create account';
+    nameF.style.display='';
+    document.getElementById('ap').autocomplete='new-password';
+  } else {
+    btxt.dataset.ar='تسجيل الدخول'; btxt.dataset.en='Sign in';
+    btxt.textContent=lang==='ar'?'تسجيل الدخول':'Sign in';
+    nameF.style.display='none';
+    document.getElementById('ap').autocomplete='current-password';
+  }
+  mMsg('','');
 }
-async function doAuth(){
-  const em=document.getElementById('ae').value.trim(),pw=document.getElementById('ap').value;
-  const mel=document.getElementById('mmsgM');
-  if(!em||!pw){mel.textContent=lang==='ar'?'يرجى ملء جميع الحقول':'Please fill in all fields';mel.className='mmsg err';return}
+
+function mMsg(t,tx){const e=document.getElementById('mmsgM');e.textContent=tx;e.className='mmsg'+(t?' '+t:'')}
+
+async function signInGoogle(){
   try{
-    const ep=ctab==='in'?'/api/auth/signin':'/api/auth/signup';
-    const res=await fetch(API+ep,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email:em,password:pw})});
+    mMsg('','');
+    const res=await fetch('/api/auth/google');
     const data=await res.json();
-    if(!res.ok){mel.textContent=data.error;mel.className='mmsg err';return}
-    if(ctab==='up'){mel.textContent=lang==='ar'?'✅ تم إنشاء الحساب! سجّل الدخول الآن':'✅ Account created! Sign in now';mel.className='mmsg ok';mTab('in');return}
-    tok=data.token;usr=data.user;
-    localStorage.setItem('lt',tok);localStorage.setItem('lu',JSON.stringify(usr));
-    closeM();updHdr();loadCred();
-  }catch{mel.textContent=lang==='ar'?'خطأ في الاتصال':'Connection error';mel.className='mmsg err'}
+    if(data.url) window.location.href=data.url;
+    else mMsg('err',lang==='ar'?'تعذر تسجيل الدخول بجوجل':'Google sign-in failed');
+  }catch{mMsg('err',lang==='ar'?'خطأ في الاتصال':'Connection error')}
 }
+
+async function doAuth(){
+  const em=document.getElementById('ae').value.trim();
+  const pw=document.getElementById('ap').value;
+  const name=document.getElementById('aname').value.trim();
+  if(!em||!pw){mMsg('err',lang==='ar'?'يرجى ملء جميع الحقول':'Please fill all fields');return}
+  const btn=document.getElementById('emailBtn');
+  btn.disabled=true;
+  try{
+    const ep=curTab==='in'?'/api/auth/signin':'/api/auth/signup';
+    const body=curTab==='up'?{email:em,password:pw,name}:{email:em,password:pw};
+    const res=await fetch(API+ep,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
+    const data=await res.json();
+    if(!res.ok){mMsg('err',data.error);return}
+    if(curTab==='up'){mMsg('ok',lang==='ar'?'✅ تم إنشاء الحساب! سجّل الدخول الآن':'✅ Account created! Sign in now');mTab('in');return}
+    loginSuccess(data);
+  }catch{mMsg('err',lang==='ar'?'خطأ في الاتصال':'Connection error')}
+  finally{btn.disabled=false}
+}
+
+
+function loginSuccess(data){
+  tok=data.token; usr=data.user;
+  localStorage.setItem('lt',tok);
+  localStorage.setItem('lu',JSON.stringify(usr));
+  closeM(); updHdr(); loadCred();
+}
+
 function sOut(){tok=usr=null;localStorage.removeItem('lt');localStorage.removeItem('lu');updHdr();loadCred()}
+
+// Google OAuth callback handling via Supabase hash fragments
+window.addEventListener('load',()=>{
+  const hash=window.location.hash;
+  if(hash.includes('access_token')){
+    const params=new URLSearchParams(hash.replace('#',''));
+    const accessToken=params.get('access_token');
+    if(accessToken){
+      fetch('/api/auth/google-token',{
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({access_token:accessToken})
+      }).then(r=>r.json()).then(data=>{
+        if(data.token){ loginSuccess(data); history.replaceState({},'','/'); }
+      }).catch(()=>{});
+    }
+  }
+  // Legacy code param
+  const params=new URLSearchParams(window.location.search);
+  const code=params.get('code');
+  if(code){
+    fetch('/api/auth/callback',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({code})})
+      .then(r=>r.json()).then(data=>{
+        if(data.token){ loginSuccess(data); history.replaceState({},'','/'); }
+      }).catch(()=>{});
+  }
+});
 
 document.addEventListener('keydown',e=>{if(e.key==='Escape')closeM();if((e.ctrlKey||e.metaKey)&&e.key==='Enter')gen()});
 </script>
