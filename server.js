@@ -225,7 +225,7 @@ app.post('/api/edit', upload.single('image'), async (req, res) => {
     const enhancedPrompt = buildProductPrompt(prompt);
 
     const response = await ai.models.generateContent({
-      model: 'gemini-2.0-flash-preview-image-generation',
+      model: 'gemini-2.0-flash-exp',
       contents: [
         {
           parts: [
