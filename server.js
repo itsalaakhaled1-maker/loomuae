@@ -13,7 +13,7 @@ app.set('trust proxy', 1);
 const PORT = process.env.PORT || 3000;
 
 // ─── Clients ───────────────────────────────────────────────────────────────
-const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY, httpOptions: { apiVersion: 'v1alpha' } });
+const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
 const supabase = createClient(
   process.env.SUPABASE_URL,
   process.env.SUPABASE_SERVICE_KEY // service key for server-side operations
@@ -230,13 +230,13 @@ app.post('/api/edit', upload.single('image'), async (req, res) => {
         {
           role: 'user',
           parts: [
-            { inlineData: { mimeType: mimeType, data: imageBase64 } },
-            { text: enhancedPrompt }
+            { text: enhancedPrompt },
+            { inlineData: { mimeType: mimeType, data: imageBase64 } }
           ]
         }
       ],
       config: {
-        responseModalities: ['Text', 'Image'],
+        responseModalities: ['TEXT', 'IMAGE'],
       }
     });
 
