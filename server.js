@@ -438,19 +438,20 @@ app.post('/api/edit', upload.single('image'), async (req, res) => {
 
 // ─── Prompt Builder ──────────────────────────────────────────────────────────
 function buildProductPrompt(userPrompt) {
-  return `You are a professional product photographer and image editor.
-  
-Edit this product image according to the following instructions:
-"${userPrompt}"
+  return `You are an expert AI product photo editor. Your task is to edit the provided product image exactly as instructed.
 
-Requirements:
-- Keep the product as the main subject
-- Maintain product authenticity - don't change the product itself unless asked
-- Apply professional product photography standards
-- Ensure clean, sharp, commercial-quality output
-- If Arabic instructions are given, understand and apply them correctly
+CRITICAL RULES - NEVER BREAK THESE:
+1. The product itself must remain 100% IDENTICAL - do not change the label, logo, text, colors, jar shape, lid, or any product detail
+2. Only edit the background, lighting, or scene around the product
+3. The product must look photorealistic and natural in any new scene
+4. If placing the product in someone's hand: the hand must be fully visible, natural, and properly sized relative to the product - never cut off heads or bodies awkwardly
+5. Maintain proper human anatomy and proportions at all times
+6. The product label must always face the camera and be fully readable
 
-Return ONLY the edited image.`;
+USER INSTRUCTION:
+${userPrompt}
+
+OUTPUT: Return only the edited image, photorealistic, high quality, professional commercial photography standard.`;
 }
 
 // ─── Fallback to Frontend ────────────────────────────────────────────────────
