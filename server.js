@@ -144,7 +144,7 @@ app.get('/api/auth/google', async (req, res) => {
   const { data, error } = await supabase.auth.signInWithOAuth({
     provider: 'google',
     options: {
-      redirectTo: `${process.env.FRONTEND_URL}/api/auth/callback`
+      redirectTo: process.env.FRONTEND_URL
     }
   });
   if (error) return res.status(500).json({ error: error.message });
