@@ -632,7 +632,14 @@ async function loadCred(){
   try{
     const h={'x-session-id':sid};
     if(tok) h['Authorization']='Bearer '+tok;
-    const d=await fetch(API+'/api/credits',{headers:h}).then(r=>r.json());
+    const r=await fetch(API+'/api/credits',{headers:h});
+    // If token expired/invalid, log out silently
+    if(r.status===401){
+      tok=null; usr=null;
+      localStorage.removeItem('lt'); localStorage.removeItem('lu');
+      updHdr();
+    }
+    const d=await r.json();
     document.getElementById('cv').textContent=d.type==='user'
       ?`${d.remaining}/${DAILY}`
       :(d.canEdit?(lang==='ar'?'١ مجاناً':'1 free'):(lang==='ar'?'سجّل':'Sign up'));
@@ -716,6 +723,15 @@ async function gen(){
     const resp=await fetch(API+'/api/edit',{method:'POST',headers:h,body:fd});
     const data=await resp.json();
     if(!resp.ok){
+      // Token expired - log out and ask to re-login
+      if(resp.status===401){
+        tok=null; usr=null;
+        localStorage.removeItem('lt'); localStorage.removeItem('lu');
+        updHdr();
+        showMsg('info', lang==='ar'?'انتهت جلستك — سجّل الدخول مرة أخرى':'Session expired — please sign in again');
+        setTimeout(()=>openM(), 2000);
+        return;
+      }
       if(data.requiresAuth){
         // Anonymous user used their free credit
         showMsg('info',lang==='ar'?'🎉 استهلكت الكريديت المجاني — سجّل للحصول على 3 صور يومياً!':'🎉 Free credit used — sign up for 3 free daily edits!');
