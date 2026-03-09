@@ -578,29 +578,14 @@ async function enhancePrompt(){
   btn.disabled=true; btn.classList.add('enhancing');
 
   try{
-    const systemPrompt=`You are an expert AI image editing prompt engineer specializing in product photography.
-Your job: take a user's simple prompt and rewrite it into a detailed, professional prompt for AI image editing.
-Rules:
-- Keep the same core intent
-- Add professional photography details (lighting, shadows, background quality, composition)
-- Be specific and descriptive
-- Keep it under 80 words
-- Respond ONLY with the improved prompt, no explanations, no quotation marks
-- If the input is in Arabic, respond in Arabic. If English, respond in English.`;
-
-    const resp=await fetch('https://api.anthropic.com/v1/messages',{
+    const resp=await fetch('/api/enhance',{
       method:'POST',
       headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({
-        model:'claude-sonnet-4-20250514',
-        max_tokens:200,
-        system: systemPrompt,
-        messages:[{role:'user',content:`Enhance this image editing prompt: "${original}"`}]
-      })
+      body:JSON.stringify({ prompt: original })
     });
     const data=await resp.json();
-    if(data.content?.[0]?.text){
-      ta.value=data.content[0].text.trim();
+    if(data.enhanced){
+      ta.value=data.enhanced;
       ta.style.borderColor='rgba(245,200,66,.45)';
       setTimeout(()=>ta.style.borderColor='',2000);
     }
