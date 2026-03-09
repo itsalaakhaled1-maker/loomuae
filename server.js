@@ -1,0 +1,321 @@
+require('dotenv').config();
+const express = require('express');
+const cors = require('cors');
+const multer = require('multer');
+const { GoogleGenerativeAI } = require('@google/generative-ai');
+const { createClient } = require('@supabase/supabase-js');
+const rateLimit = require('express-rate-limit');
+const { v4: uuidv4 } = require('uuid');
+const path = require('path');
+
+const app = express();
+const PORT = process.env.PORT || 3000;
+
+// ─── Clients ───────────────────────────────────────────────────────────────
+const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+const supabase = createClient(
+  process.env.SUPABASE_URL,
+  process.env.SUPABASE_SERVICE_KEY // service key for server-side operations
+);
+
+// ─── Middleware ─────────────────────────────────────────────────────────────
+app.use(cors({
+  origin: process.env.FRONTEND_URL || '*',
+  credentials: true
+}));
+app.use(express.json());
+app.use(express.static(path.join(__dirname, 'public')));
+
+// Rate limiter - protect API
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 30,
+  message: { error: 'Too many requests, please try again later.' }
+});
+app.use('/api/', limiter);
+
+// Multer - memory storage (no disk)
+const upload = multer({
+  storage: multer.memoryStorage(),
+  limits: { fileSize: 10 * 1024 * 1024 }, // 10MB
+  fileFilter: (req, file, cb) => {
+    const allowed = ['image/jpeg', 'image/png', 'image/webp'];
+    if (allowed.includes(file.mimetype)) cb(null, true);
+    else cb(new Error('Only JPEG, PNG, WEBP images are allowed'));
+  }
+});
+
+// ─── Auth Middleware ────────────────────────────────────────────────────────
+async function getUser(req) {
+  const authHeader = req.headers.authorization;
+  if (!authHeader) return null;
+  const token = authHeader.replace('Bearer ', '');
+  const { data: { user }, error } = await supabase.auth.getUser(token);
+  if (error || !user) return null;
+  return user;
+}
+
+// ─── Credits Logic ──────────────────────────────────────────────────────────
+
+// For anonymous users: track by session_id cookie/header
+async function checkAnonymousCredit(sessionId) {
+  const today = new Date().toISOString().split('T')[0];
+
+  const { data, error } = await supabase
+    .from('anonymous_usage')
+    .select('*')
+    .eq('session_id', sessionId)
+    .single();
+
+  if (error || !data) {
+    // New session - has 1 free credit
+    return { canEdit: true, isNew: true };
+  }
+
+  if (data.used) {
+    return { canEdit: false, isNew: false };
+  }
+
+  return { canEdit: true, isNew: false, existing: data };
+}
+
+async function useAnonymousCredit(sessionId) {
+  const { data: existing } = await supabase
+    .from('anonymous_usage')
+    .select('*')
+    .eq('session_id', sessionId)
+    .single();
+
+  if (!existing) {
+    await supabase.from('anonymous_usage').insert({ session_id: sessionId, used: true });
+  } else {
+    await supabase.from('anonymous_usage').update({ used: true }).eq('session_id', sessionId);
+  }
+}
+
+// For logged-in users: 5 credits/day
+async function checkUserCredits(userId) {
+  const today = new Date().toISOString().split('T')[0];
+
+  let { data, error } = await supabase
+    .from('user_credits')
+    .select('*')
+    .eq('user_id', userId)
+    .single();
+
+  if (error || !data) {
+    // First time user - create record
+    await supabase.from('user_credits').insert({
+      user_id: userId,
+      used_today: 0,
+      last_reset: today
+    });
+    return { canEdit: true, remaining: 5 };
+  }
+
+  // Reset if new day
+  if (data.last_reset !== today) {
+    await supabase.from('user_credits').update({
+      used_today: 0,
+      last_reset: today
+    }).eq('user_id', userId);
+    return { canEdit: true, remaining: 5 };
+  }
+
+  const remaining = 5 - data.used_today;
+  return { canEdit: remaining > 0, remaining: Math.max(0, remaining) };
+}
+
+async function useUserCredit(userId) {
+  const today = new Date().toISOString().split('T')[0];
+  await supabase.rpc('increment_credits', { p_user_id: userId, p_today: today });
+}
+
+// ─── Routes ─────────────────────────────────────────────────────────────────
+
+// Health check
+app.get('/api/health', (req, res) => {
+  res.json({ status: 'ok', service: 'Loom API' });
+});
+
+// Auth: Sign Up
+app.post('/api/auth/signup', async (req, res) => {
+  const { email, password } = req.body;
+  if (!email || !password) return res.status(400).json({ error: 'Email and password required' });
+
+  const { data, error } = await supabase.auth.admin.createUser({
+    email,
+    password,
+    email_confirm: true
+  });
+
+  if (error) return res.status(400).json({ error: error.message });
+  res.json({ message: 'Account created! You can now sign in.', user: data.user });
+});
+
+// Auth: Sign In
+app.post('/api/auth/signin', async (req, res) => {
+  const { email, password } = req.body;
+
+  const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+  if (error) return res.status(401).json({ error: 'Invalid email or password' });
+
+  res.json({
+    token: data.session.access_token,
+    user: { id: data.user.id, email: data.user.email }
+  });
+});
+
+// Get credits status
+app.get('/api/credits', async (req, res) => {
+  const user = await getUser(req);
+  const sessionId = req.headers['x-session-id'];
+
+  if (user) {
+    const credits = await checkUserCredits(user.id);
+    res.json({ type: 'user', ...credits, daily_limit: 5 });
+  } else {
+    const credits = await checkAnonymousCredit(sessionId || 'unknown');
+    res.json({ type: 'anonymous', canEdit: credits.canEdit, remaining: credits.canEdit ? 1 : 0, daily_limit: 1 });
+  }
+});
+
+// ─── Main: Edit Image ────────────────────────────────────────────────────────
+app.post('/api/edit', upload.single('image'), async (req, res) => {
+  try {
+    const { prompt, sessionId } = req.body;
+    const user = await getUser(req);
+
+    if (!req.file) return res.status(400).json({ error: 'No image uploaded' });
+    if (!prompt || prompt.trim().length < 3) return res.status(400).json({ error: 'Please provide a description' });
+
+    // ── Check Credits ──
+    if (user) {
+      const credits = await checkUserCredits(user.id);
+      if (!credits.canEdit) {
+        return res.status(403).json({
+          error: 'Daily limit reached',
+          error_ar: 'انتهت الكريديتس اليومية',
+          message: 'You have used all 5 daily credits. Come back tomorrow!',
+          remaining: 0
+        });
+      }
+    } else {
+      const sid = sessionId || req.headers['x-session-id'];
+      if (!sid) return res.status(400).json({ error: 'Session ID required for anonymous usage' });
+
+      const credits = await checkAnonymousCredit(sid);
+      if (!credits.canEdit) {
+        return res.status(403).json({
+          error: 'Free credit used',
+          error_ar: 'استهلكت الكريديت المجاني',
+          message: 'Create a free account to get 5 daily credits!',
+          requiresAuth: true,
+          remaining: 0
+        });
+      }
+    }
+
+    // ── Call Gemini ──
+    const imageBase64 = req.file.buffer.toString('base64');
+    const mimeType = req.file.mimetype;
+
+    // Build the prompt - enhanced for product photography
+    const enhancedPrompt = buildProductPrompt(prompt);
+
+    const model = genAI.getGenerativeModel({
+      model: 'gemini-2.0-flash-exp-image-generation',
+      generationConfig: {
+        responseModalities: ['Text', 'Image'],
+      }
+    });
+
+    const result = await model.generateContent([
+      {
+        inlineData: {
+          mimeType: mimeType,
+          data: imageBase64
+        }
+      },
+      { text: enhancedPrompt }
+    ]);
+
+    const response = result.response;
+    let editedImageBase64 = null;
+    let textResponse = '';
+
+    for (const part of response.candidates[0].content.parts) {
+      if (part.inlineData) {
+        editedImageBase64 = part.inlineData.data;
+      } else if (part.text) {
+        textResponse = part.text;
+      }
+    }
+
+    if (!editedImageBase64) {
+      return res.status(500).json({ error: 'Image generation failed. Please try again.' });
+    }
+
+    // ── Deduct Credit ──
+    if (user) {
+      await useUserCredit(user.id);
+      const newCredits = await checkUserCredits(user.id);
+      const remaining = newCredits.remaining;
+
+      res.json({
+        success: true,
+        image: editedImageBase64,
+        mimeType: 'image/png',
+        remaining_credits: remaining,
+        text: textResponse
+      });
+    } else {
+      const sid = sessionId || req.headers['x-session-id'];
+      await useAnonymousCredit(sid);
+      res.json({
+        success: true,
+        image: editedImageBase64,
+        mimeType: 'image/png',
+        remaining_credits: 0,
+        requiresAuthForMore: true,
+        text: textResponse
+      });
+    }
+
+  } catch (err) {
+    console.error('Edit error:', err);
+
+    if (err.message?.includes('SAFETY')) {
+      return res.status(400).json({ error: 'The image or prompt was flagged. Please try a different one.' });
+    }
+
+    res.status(500).json({ error: 'Something went wrong. Please try again.', details: err.message });
+  }
+});
+
+// ─── Prompt Builder ──────────────────────────────────────────────────────────
+function buildProductPrompt(userPrompt) {
+  return `You are a professional product photographer and image editor.
+  
+Edit this product image according to the following instructions:
+"${userPrompt}"
+
+Requirements:
+- Keep the product as the main subject
+- Maintain product authenticity - don't change the product itself unless asked
+- Apply professional product photography standards
+- Ensure clean, sharp, commercial-quality output
+- If Arabic instructions are given, understand and apply them correctly
+
+Return ONLY the edited image.`;
+}
+
+// ─── Fallback to Frontend ────────────────────────────────────────────────────
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'index.html'));
+});
+
+// ─── Start Server ────────────────────────────────────────────────────────────
+app.listen(PORT, () => {
+  console.log(`🚀 Loom API running on port ${PORT}`);
+});
