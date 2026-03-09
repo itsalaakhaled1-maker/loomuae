@@ -196,7 +196,25 @@ h2.stitle-ar{font-family:'Tajawal',sans-serif;font-size:clamp(26px,4.2vw,46px);f
 .stept-ar{font-family:'Tajawal',sans-serif}
 .stepd{font-size:12.5px;color:var(--muted2);line-height:1.65}
 
-/* ── AUTH MODAL ── */
+/* ── LOADING OVERLAY ── */
+.loverlay{position:fixed;inset:0;z-index:600;background:rgba(8,8,8,.92);backdrop-filter:blur(20px);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:28px;opacity:0;pointer-events:none;transition:opacity .4s}
+.loverlay.show{opacity:1;pointer-events:all}
+.lring{position:relative;width:90px;height:90px}
+.lring svg{width:90px;height:90px;animation:lspin 2s linear infinite}
+.lring-track{fill:none;stroke:rgba(245,200,66,.1);stroke-width:3}
+.lring-fill{fill:none;stroke:var(--amber);stroke-width:3;stroke-linecap:round;stroke-dasharray:220;stroke-dashoffset:160;animation:ldash 1.8s ease-in-out infinite}
+.lring-icon{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:26px;animation:lpulse 1.8s ease-in-out infinite}
+.ltitle{font-family:'Josefin Sans',sans-serif;font-size:18px;font-weight:700;letter-spacing:3px;color:var(--white)}
+.lsteps{display:flex;flex-direction:column;align-items:center;gap:6px}
+.lstep{font-size:12.5px;color:var(--muted);transition:all .4s;opacity:.4;display:flex;align-items:center;gap:7px}
+.lstep.active{color:var(--amber);opacity:1;transform:scale(1.04)}
+.lstep.done{color:var(--success);opacity:.7}
+.lstep-dot{width:6px;height:6px;border-radius:50%;background:currentColor;flex-shrink:0}
+.lbar{width:220px;height:2px;background:rgba(255,255,255,.07);border-radius:10px;overflow:hidden}
+.lbar-fill{height:100%;background:linear-gradient(90deg,var(--amber2),var(--amber));border-radius:10px;width:0%;transition:width .6s ease}
+@keyframes lspin{to{transform:rotate(360deg)}}
+@keyframes ldash{0%{stroke-dashoffset:200}50%{stroke-dashoffset:40}100%{stroke-dashoffset:200}}
+@keyframes lpulse{0%,100%{transform:scale(1)}50%{transform:scale(1.15)}}
 .overlay{position:fixed;inset:0;z-index:500;background:rgba(0,0,0,.92);backdrop-filter:blur(16px);display:flex;align-items:center;justify-content:center;padding:20px;opacity:0;pointer-events:none;transition:opacity .3s}
 .overlay.open{opacity:1;pointer-events:all}
 .modal{background:var(--bg2);border:1px solid var(--border);border-radius:24px;padding:32px 30px;width:100%;max-width:400px;position:relative;transform:translateY(16px) scale(.97);transition:transform .3s;overflow:hidden}
@@ -485,6 +503,25 @@ footer{position:relative;z-index:1;border-top:1px solid var(--border);padding:36
   </div>
 </footer>
 
+<!-- LOADING OVERLAY -->
+<div class="loverlay" id="loverlay">
+  <div class="lring">
+    <svg viewBox="0 0 90 90">
+      <circle class="lring-track" cx="45" cy="45" r="38"/>
+      <circle class="lring-fill" cx="45" cy="45" r="38"/>
+    </svg>
+    <div class="lring-icon">🪡</div>
+  </div>
+  <div class="ltitle">LOOM</div>
+  <div class="lsteps">
+    <div class="lstep active" id="ls1"><span class="lstep-dot"></span><span data-ar="جاري تحليل الصورة..." data-en="Analyzing image...">جاري تحليل الصورة...</span></div>
+    <div class="lstep" id="ls2"><span class="lstep-dot"></span><span data-ar="تطبيق التعديلات..." data-en="Applying edits...">تطبيق التعديلات...</span></div>
+    <div class="lstep" id="ls3"><span class="lstep-dot"></span><span data-ar="تحسين الجودة..." data-en="Enhancing quality...">تحسين الجودة...</span></div>
+    <div class="lstep" id="ls4"><span class="lstep-dot"></span><span data-ar="اللمسات الأخيرة..." data-en="Final touches...">اللمسات الأخيرة...</span></div>
+  </div>
+  <div class="lbar"><div class="lbar-fill" id="lbarfill"></div></div>
+</div>
+
 <!-- AUTH MODAL -->
 <div class="overlay" id="ov" onclick="clovOuter(event)">
   <div class="modal">
@@ -702,7 +739,52 @@ async function gen(){
   }catch{showMsg('err',lang==='ar'?'تعذر الاتصال بالخادم':'Could not reach server')}
   finally{setLoad(false)}
 }
-function setLoad(s){const b=document.getElementById('genbtn');b.disabled=s;b.classList.toggle('loading',s)}
+let loadTimer = null;
+function setLoad(s){
+  const b=document.getElementById('genbtn');
+  b.disabled=s;
+  b.classList.toggle('loading',s);
+  const ov=document.getElementById('loverlay');
+  if(s){
+    // Reset steps
+    ['ls1','ls2','ls3','ls4'].forEach(id=>{
+      const el=document.getElementById(id);
+      el.classList.remove('active','done');
+    });
+    document.getElementById('lbarfill').style.width='0%';
+    document.getElementById('ls1').classList.add('active');
+    ov.classList.add('show');
+    // Animate steps
+    const steps=[
+      {id:'ls1',next:'ls2',bar:'25%',delay:2500},
+      {id:'ls2',next:'ls3',bar:'55%',delay:5000},
+      {id:'ls3',next:'ls4',bar:'80%',delay:9000},
+      {id:'ls4',next:null, bar:'95%',delay:14000},
+    ];
+    loadTimer = [];
+    steps.forEach(({id,next,bar,delay})=>{
+      loadTimer.push(setTimeout(()=>{
+        document.getElementById(id).classList.remove('active');
+        document.getElementById(id).classList.add('done');
+        if(next){
+          document.getElementById(next).classList.add('active');
+        }
+        document.getElementById('lbarfill').style.width=bar;
+      },delay));
+    });
+  } else {
+    // Complete
+    document.getElementById('lbarfill').style.width='100%';
+    setTimeout(()=>{
+      ov.classList.remove('show');
+      ['ls1','ls2','ls3','ls4'].forEach(id=>{
+        document.getElementById(id).classList.remove('active','done');
+      });
+      document.getElementById('lbarfill').style.width='0%';
+    },400);
+    if(loadTimer){ loadTimer.forEach(t=>clearTimeout(t)); loadTimer=null; }
+  }
+}
 function dl(){if(!res64)return;const a=document.createElement('a');a.href='data:image/png;base64,'+res64;a.download='loom-'+Date.now()+'.png';a.click()}
 
 /* ── MESSAGES ── */
