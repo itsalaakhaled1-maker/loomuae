@@ -286,10 +286,14 @@ footer{position:relative;z-index:1;border-top:1px solid var(--border);padding:36
       <span class="cpill-dot"></span>
       <span id="cv">١ مجاناً</span>
     </div>
-    <button class="nbtn nbtn-ghost" id="loginBtn" onclick="openM()">
+    <button class="nbtn nbtn-amber" id="signupBtn" onclick="openM();mTab('up')" style="font-size:12px">
+      <span data-ar="إنشاء حساب" data-en="Sign up">إنشاء حساب</span>
+    </button>
+    <button class="nbtn nbtn-ghost" id="loginBtn" onclick="openM();mTab('in')">
       <span data-ar="دخول" data-en="Sign in">دخول</span>
     </button>
-    <div id="userMenu" style="display:none">
+    <div id="userMenu" style="display:none;align-items:center;gap:8px;display:none">
+      <span id="userName" style="font-size:12px;color:var(--muted2);max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap"></span>
       <button class="nbtn nbtn-ghost" onclick="sOut()"><span data-ar="خروج" data-en="Sign out">خروج</span></button>
     </div>
   </div>
@@ -533,7 +537,7 @@ const API='', DAILY=5;
 let lang=localStorage.getItem('ll')||'ar';
 let sid=localStorage.getItem('ls')||'s'+Math.random().toString(36).slice(2)+Date.now().toString(36);
 let tok=localStorage.getItem('lt')||null, usr=JSON.parse(localStorage.getItem('lu')||'null');
-let file=null, res64=null, ctab='in';
+let file=null, res64=null;
 localStorage.setItem('ls',sid);
 
 /* ── LANG ── */
@@ -573,8 +577,15 @@ window.addEventListener('load',()=>{setLang(lang);updHdr();loadCred();setupDrop(
 
 /* ── HEADER ── */
 function updHdr(){
-  document.getElementById('loginBtn').style.display=usr?'none':'';
-  document.getElementById('userMenu').style.display=usr?'':'none';
+  const loggedIn = !!usr;
+  document.getElementById('loginBtn').style.display = loggedIn ? 'none' : '';
+  document.getElementById('signupBtn').style.display = loggedIn ? 'none' : '';
+  const um = document.getElementById('userMenu');
+  um.style.display = loggedIn ? 'flex' : 'none';
+  if(loggedIn && usr){
+    const nameEl = document.getElementById('userName');
+    if(nameEl) nameEl.textContent = usr.name || usr.email?.split('@')[0] || '';
+  }
 }
 async function loadCred(){
   try{
@@ -756,6 +767,7 @@ function sOut(){tok=usr=null;localStorage.removeItem('lt');localStorage.removeIt
 
 // Google OAuth callback handling via Supabase hash fragments
 window.addEventListener('load',()=>{
+  // Handle hash fragment with access_token (Supabase default OAuth flow)
   const hash=window.location.hash;
   if(hash.includes('access_token')){
     const params=new URLSearchParams(hash.replace('#',''));
@@ -769,15 +781,6 @@ window.addEventListener('load',()=>{
         if(data.token){ loginSuccess(data); history.replaceState({},'','/'); }
       }).catch(()=>{});
     }
-  }
-  // Legacy code param
-  const params=new URLSearchParams(window.location.search);
-  const code=params.get('code');
-  if(code){
-    fetch('/api/auth/callback',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({code})})
-      .then(r=>r.json()).then(data=>{
-        if(data.token){ loginSuccess(data); history.replaceState({},'','/'); }
-      }).catch(()=>{});
   }
 });
 
