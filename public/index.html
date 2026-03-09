@@ -664,7 +664,7 @@ async function gen(){
     const resp=await fetch(API+'/api/edit',{method:'POST',headers:h,body:fd});
     const data=await resp.json();
     if(!resp.ok){
-      if(data.requiresAuth){showMsg('info',lang==='ar'?'🎉 استهلكت الكريديت المجاني — سجّل للحصول على 5 صور يومياً!':'🎉 Free credit used — sign up for 5 free daily edits!');openM()}
+      if(data.requiresAuth){showMsg('info',lang==='ar'?'🎉 استهلكت الكريديت المجاني — سجّل للحصول على 5 صور يومياً!':'🎉 Free credit used — sign up for 5 free daily edits!');setTimeout(()=>openM(),8000)}
       else showMsg('err',data.error_ar||data.error||(lang==='ar'?'حدث خطأ':'Something went wrong'));
       return;
     }
@@ -674,6 +674,8 @@ async function gen(){
     document.getElementById('upbanner').style.display=data.requiresAuthForMore?'block':'none';
     document.getElementById('resc').scrollIntoView({behavior:'smooth',block:'nearest'});
     document.getElementById('cv').textContent=tok?`${data.remaining_credits}/${DAILY}`:(lang==='ar'?'سجّل':'Sign up');
+    // Show signup modal after 8 seconds for anonymous users who used their free credit
+    if(data.requiresAuthForMore && !tok){ setTimeout(()=>{ if(!tok) openM(); }, 8000); }
   }catch{showMsg('err',lang==='ar'?'تعذر الاتصال بالخادم':'Could not reach server')}
   finally{setLoad(false)}
 }
