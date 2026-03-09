@@ -393,7 +393,7 @@ footer{position:relative;z-index:1;border-top:1px solid var(--border);padding:36
           <div class="cmpc res"><span class="cmplabel" data-ar="المعدّل ✦" data-en="Edited ✦">المعدّل ✦</span><img id="rimg" src="" alt=""/></div>
         </div>
         <div class="upbanner" id="upbanner">
-          <p id="upTxt" data-ar="🎉 استمتعت بصورتك المجانية! سجّل الآن واحصل على 5 صور يومياً مجاناً" data-en="🎉 You used your free edit! Sign up for 5 free edits every day">🎉 استمتعت بصورتك المجانية! سجّل الآن واحصل على 5 صور يومياً</p>
+          <p id="upTxt" data-ar="🎉 استمتعت بصورتك المجانية! سجّل الآن واحصل على 3 صور يومياً مجاناً" data-en="🎉 You used your free edit! Sign up for 5 free edits every day">🎉 استمتعت بصورتك المجانية! سجّل الآن واحصل على 5 صور يومياً</p>
           <button class="upbtn" onclick="openM()"><span data-ar="إنشاء حساب مجاني ✦" data-en="Create free account ✦">إنشاء حساب مجاني ✦</span></button>
         </div>
       </div>
@@ -494,7 +494,7 @@ footer{position:relative;z-index:1;border-top:1px solid var(--border);padding:36
 
     <div class="perks">
       <div class="perks-t">✦ <span data-ar="مزايا الحساب المجاني" data-en="Free account perks">مزايا الحساب المجاني</span></div>
-      <div class="perk">🎨 <span data-ar="5 صور يومياً مجاناً" data-en="5 free edits daily">5 صور يومياً مجاناً</span></div>
+      <div class="perk">🎨 <span data-ar="3 صور يومياً مجاناً" data-en="3 free edits daily">3 صور يومياً مجاناً</span></div>
       <div class="perk">⚡ <span data-ar="أولوية في المعالجة" data-en="Priority processing">أولوية في المعالجة</span></div>
       <div class="perk">🛠️ <span data-ar="وصول مبكر لأدوات Maven" data-en="Early access to Maven tools">وصول مبكر لأدوات Maven</span></div>
     </div>
@@ -537,7 +537,7 @@ footer{position:relative;z-index:1;border-top:1px solid var(--border);padding:36
 </div>
 
 <script>
-const API='', DAILY=5;
+const DAILY=3;
 let lang=localStorage.getItem('ll')||'ar';
 let sid=localStorage.getItem('ls')||'s'+Math.random().toString(36).slice(2)+Date.now().toString(36);
 let tok=localStorage.getItem('lt')||null, usr=JSON.parse(localStorage.getItem('lu')||'null');
