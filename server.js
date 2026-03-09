@@ -2,7 +2,6 @@ require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const multer = require('multer');
-const { GoogleGenerativeAI } = require('@google/generative-ai');
 const { createClient } = require('@supabase/supabase-js');
 const rateLimit = require('express-rate-limit');
 const { v4: uuidv4 } = require('uuid');
@@ -13,7 +12,6 @@ app.set('trust proxy', 1);
 const PORT = process.env.PORT || 3000;
 
 // ─── Clients ───────────────────────────────────────────────────────────────
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 const supabase = createClient(
   process.env.SUPABASE_URL,
   process.env.SUPABASE_SERVICE_KEY // service key for server-side operations
@@ -224,24 +222,43 @@ app.post('/api/edit', upload.single('image'), async (req, res) => {
     // Build the prompt - enhanced for product photography
     const enhancedPrompt = buildProductPrompt(prompt);
 
-    const model = genAI.getGenerativeModel({
-      model: 'gemini-2.0-flash-exp-image-generation',
-      generationConfig: {
-        responseModalities: ['Text', 'Image'],
-      }
+    // Call Gemini API directly via fetch - no SDK needed
+    const GEMINI_KEY = process.env.GEMINI_API_KEY;
+    const apiUrl = `https://generativelanguage.googleapis.com/v1alpha/models/gemini-2.0-flash-exp:generateContent?key=${GEMINI_KEY}`;
+
+    const geminiRes = await fetch(apiUrl, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        contents: [{
+          role: 'user',
+          parts: [
+            { text: enhancedPrompt },
+            { inline_data: { mime_type: mimeType, data: imageBase64 } }
+          ]
+        }],
+        generationConfig: {
+          responseModalities: ['TEXT', 'IMAGE']
+        }
+      })
     });
 
-    const result = await model.generateContent([
-      { text: enhancedPrompt },
-      { inlineData: { mimeType: mimeType, data: imageBase64 } }
-    ]);
+    const geminiData = await geminiRes.json();
+    console.log('Gemini status:', geminiRes.status);
 
-    const response = result.response;
+    if (!geminiRes.ok) {
+      console.error('Gemini error:', JSON.stringify(geminiData));
+      return res.status(500).json({ error: 'Image generation failed', details: geminiData?.error?.message });
+    }
+
     let editedImageBase64 = null;
     let textResponse = '';
 
-    for (const part of response.candidates[0].content.parts) {
-      if (part.inlineData?.data) {
+    const parts = geminiData?.candidates?.[0]?.content?.parts || [];
+    for (const part of parts) {
+      if (part.inline_data?.data) {
+        editedImageBase64 = part.inline_data.data;
+      } else if (part.inlineData?.data) {
         editedImageBase64 = part.inlineData.data;
       } else if (part.text) {
         textResponse = part.text;
