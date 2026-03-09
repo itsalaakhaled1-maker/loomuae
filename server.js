@@ -2,7 +2,7 @@ require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const multer = require('multer');
-const { GoogleGenAI } = require('@google/genai');
+const { GoogleGenerativeAI } = require('@google/generative-ai');
 const { createClient } = require('@supabase/supabase-js');
 const rateLimit = require('express-rate-limit');
 const { v4: uuidv4 } = require('uuid');
@@ -13,7 +13,7 @@ app.set('trust proxy', 1);
 const PORT = process.env.PORT || 3000;
 
 // ─── Clients ───────────────────────────────────────────────────────────────
-const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
+const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 const supabase = createClient(
   process.env.SUPABASE_URL,
   process.env.SUPABASE_SERVICE_KEY // service key for server-side operations
@@ -224,27 +224,23 @@ app.post('/api/edit', upload.single('image'), async (req, res) => {
     // Build the prompt - enhanced for product photography
     const enhancedPrompt = buildProductPrompt(prompt);
 
-    const response = await ai.models.generateContent({
-      model: 'gemini-2.0-flash-exp',
-      contents: [
-        {
-          role: 'user',
-          parts: [
-            { text: enhancedPrompt },
-            { inlineData: { mimeType: mimeType, data: imageBase64 } }
-          ]
-        }
-      ],
-      config: {
-        responseModalities: ['TEXT', 'IMAGE'],
+    const model = genAI.getGenerativeModel({
+      model: 'gemini-2.0-flash-exp-image-generation',
+      generationConfig: {
+        responseModalities: ['Text', 'Image'],
       }
     });
 
+    const result = await model.generateContent([
+      { text: enhancedPrompt },
+      { inlineData: { mimeType: mimeType, data: imageBase64 } }
+    ]);
+
+    const response = result.response;
     let editedImageBase64 = null;
     let textResponse = '';
 
-    const parts = response?.candidates?.[0]?.content?.parts || [];
-    for (const part of parts) {
+    for (const part of response.candidates[0].content.parts) {
       if (part.inlineData?.data) {
         editedImageBase64 = part.inlineData.data;
       } else if (part.text) {
