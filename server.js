@@ -139,31 +139,121 @@ app.get('/api/health', (req, res) => {
   res.json({ status: 'ok', service: 'Loom API' });
 });
 
-// Auth: Sign Up
+// Auth: Google OAuth - get redirect URL
+app.get('/api/auth/google', async (req, res) => {
+  const { data, error } = await supabase.auth.signInWithOAuth({
+    provider: 'google',
+    options: {
+      redirectTo: `${process.env.FRONTEND_URL}/api/auth/callback`
+    }
+  });
+  if (error) return res.status(500).json({ error: error.message });
+  res.json({ url: data.url });
+});
+
+// Auth: Google OAuth callback
+app.get('/api/auth/callback', async (req, res) => {
+  res.redirect(`${process.env.FRONTEND_URL}/#auth-callback`);
+});
+
+// Auth: Exchange Google access token
+app.post('/api/auth/google-token', async (req, res) => {
+  const { access_token } = req.body;
+  if (!access_token) return res.status(400).json({ error: 'Token required' });
+  const { data, error } = await supabase.auth.getUser(access_token);
+  if (error || !data.user) return res.status(401).json({ error: 'Invalid token' });
+  res.json({
+    token: access_token,
+    user: { id: data.user.id, email: data.user.email, name: data.user.user_metadata?.full_name }
+  });
+});
+
+// Auth: Sign Up (Email + Name)
 app.post('/api/auth/signup', async (req, res) => {
-  const { email, password } = req.body;
+  const { email, password, name } = req.body;
   if (!email || !password) return res.status(400).json({ error: 'Email and password required' });
 
   const { data, error } = await supabase.auth.admin.createUser({
     email,
     password,
-    email_confirm: true
+    email_confirm: true,
+    user_metadata: { full_name: name || '' }
   });
 
   if (error) return res.status(400).json({ error: error.message });
   res.json({ message: 'Account created! You can now sign in.', user: data.user });
 });
 
-// Auth: Sign In
+// Auth: Sign In (Email)
 app.post('/api/auth/signin', async (req, res) => {
   const { email, password } = req.body;
 
   const { data, error } = await supabase.auth.signInWithPassword({ email, password });
   if (error) return res.status(401).json({ error: 'Invalid email or password' });
 
+  const name = data.user.user_metadata?.full_name || data.user.email?.split('@')[0] || '';
   res.json({
     token: data.session.access_token,
-    user: { id: data.user.id, email: data.user.email }
+    user: { id: data.user.id, email: data.user.email, name }
+  });
+});
+
+// Auth: Send Phone OTP
+app.post('/api/auth/phone/send', async (req, res) => {
+  const { phone } = req.body;
+  if (!phone) return res.status(400).json({ error: 'Phone number required' });
+
+  const { error } = await supabase.auth.signInWithOtp({ phone });
+  if (error) return res.status(400).json({ error: error.message });
+  res.json({ message: 'OTP sent successfully' });
+});
+
+// Auth: Verify Phone OTP
+app.post('/api/auth/phone/verify', async (req, res) => {
+  const { phone, token, name } = req.body;
+  if (!phone || !token) return res.status(400).json({ error: 'Phone and token required' });
+
+  const { data, error } = await supabase.auth.verifyOtp({ phone, token, type: 'sms' });
+  if (error) return res.status(400).json({ error: error.message });
+
+  // Update name if provided
+  if (name && data.user) {
+    await supabase.auth.admin.updateUserById(data.user.id, {
+      user_metadata: { full_name: name }
+    });
+  }
+
+  const displayName = name || data.user.phone || '';
+  res.json({
+    token: data.session.access_token,
+    user: { id: data.user.id, phone: data.user.phone, name: displayName }
+  });
+});
+
+// Auth: Google OAuth — get redirect URL
+app.get('/api/auth/google', async (req, res) => {
+  const { data, error } = await supabase.auth.signInWithOAuth({
+    provider: 'google',
+    options: {
+      redirectTo: `${process.env.FRONTEND_URL}/auth/callback`
+    }
+  });
+  if (error) return res.status(500).json({ error: error.message });
+  res.json({ url: data.url });
+});
+
+// Auth: OAuth Callback — exchange code for session
+app.post('/api/auth/callback', async (req, res) => {
+  const { code } = req.body;
+  if (!code) return res.status(400).json({ error: 'Code required' });
+
+  const { data, error } = await supabase.auth.exchangeCodeForSession(code);
+  if (error) return res.status(400).json({ error: error.message });
+
+  const name = data.user.user_metadata?.full_name || data.user.user_metadata?.name || '';
+  res.json({
+    token: data.session.access_token,
+    user: { id: data.user.id, email: data.user.email, name }
   });
 });
 
