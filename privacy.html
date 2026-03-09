@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" data-lang="ar">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>سياسة الخصوصية — Loom</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;900&family=Josefin+Sans:wght@300;400;600;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+  <style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#080808;--bg2:#0f0f0f;--bg3:#161616;
+  --border:rgba(255,255,255,0.07);--border-hi:rgba(245,200,66,0.22);
+  --amber:#f5c842;--amber2:#d9a520;--amber-dim:rgba(245,200,66,0.07);
+  --white:#f0ead8;--muted:#66625a;--muted2:#999080;
+  --r:12px;--r-lg:20px;--r-xl:28px;
+  --t:.26s;--ease:cubic-bezier(.4,0,.2,1);
+}
+html{scroll-behavior:smooth}
+body{font-family:'Tajawal','DM Sans',sans-serif;background:var(--bg);color:var(--white);min-height:100vh;overflow-x:hidden;line-height:1.8}
+[data-lang="en"]{direction:ltr;font-family:'DM Sans','Tajawal',sans-serif}
+body::after{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");pointer-events:none;z-index:9999}
+.mesh{position:fixed;inset:0;z-index:0;pointer-events:none;background:radial-gradient(ellipse 90% 40% at 50% -5%,rgba(245,200,66,.05) 0%,transparent 60%)}
+
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:200;height:62px;display:flex;align-items:center;justify-content:space-between;padding:0 36px;background:rgba(8,8,8,.72);backdrop-filter:blur(22px);border-bottom:1px solid var(--border)}
+.logo{font-family:'Josefin Sans',sans-serif;font-weight:700;font-size:18px;color:var(--amber);text-decoration:none;letter-spacing:5px}
+.nav-r{display:flex;align-items:center;gap:10px}
+.ltoggle{display:flex;align-items:center;background:var(--bg3);border:1px solid var(--border);border-radius:100px;padding:3px;gap:2px}
+.lbtn{padding:5px 13px;border-radius:100px;font-size:11.5px;font-weight:700;cursor:pointer;border:none;background:transparent;color:var(--muted);transition:all var(--t);font-family:'DM Sans',sans-serif;letter-spacing:.4px}
+.lbtn.on{background:var(--amber-dim);color:var(--amber);border:1px solid var(--border-hi)}
+.back-btn{display:inline-flex;align-items:center;gap:7px;padding:8px 17px;border-radius:100px;font-size:12.5px;font-weight:600;cursor:pointer;border:1px solid var(--border);background:transparent;color:var(--muted2);transition:all var(--t);text-decoration:none;font-family:inherit}
+.back-btn:hover{color:var(--white);border-color:rgba(255,255,255,.14)}
+
+/* PAGE */
+.page{position:relative;z-index:1;max-width:760px;margin:0 auto;padding:100px 24px 80px}
+
+.page-header{margin-bottom:52px;padding-bottom:32px;border-bottom:1px solid var(--border)}
+.page-eyebrow{display:inline-flex;align-items:center;gap:7px;padding:5px 14px;background:var(--amber-dim);border:1px solid var(--border-hi);border-radius:100px;font-size:10.5px;color:var(--amber);font-weight:800;letter-spacing:.9px;text-transform:uppercase;margin-bottom:18px;font-family:'DM Sans',sans-serif}
+.page-title{font-family:'Playfair Display',serif;font-size:clamp(32px,5vw,52px);font-weight:700;line-height:1.1;margin-bottom:14px}
+.page-title-ar{font-family:'Tajawal',sans-serif;font-size:clamp(28px,4.5vw,46px);font-weight:900}
+.page-date{font-size:12.5px;color:var(--muted);font-family:'DM Sans',sans-serif}
+
+/* CONTENT */
+.section{margin-bottom:40px}
+.section-title{font-size:18px;font-weight:800;color:var(--amber);margin-bottom:14px;display:flex;align-items:center;gap:10px}
+.section-title-ar{font-family:'Tajawal',sans-serif;font-size:17px}
+.section-num{display:inline-flex;align-items:center;justify-content:center;width:26px;height:26px;border-radius:50%;background:var(--amber-dim);border:1px solid var(--border-hi);font-size:11px;font-weight:900;color:var(--amber);flex-shrink:0;font-family:'DM Sans',sans-serif}
+
+p{font-size:15px;color:var(--muted2);line-height:1.85;margin-bottom:12px}
+[data-lang="en"] p{font-size:14.5px}
+
+.highlight-box{background:var(--bg3);border:1px solid var(--border);border-radius:var(--r-lg);padding:20px 24px;margin:16px 0}
+.highlight-box p{margin-bottom:0}
+
+.tag-list{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0}
+.tag{padding:5px 13px;background:var(--bg3);border:1px solid var(--border);border-radius:100px;font-size:12.5px;color:var(--muted2)}
+.tag.amber{background:var(--amber-dim);border-color:var(--border-hi);color:var(--amber)}
+
+.divider{height:1px;background:var(--border);margin:40px 0}
+
+/* FOOTER */
+footer{position:relative;z-index:1;border-top:1px solid var(--border);padding:28px 36px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px}
+.flogo{font-family:'Josefin Sans',sans-serif;font-weight:700;letter-spacing:5px;font-size:15px;color:var(--amber)}
+.fctr{font-size:11.5px;color:var(--muted);text-align:center;flex:1}
+.fctr .h{color:var(--amber)}
+.flinks{display:flex;gap:18px}
+.flink{font-size:11.5px;color:var(--muted);text-decoration:none;transition:color var(--t);font-family:'DM Sans',sans-serif}
+.flink:hover{color:var(--amber)}
+.flink.active{color:var(--amber)}
+
+@media(max-width:640px){
+  nav{padding:0 14px}
+  .page{padding:90px 16px 60px}
+  footer{flex-direction:column;text-align:center}
+  .flinks{justify-content:center}
+}
+  </style>
+</head>
+<body>
+<div class="mesh"></div>
+
+<nav>
+  <a href="index.html" class="logo">LOOM</a>
+  <div class="nav-r">
+    <div class="ltoggle">
+      <button class="lbtn" id="ben" onclick="setLang('en')">EN</button>
+      <button class="lbtn on" id="bar" onclick="setLang('ar')">AR</button>
+    </div>
+    <a href="index.html" class="back-btn">
+      <span id="backTxt">← العودة</span>
+    </a>
+  </div>
+</nav>
+
+<main class="page">
+
+  <div class="page-header">
+    <div class="page-eyebrow">✦ <span id="eyebrowTxt">سياسة الخصوصية</span></div>
+    <h1 class="page-title page-title-ar" id="titleAr">نحن نحترم<br/>خصوصيتك</h1>
+    <h1 class="page-title" id="titleEn" style="display:none">We respect<br/><em>your privacy</em></h1>
+    <p class="page-date" id="dateTxt">آخر تحديث: مارس ٢٠٢٥ &nbsp;·&nbsp; تسري على جميع مستخدمي loomuae.xyz</p>
+  </div>
+
+  <!-- AR Content -->
+  <div id="contentAr">
+
+    <div class="highlight-box">
+      <p>نأخذ خصوصيتك بجدية. هذه الصفحة تشرح بوضوح وبدون تعقيد ما نجمعه، لماذا نجمعه، وكيف نحميه.</p>
+    </div>
+
+    <div class="section">
+      <div class="section-title section-title-ar"><span class="section-num">١</span> ما البيانات التي نجمعها؟</div>
+      <p>عند استخدام منصة Loom، قد نجمع البيانات التالية:</p>
+      <div class="tag-list">
+        <span class="tag amber">📧 البريد الإلكتروني</span>
+        <span class="tag amber">🖼️ الصور التي ترفعها</span>
+        <span class="tag amber">💬 البرومت الذي تكتبه</span>
+        <span class="tag">🌐 عنوان IP</span>
+        <span class="tag">📱 نوع المتصفح والجهاز</span>
+        <span class="tag">⏱️ وقت وتاريخ الاستخدام</span>
+      </div>
+      <p>إذا استخدمت المنصة بدون حساب، نحفظ فقط معرّف جلسة مجهول الهوية (Session ID) لتتبع الكريديت المجاني.</p>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="section">
+      <div class="section-title section-title-ar"><span class="section-num">٢</span> كيف نستخدم بياناتك؟</div>
+      <p>نستخدم بياناتك <strong>فقط</strong> للأغراض التالية:</p>
+      <p>• تقديم خدمة تعديل الصور وإرسالها لـ Google Gemini API للمعالجة</p>
+      <p>• إدارة حسابك وكريديتاتك اليومية</p>
+      <p>• تحسين جودة الخدمة وإصلاح المشاكل التقنية</p>
+      <p>• إرسال إشعارات مهمة تتعلق بحسابك (إذا اخترت ذلك)</p>
+      <div class="highlight-box">
+        <p>🚫 <strong>لا نبيع بياناتك</strong> لأي طرف ثالث، ولا نستخدمها للإعلانات المستهدفة.</p>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="section">
+      <div class="section-title section-title-ar"><span class="section-num">٣</span> مع من نشارك بياناتك؟</div>
+      <p>للقيام بتقديم الخدمة، نتعامل مع شركاء موثوقين:</p>
+      <p>• <strong>Google Cloud (Gemini API)</strong> — لمعالجة الصور بالذكاء الاصطناعي. الصور تُرسل للمعالجة ولا تُخزَّن على خوادمهم.</p>
+      <p>• <strong>Supabase</strong> — لتخزين بيانات الحساب والكريديتات بشكل آمن.</p>
+      <p>• <strong>Railway</strong> — لاستضافة الخادم وتشغيل التطبيق.</p>
+      <p>جميع هؤلاء الشركاء ملتزمون بمعايير حماية البيانات الدولية.</p>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="section">
+      <div class="section-title section-title-ar"><span class="section-num">٤</span> الصور التي ترفعها</div>
+      <p>الصور التي ترفعها تُعالَج مؤقتاً في الذاكرة (Memory) ولا تُخزَّن على خوادمنا بعد اكتمال المعالجة.</p>
+      <p>يُرسَل نسخة منها إلى Google Gemini API للمعالجة وفقاً لسياسة خصوصية Google.</p>
+      <div class="highlight-box">
+        <p>⚠️ لا ترفع صوراً تحتوي على معلومات حساسة أو بيانات شخصية لأشخاص آخرين دون إذنهم.</p>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="section">
+      <div class="section-title section-title-ar"><span class="section-num">٥</span> حقوقك</div>
+      <p>لديك الحق في:</p>
+      <p>• <strong>الوصول</strong> — طلب نسخة من بياناتك الشخصية</p>
+      <p>• <strong>التصحيح</strong> — تصحيح أي بيانات غير دقيقة</p>
+      <p>• <strong>الحذف</strong> — طلب حذف حسابك وجميع بياناتك</p>
+      <p>• <strong>الاعتراض</strong> — الاعتراض على أي معالجة لا توافق عليها</p>
+      <p>للتواصل معنا بخصوص أي من هذه الحقوق: <strong style="color:var(--amber)">privacy@loomuae.xyz</strong></p>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="section">
+      <div class="section-title section-title-ar"><span class="section-num">٦</span> الكوكيز والتتبع</div>
+      <p>نستخدم Local Storage في المتصفح فقط لحفظ تفضيلاتك (اللغة، الجلسة، التوكن) — لا نستخدم كوكيز تتبع أو إعلانية.</p>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="section">
+      <div class="section-title section-title-ar"><span class="section-num">٧</span> التغييرات على هذه السياسة</div>
+      <p>قد نحدّث هذه السياسة من وقت لآخر. في حال التغييرات الجوهرية، سنخطرك عبر البريد الإلكتروني أو إشعار واضح على المنصة.</p>
+    </div>
+
+  </div>
+
+  <!-- EN Content -->
+  <div id="contentEn" style="display:none">
+
+    <div class="highlight-box">
+      <p>We take your privacy seriously. This page explains clearly what we collect, why we collect it, and how we protect it.</p>
+    </div>
+
+    <div class="section">
+      <div class="section-title"><span class="section-num">1</span> What data do we collect?</div>
+      <p>When using Loom, we may collect:</p>
+      <div class="tag-list">
+        <span class="tag amber">📧 Email address</span>
+        <span class="tag amber">🖼️ Images you upload</span>
+        <span class="tag amber">💬 Prompts you write</span>
+        <span class="tag">🌐 IP address</span>
+        <span class="tag">📱 Browser & device type</span>
+        <span class="tag">⏱️ Usage timestamps</span>
+      </div>
+      <p>If you use Loom without an account, we only store an anonymous Session ID to track your free credit usage.</p>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="section">
+      <div class="section-title"><span class="section-num">2</span> How do we use your data?</div>
+      <p>We use your data <strong>only</strong> for:</p>
+      <p>• Processing your image edits via Google Gemini API</p>
+      <p>• Managing your account and daily credits</p>
+      <p>• Improving our service and fixing technical issues</p>
+      <p>• Sending important account-related notifications (if you opt in)</p>
+      <div class="highlight-box">
+        <p>🚫 <strong>We never sell your data</strong> to third parties or use it for targeted advertising.</p>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="section">
+      <div class="section-title"><span class="section-num">3</span> Who do we share data with?</div>
+      <p>To provide our service, we work with trusted partners:</p>
+      <p>• <strong>Google Cloud (Gemini API)</strong> — For AI image processing. Images are sent for processing and not stored on their servers.</p>
+      <p>• <strong>Supabase</strong> — For secure storage of account data and credits.</p>
+      <p>• <strong>Railway</strong> — For server hosting and app execution.</p>
+      <p>All partners comply with international data protection standards.</p>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="section">
+      <div class="section-title"><span class="section-num">4</span> Images you upload</div>
+      <p>Images you upload are processed temporarily in memory and are not stored on our servers after processing is complete.</p>
+      <p>A copy is sent to Google Gemini API for processing in accordance with Google's privacy policy.</p>
+      <div class="highlight-box">
+        <p>⚠️ Do not upload images containing sensitive information or personal data of others without their consent.</p>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="section">
+      <div class="section-title"><span class="section-num">5</span> Your rights</div>
+      <p>You have the right to:</p>
+      <p>• <strong>Access</strong> — Request a copy of your personal data</p>
+      <p>• <strong>Correction</strong> — Correct any inaccurate data</p>
+      <p>• <strong>Deletion</strong> — Request deletion of your account and all data</p>
+      <p>• <strong>Objection</strong> — Object to any processing you disagree with</p>
+      <p>To exercise these rights: <strong style="color:var(--amber)">privacy@loomuae.xyz</strong></p>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="section">
+      <div class="section-title"><span class="section-num">6</span> Cookies & tracking</div>
+      <p>We only use browser Local Storage to save your preferences (language, session, token) — we do not use tracking or advertising cookies.</p>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="section">
+      <div class="section-title"><span class="section-num">7</span> Changes to this policy</div>
+      <p>We may update this policy from time to time. For material changes, we'll notify you via email or a clear notice on the platform.</p>
+    </div>
+
+  </div>
+
+</main>
+
+<footer>
+  <div class="flogo">LOOM</div>
+  <div class="fctr">Made with <span class="h">❤️</span> by Maven &nbsp;·&nbsp; <span id="yearTxt">© 2025 جميع الحقوق محفوظة</span></div>
+  <div class="flinks">
+    <a href="privacy.html" class="flink active" id="privLink">الخصوصية</a>
+    <a href="terms.html" class="flink" id="termsLink">الشروط</a>
+  </div>
+</footer>
+
+<script>
+let lang = localStorage.getItem('ll') || 'ar';
+function setLang(l) {
+  lang = l; localStorage.setItem('ll', l);
+  const h = document.documentElement;
+  h.setAttribute('lang', l); h.setAttribute('dir', l === 'ar' ? 'rtl' : 'ltr'); h.setAttribute('data-lang', l);
+  document.getElementById('ben').classList.toggle('on', l === 'en');
+  document.getElementById('bar').classList.toggle('on', l === 'ar');
+  document.getElementById('titleAr').style.display = l === 'ar' ? '' : 'none';
+  document.getElementById('titleEn').style.display = l === 'en' ? '' : 'none';
+  document.getElementById('contentAr').style.display = l === 'ar' ? '' : 'none';
+  document.getElementById('contentEn').style.display = l === 'en' ? '' : 'none';
+  document.getElementById('eyebrowTxt').textContent = l === 'ar' ? 'سياسة الخصوصية' : 'Privacy Policy';
+  document.getElementById('dateTxt').textContent = l === 'ar'
+    ? 'آخر تحديث: مارس ٢٠٢٥ · تسري على جميع مستخدمي loomuae.xyz'
+    : 'Last updated: March 2025 · Applies to all users of loomuae.xyz';
+  document.getElementById('backTxt').textContent = l === 'ar' ? '← العودة' : '← Back';
+  document.getElementById('yearTxt').textContent = l === 'ar' ? '© 2025 جميع الحقوق محفوظة' : '© 2025 All rights reserved';
+  document.getElementById('privLink').textContent = l === 'ar' ? 'الخصوصية' : 'Privacy';
+  document.getElementById('termsLink').textContent = l === 'ar' ? 'الشروط' : 'Terms';
+}
+window.addEventListener('load', () => setLang(lang));
+</script>
+</body>
+</html>

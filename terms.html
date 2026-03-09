@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" data-lang="ar">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>شروط الاستخدام — Loom</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;900&family=Josefin+Sans:wght@300;400;600;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+  <style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#080808;--bg2:#0f0f0f;--bg3:#161616;
+  --border:rgba(255,255,255,0.07);--border-hi:rgba(245,200,66,0.22);
+  --amber:#f5c842;--amber2:#d9a520;--amber-dim:rgba(245,200,66,0.07);
+  --white:#f0ead8;--muted:#66625a;--muted2:#999080;
+  --r:12px;--r-lg:20px;--r-xl:28px;
+  --t:.26s;--ease:cubic-bezier(.4,0,.2,1);
+}
+html{scroll-behavior:smooth}
+body{font-family:'Tajawal','DM Sans',sans-serif;background:var(--bg);color:var(--white);min-height:100vh;overflow-x:hidden;line-height:1.8}
+[data-lang="en"]{direction:ltr;font-family:'DM Sans','Tajawal',sans-serif}
+body::after{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");pointer-events:none;z-index:9999}
+.mesh{position:fixed;inset:0;z-index:0;pointer-events:none;background:radial-gradient(ellipse 90% 40% at 50% -5%,rgba(245,200,66,.05) 0%,transparent 60%)}
+
+nav{position:fixed;top:0;left:0;right:0;z-index:200;height:62px;display:flex;align-items:center;justify-content:space-between;padding:0 36px;background:rgba(8,8,8,.72);backdrop-filter:blur(22px);border-bottom:1px solid var(--border)}
+.logo{font-family:'Josefin Sans',sans-serif;font-weight:700;font-size:18px;color:var(--amber);text-decoration:none;letter-spacing:5px}
+.nav-r{display:flex;align-items:center;gap:10px}
+.ltoggle{display:flex;align-items:center;background:var(--bg3);border:1px solid var(--border);border-radius:100px;padding:3px;gap:2px}
+.lbtn{padding:5px 13px;border-radius:100px;font-size:11.5px;font-weight:700;cursor:pointer;border:none;background:transparent;color:var(--muted);transition:all var(--t);font-family:'DM Sans',sans-serif;letter-spacing:.4px}
+.lbtn.on{background:var(--amber-dim);color:var(--amber);border:1px solid var(--border-hi)}
+.back-btn{display:inline-flex;align-items:center;gap:7px;padding:8px 17px;border-radius:100px;font-size:12.5px;font-weight:600;cursor:pointer;border:1px solid var(--border);background:transparent;color:var(--muted2);transition:all var(--t);text-decoration:none;font-family:inherit}
+.back-btn:hover{color:var(--white);border-color:rgba(255,255,255,.14)}
+
+.page{position:relative;z-index:1;max-width:760px;margin:0 auto;padding:100px 24px 80px}
+.page-header{margin-bottom:52px;padding-bottom:32px;border-bottom:1px solid var(--border)}
+.page-eyebrow{display:inline-flex;align-items:center;gap:7px;padding:5px 14px;background:var(--amber-dim);border:1px solid var(--border-hi);border-radius:100px;font-size:10.5px;color:var(--amber);font-weight:800;letter-spacing:.9px;text-transform:uppercase;margin-bottom:18px;font-family:'DM Sans',sans-serif}
+.page-title{font-family:'Playfair Display',serif;font-size:clamp(32px,5vw,52px);font-weight:700;line-height:1.1;margin-bottom:14px}
+.page-title-ar{font-family:'Tajawal',sans-serif;font-size:clamp(28px,4.5vw,46px);font-weight:900}
+.page-date{font-size:12.5px;color:var(--muted);font-family:'DM Sans',sans-serif}
+
+.section{margin-bottom:40px}
+.section-title{font-size:18px;font-weight:800;color:var(--amber);margin-bottom:14px;display:flex;align-items:center;gap:10px}
+.section-title-ar{font-family:'Tajawal',sans-serif;font-size:17px}
+.section-num{display:inline-flex;align-items:center;justify-content:center;width:26px;height:26px;border-radius:50%;background:var(--amber-dim);border:1px solid var(--border-hi);font-size:11px;font-weight:900;color:var(--amber);flex-shrink:0;font-family:'DM Sans',sans-serif}
+
+p{font-size:15px;color:var(--muted2);line-height:1.85;margin-bottom:12px}
+[data-lang="en"] p{font-size:14.5px}
+
+.highlight-box{background:var(--bg3);border:1px solid var(--border);border-radius:var(--r-lg);padding:20px 24px;margin:16px 0}
+.highlight-box p{margin-bottom:0}
+.warn-box{background:rgba(224,96,96,.07);border:1px solid rgba(224,96,96,.2);border-radius:var(--r-lg);padding:18px 22px;margin:16px 0}
+.warn-box p{color:#d08080;margin-bottom:0}
+
+.divider{height:1px;background:var(--border);margin:40px 0}
+
+footer{position:relative;z-index:1;border-top:1px solid var(--border);padding:28px 36px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px}
+.flogo{font-family:'Josefin Sans',sans-serif;font-weight:700;letter-spacing:5px;font-size:15px;color:var(--amber)}
+.fctr{font-size:11.5px;color:var(--muted);text-align:center;flex:1}
+.fctr .h{color:var(--amber)}
+.flinks{display:flex;gap:18px}
+.flink{font-size:11.5px;color:var(--muted);text-decoration:none;transition:color var(--t);font-family:'DM Sans',sans-serif}
+.flink:hover,.flink.active{color:var(--amber)}
+
+@media(max-width:640px){
+  nav{padding:0 14px}
+  .page{padding:90px 16px 60px}
+  footer{flex-direction:column;text-align:center}
+  .flinks{justify-content:center}
+}
+  </style>
+</head>
+<body>
+<div class="mesh"></div>
+
+<nav>
+  <a href="index.html" class="logo">LOOM</a>
+  <div class="nav-r">
+    <div class="ltoggle">
+      <button class="lbtn" id="ben" onclick="setLang('en')">EN</button>
+      <button class="lbtn on" id="bar" onclick="setLang('ar')">AR</button>
+    </div>
+    <a href="index.html" class="back-btn">
+      <span id="backTxt">← العودة</span>
+    </a>
+  </div>
+</nav>
+
+<main class="page">
+
+  <div class="page-header">
+    <div class="page-eyebrow">✦ <span id="eyebrowTxt">شروط الاستخدام</span></div>
+    <h1 class="page-title page-title-ar" id="titleAr">القواعد التي<br/>تحمي الجميع</h1>
+    <h1 class="page-title" id="titleEn" style="display:none">Rules that<br/><em>protect everyone</em></h1>
+    <p class="page-date" id="dateTxt">آخر تحديث: مارس ٢٠٢٥ &nbsp;·&nbsp; باستخدامك للمنصة، فأنت توافق على هذه الشروط</p>
+  </div>
+
+  <!-- AR -->
+  <div id="contentAr">
+
+    <div class="highlight-box">
+      <p>مرحباً بك في Loom. قبل استخدام المنصة، يرجى قراءة هذه الشروط. هي بسيطة ومكتوبة بلغة واضحة — بدون تعقيد قانوني.</p>
+    </div>
+
+    <div class="section">
+      <div class="section-title section-title-ar"><span class="section-num">١</span> قبول الشروط</div>
+      <p>باستخدامك لمنصة Loom على <strong>loomuae.xyz</strong>، فأنت تؤكد أنك قرأت وفهمت ووافقت على هذه الشروط. إذا كنت لا توافق، يرجى عدم استخدام المنصة.</p>
+      <p>نحتفظ بالحق في تعديل هذه الشروط في أي وقت. سنخطرك بالتغييرات الجوهرية عبر البريد الإلكتروني.</p>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="section">
+      <div class="section-title section-title-ar"><span class="section-num">٢</span> استخدام الخدمة</div>
+      <p>يمكنك استخدام Loom لـ:</p>
+      <p>• تعديل صور منتجاتك التجارية والشخصية</p>
+      <p>• تحسين جودة الصور للمتاجر الإلكترونية والتسويق</p>
+      <p>• أي غرض مشروع آخر يتوافق مع هذه الشروط</p>
+      <div class="warn-box">
+        <p>🚫 <strong>يُحظر تماماً:</strong> رفع صور تحتوي على محتوى مسيء، صور لأشخاص دون إذنهم، محتوى ينتهك حقوق الملكية الفكرية، أو أي محتوى مخالف للقانون.</p>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="section">
+      <div class="section-title section-title-ar"><span class="section-num">٣</span> الحساب والكريديتات</div>
+      <p>• الكريديتات المجانية (5 يومياً) متاحة للحسابات المسجلة ولا يمكن ترحيلها لليوم التالي.</p>
+      <p>• أنت مسؤول عن الحفاظ على سرية كلمة مرور حسابك.</p>
+      <p>• نحتفظ بالحق في تعليق أو إلغاء أي حساب يخالف هذه الشروط دون إشعار مسبق.</p>
+      <div class="highlight-box">
+        <p>الكريديتات المجانية ليست قابلة للاسترداد أو التحويل أو البيع.</p>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="section">
+      <div class="section-title section-title-ar"><span class="section-num">٤</span> ملكية المحتوى</div>
+      <p>• <strong>صورك الأصلية</strong> — تظل ملكاً لك بالكامل. نحن لا ندّعي أي حقوق عليها.</p>
+      <p>• <strong>الصور المعدّلة</strong> — الناتج النهائي هو لك وبإمكانك استخدامه تجارياً.</p>
+      <p>• <strong>منصة Loom</strong> — الكود والتصميم والعلامة التجارية هي ملكية حصرية لـ Maven.</p>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="section">
+      <div class="section-title section-title-ar"><span class="section-num">٥</span> حدود المسؤولية</div>
+      <p>Loom تُقدَّم "كما هي" (As-Is). نسعى دائماً لتقديم أفضل خدمة ممكنة، لكن:</p>
+      <p>• لا نضمن أن الخدمة ستكون متاحة دائماً بدون انقطاع.</p>
+      <p>• جودة النتائج تعتمد على جودة الصورة المرفوعة والبرومت المكتوب.</p>
+      <p>• لسنا مسؤولين عن أي أضرار تجارية ناتجة عن استخدام أو عدم إمكانية استخدام الخدمة.</p>
+      <div class="highlight-box">
+        <p>نتائج الذكاء الاصطناعي قد لا تكون مثالية دائماً — راجع النتيجة قبل الاستخدام التجاري.</p>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="section">
+      <div class="section-title section-title-ar"><span class="section-num">٦</span> الخدمات الخارجية</div>
+      <p>نستخدم Google Gemini API لمعالجة الصور. باستخدامك للمنصة، فأنت تقبل أيضاً شروط استخدام Google المتعلقة بهذه الخدمة.</p>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="section">
+      <div class="section-title section-title-ar"><span class="section-num">٧</span> التواصل معنا</div>
+      <p>أي أسئلة بخصوص هذه الشروط؟ تواصل معنا على: <strong style="color:var(--amber)">legal@loomuae.xyz</strong></p>
+    </div>
+
+  </div>
+
+  <!-- EN -->
+  <div id="contentEn" style="display:none">
+
+    <div class="highlight-box">
+      <p>Welcome to Loom. Before using the platform, please read these terms. They're simple and written in plain language — no legal jargon.</p>
+    </div>
+
+    <div class="section">
+      <div class="section-title"><span class="section-num">1</span> Acceptance of Terms</div>
+      <p>By using Loom at <strong>loomuae.xyz</strong>, you confirm that you have read, understood, and agreed to these terms. If you disagree, please do not use the platform.</p>
+      <p>We reserve the right to modify these terms at any time. We will notify you of material changes via email.</p>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="section">
+      <div class="section-title"><span class="section-num">2</span> Use of Service</div>
+      <p>You may use Loom to:</p>
+      <p>• Edit your commercial and personal product photos</p>
+      <p>• Enhance image quality for online stores and marketing</p>
+      <p>• Any other lawful purpose consistent with these terms</p>
+      <div class="warn-box">
+        <p>🚫 <strong>Strictly prohibited:</strong> Uploading offensive content, images of people without consent, content that infringes intellectual property rights, or any illegal content.</p>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="section">
+      <div class="section-title"><span class="section-num">3</span> Account & Credits</div>
+      <p>• Free credits (5 daily) are available to registered accounts and cannot be rolled over to the next day.</p>
+      <p>• You are responsible for keeping your account password confidential.</p>
+      <p>• We reserve the right to suspend or terminate any account that violates these terms without prior notice.</p>
+      <div class="highlight-box">
+        <p>Free credits are non-refundable, non-transferable, and cannot be sold.</p>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="section">
+      <div class="section-title"><span class="section-num">4</span> Content Ownership</div>
+      <p>• <strong>Your original images</strong> — Remain entirely yours. We claim no rights over them.</p>
+      <p>• <strong>Edited images</strong> — The final output belongs to you and may be used commercially.</p>
+      <p>• <strong>Loom platform</strong> — The code, design, and brand are exclusive property of Maven.</p>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="section">
+      <div class="section-title"><span class="section-num">5</span> Limitation of Liability</div>
+      <p>Loom is provided "As-Is". We strive to provide the best possible service, however:</p>
+      <p>• We do not guarantee the service will always be available without interruption.</p>
+      <p>• Result quality depends on the quality of the uploaded image and written prompt.</p>
+      <p>• We are not liable for any commercial damages resulting from use or inability to use the service.</p>
+      <div class="highlight-box">
+        <p>AI results may not always be perfect — review the output before commercial use.</p>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="section">
+      <div class="section-title"><span class="section-num">6</span> Third-Party Services</div>
+      <p>We use Google Gemini API for image processing. By using the platform, you also accept Google's terms of service related to this API.</p>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="section">
+      <div class="section-title"><span class="section-num">7</span> Contact Us</div>
+      <p>Questions about these terms? Contact us at: <strong style="color:var(--amber)">legal@loomuae.xyz</strong></p>
+    </div>
+
+  </div>
+
+</main>
+
+<footer>
+  <div class="flogo">LOOM</div>
+  <div class="fctr">Made with <span class="h">❤️</span> by Maven &nbsp;·&nbsp; <span id="yearTxt">© 2025 جميع الحقوق محفوظة</span></div>
+  <div class="flinks">
+    <a href="privacy.html" class="flink" id="privLink">الخصوصية</a>
+    <a href="terms.html" class="flink active" id="termsLink">الشروط</a>
+  </div>
+</footer>
+
+<script>
+let lang = localStorage.getItem('ll') || 'ar';
+function setLang(l) {
+  lang = l; localStorage.setItem('ll', l);
+  const h = document.documentElement;
+  h.setAttribute('lang', l); h.setAttribute('dir', l === 'ar' ? 'rtl' : 'ltr'); h.setAttribute('data-lang', l);
+  document.getElementById('ben').classList.toggle('on', l === 'en');
+  document.getElementById('bar').classList.toggle('on', l === 'ar');
+  document.getElementById('titleAr').style.display = l === 'ar' ? '' : 'none';
+  document.getElementById('titleEn').style.display = l === 'en' ? '' : 'none';
+  document.getElementById('contentAr').style.display = l === 'ar' ? '' : 'none';
+  document.getElementById('contentEn').style.display = l === 'en' ? '' : 'none';
+  document.getElementById('eyebrowTxt').textContent = l === 'ar' ? 'شروط الاستخدام' : 'Terms of Service';
+  document.getElementById('dateTxt').textContent = l === 'ar'
+    ? 'آخر تحديث: مارس ٢٠٢٥ · باستخدامك للمنصة، فأنت توافق على هذه الشروط'
+    : 'Last updated: March 2025 · By using the platform, you agree to these terms';
+  document.getElementById('backTxt').textContent = l === 'ar' ? '← العودة' : '← Back';
+  document.getElementById('yearTxt').textContent = l === 'ar' ? '© 2025 جميع الحقوق محفوظة' : '© 2025 All rights reserved';
+  document.getElementById('privLink').textContent = l === 'ar' ? 'الخصوصية' : 'Privacy';
+  document.getElementById('termsLink').textContent = l === 'ar' ? 'الشروط' : 'Terms';
+}
+window.addEventListener('load', () => setLang(lang));
+</script>
+</body>
+</html>

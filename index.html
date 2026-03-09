@@ -1,0 +1,680 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" data-lang="ar">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Loom — AI Product Studio</title>
+  <meta name="description" content="Transform your product photos into professional shots in seconds" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;900&family=Josefin+Sans:wght@300;400;600;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,300&display=swap" rel="stylesheet" />
+  <style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#080808;--bg2:#0f0f0f;--bg3:#161616;--bg4:#1e1e1e;
+  --border:rgba(255,255,255,0.07);--border-hi:rgba(245,200,66,0.22);
+  --amber:#f5c842;--amber2:#d9a520;--amber-dim:rgba(245,200,66,0.07);
+  --white:#f0ead8;--muted:#66625a;--muted2:#999080;
+  --error:#e06060;--success:#5ec080;
+  --r:12px;--r-lg:20px;--r-xl:28px;
+  --t:.26s;--ease:cubic-bezier(.4,0,.2,1);
+}
+html{scroll-behavior:smooth}
+body{font-family:'Tajawal','DM Sans',sans-serif;background:var(--bg);color:var(--white);min-height:100vh;overflow-x:hidden}
+[data-lang="en"]{direction:ltr;font-family:'DM Sans','Tajawal',sans-serif}
+
+/* Grain */
+body::after{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");pointer-events:none;z-index:9999}
+
+/* Mesh */
+.mesh{position:fixed;inset:0;z-index:0;pointer-events:none;
+  background:radial-gradient(ellipse 90% 55% at 50% -5%,rgba(245,200,66,.065) 0%,transparent 60%),
+             radial-gradient(ellipse 40% 35% at 85% 85%,rgba(220,150,40,.04) 0%,transparent 55%)}
+
+/* ── NAVBAR ── */
+nav{position:fixed;top:0;left:0;right:0;z-index:200;height:62px;display:flex;align-items:center;justify-content:space-between;padding:0 36px;background:rgba(8,8,8,.72);backdrop-filter:blur(22px) saturate(1.4);border-bottom:1px solid var(--border)}
+.logo{font-family:'Josefin Sans',sans-serif;font-style:normal;font-weight:700;font-size:20px;color:var(--amber);text-decoration:none;letter-spacing:5px}
+.nav-r{display:flex;align-items:center;gap:9px}
+
+/* Lang toggle */
+.ltoggle{display:flex;align-items:center;background:var(--bg3);border:1px solid var(--border);border-radius:100px;padding:3px;gap:2px}
+.lbtn{padding:5px 13px;border-radius:100px;font-size:11.5px;font-weight:700;cursor:pointer;border:none;background:transparent;color:var(--muted);transition:all var(--t) var(--ease);font-family:'DM Sans',sans-serif;letter-spacing:.4px}
+.lbtn.on{background:var(--amber-dim);color:var(--amber);border:1px solid var(--border-hi)}
+
+/* Credits pill */
+.cpill{display:flex;align-items:center;gap:6px;padding:5px 13px;background:var(--amber-dim);border:1px solid var(--border-hi);border-radius:100px;font-size:12px;font-weight:700;color:var(--amber);white-space:nowrap}
+.cpill-dot{width:5px;height:5px;border-radius:50%;background:var(--amber);animation:breathe 2s ease-in-out infinite}
+
+.nbtn{display:inline-flex;align-items:center;gap:6px;padding:8px 17px;border-radius:100px;font-size:12.5px;font-weight:600;cursor:pointer;border:none;transition:all var(--t) var(--ease);font-family:inherit}
+.nbtn-ghost{background:transparent;color:var(--muted2);border:1px solid var(--border)}
+.nbtn-ghost:hover{color:var(--white);border-color:rgba(255,255,255,.14)}
+.nbtn-amber{background:linear-gradient(135deg,var(--amber),var(--amber2));color:#090600}
+.nbtn-amber:hover{transform:translateY(-1px);box-shadow:0 6px 22px rgba(245,200,66,.28)}
+
+/* ── HERO ── */
+.hero{position:relative;z-index:1;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:96px 20px 56px}
+
+.banner{display:inline-flex;align-items:center;gap:9px;padding:6px 15px 6px 7px;background:var(--bg3);border:1px solid var(--border);border-radius:100px;margin-bottom:34px;font-size:11.5px;cursor:pointer;transition:border-color var(--t);animation:fadeUp .5s ease both}
+.banner:hover{border-color:var(--border-hi)}
+.banner-tag{background:linear-gradient(135deg,var(--amber),var(--amber2));color:#090600;padding:3px 9px;border-radius:100px;font-size:9.5px;font-weight:900;letter-spacing:.6px;font-family:'DM Sans',sans-serif}
+.banner-txt{color:var(--muted2)}
+.banner-arr{color:var(--muted);font-size:9px}
+
+h1.htitle{font-family:'Playfair Display',serif;font-size:clamp(44px,7.5vw,94px);font-weight:700;line-height:1.05;letter-spacing:-1.5px;margin-bottom:22px;animation:fadeUp .6s .04s ease both}
+h1.htitle em{font-style:italic;background:linear-gradient(135deg,var(--amber) 0%,#ffe57a 50%,var(--amber2) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+h1.htitle-ar{font-family:'Tajawal',sans-serif;font-size:clamp(38px,6.5vw,80px);font-weight:900;letter-spacing:0}
+
+.hsub{font-size:clamp(14px,1.8vw,17px);color:var(--muted2);max-width:500px;line-height:1.8;margin-bottom:46px;font-weight:400;animation:fadeUp .6s .09s ease both}
+
+/* Stats */
+.hstats{display:flex;flex-direction:row;background:var(--bg3);border:1px solid var(--border);border-radius:var(--r-lg);overflow:hidden;margin-bottom:46px;animation:fadeUp .6s .14s ease both;width:100%;max-width:520px}
+.hstat{padding:14px 20px;text-align:center;border-right:1px solid var(--border);flex:1;min-width:0}
+.hstat:last-child{border-right:none}
+[data-lang="en"] .hstat{border-right:none;border-left:1px solid var(--border)}
+[data-lang="en"] .hstat:last-child{border-left:none}
+.hstat-v{font-family:'Playfair Display',serif;font-size:21px;font-weight:700;color:var(--amber);display:block}
+.hstat-l{font-size:11px;color:var(--muted);margin-top:2px;font-family:'DM Sans',sans-serif}
+
+/* ── APP CARD ── */
+.appwrap{width:100%;max-width:860px;animation:fadeUp .7s .18s ease both}
+.appcard{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r-xl);overflow:hidden;box-shadow:0 40px 80px rgba(0,0,0,.5),0 0 0 1px rgba(255,255,255,.02)}
+
+.sec{padding:26px 30px}
+.sec+.sec,.sec+.psec,.psec+.arow{border-top:1px solid var(--border)}
+
+/* Upload */
+.udrop{position:relative;border:1.5px dashed rgba(255,255,255,.09);border-radius:var(--r-lg);padding:42px 20px;text-align:center;cursor:pointer;transition:all var(--t) var(--ease);background:var(--bg3);overflow:hidden}
+.udrop:hover,.udrop.over{border-color:var(--amber);background:var(--amber-dim)}
+.udrop input{position:absolute;inset:0;opacity:0;cursor:pointer}
+.uicon{width:56px;height:56px;margin:0 auto 14px;border-radius:16px;background:linear-gradient(135deg,var(--amber-dim),transparent);border:1px solid var(--border-hi);display:flex;align-items:center;justify-content:center;font-size:24px;transition:transform var(--t)}
+.udrop:hover .uicon{transform:scale(1.08)}
+.utitle{font-size:16px;font-weight:700;margin-bottom:6px}
+.uhint{font-size:12px;color:var(--muted)}
+
+.prevwrap{display:none;position:relative;border-radius:var(--r-lg);overflow:hidden;background:var(--bg3);border:1px solid var(--border)}
+.prevwrap.show{display:block}
+.prevwrap img{width:100%;max-height:290px;object-fit:contain;display:block}
+.prevx{position:absolute;top:10px;left:10px;width:30px;height:30px;border-radius:50%;background:rgba(8,8,8,.85);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--muted);font-size:13px;transition:all var(--t)}
+[data-lang="en"] .prevx{left:auto;right:10px}
+.prevx:hover{color:var(--error);border-color:var(--error)}
+
+/* Prompt */
+.psec{padding:22px 30px;border-top:1px solid var(--border)}
+.plabel-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:9px}
+.plabel{font-size:11px;color:var(--muted);letter-spacing:.4px;text-transform:uppercase;font-family:'DM Sans',sans-serif;font-weight:600}
+
+.enhance-btn{display:inline-flex;align-items:center;gap:6px;padding:5px 13px;border-radius:100px;background:var(--amber-dim);border:1px solid var(--border-hi);color:var(--amber);font-family:inherit;font-size:12px;font-weight:700;cursor:pointer;transition:all var(--t);white-space:nowrap}
+.enhance-btn:hover:not(:disabled){background:rgba(245,200,66,.14);transform:translateY(-1px);box-shadow:0 4px 14px rgba(245,200,66,.2)}
+.enhance-btn:disabled{opacity:.5;cursor:not-allowed;transform:none}
+.enhance-icon{font-size:11px}
+.enhance-spin{width:12px;height:12px;border:1.5px solid rgba(245,200,66,.3);border-top-color:var(--amber);border-radius:50%;animation:rotate .65s linear infinite;display:none}
+.enhancing .enhance-spin{display:block}
+.enhancing .enhance-icon,.enhancing .enhance-txt{display:none}
+.ptxt{width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);padding:13px 17px;color:var(--white);font-family:inherit;font-size:14.5px;resize:none;outline:none;min-height:74px;transition:border-color var(--t);line-height:1.65}
+.ptxt:focus{border-color:rgba(245,200,66,.3);background:var(--bg4)}
+.ptxt::placeholder{color:var(--muted)}
+.chips{display:flex;flex-wrap:wrap;gap:7px;margin-top:11px}
+.chip{padding:5px 12px;background:var(--bg3);border:1px solid var(--border);border-radius:100px;font-size:12px;color:var(--muted2);cursor:pointer;transition:all var(--t)}
+.chip:hover{color:var(--amber);border-color:var(--border-hi);background:var(--amber-dim)}
+
+/* Action row */
+.arow{padding:18px 30px;display:flex;align-items:center;gap:13px;border-top:1px solid var(--border);background:rgba(15,15,15,.6)}
+.ainfo{flex:1;font-size:11.5px;color:var(--muted);font-family:'DM Sans',sans-serif}
+
+.genbtn{display:flex;align-items:center;gap:8px;padding:13px 34px;background:linear-gradient(135deg,var(--amber),var(--amber2));color:#090600;border:none;border-radius:var(--r);font-family:inherit;font-size:15px;font-weight:800;cursor:pointer;transition:all var(--t) var(--ease);position:relative;overflow:hidden;flex-shrink:0}
+.genbtn::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(255,255,255,.18),transparent);opacity:0;transition:opacity var(--t)}
+.genbtn:hover::before{opacity:1}
+.genbtn:hover:not(:disabled){transform:translateY(-2px);box-shadow:0 10px 30px rgba(245,200,66,.32)}
+.genbtn:disabled{opacity:.42;cursor:not-allowed;transform:none;box-shadow:none}
+.spin{width:15px;height:15px;border:2px solid rgba(9,6,0,.3);border-top-color:#090600;border-radius:50%;animation:rotate .65s linear infinite;display:none}
+@keyframes rotate{to{transform:rotate(360deg)}}
+.loading .spin{display:block}
+.loading .bstar{display:none}
+
+/* Message */
+.msgwrap{padding:0 30px}
+.msg{padding:12px 16px;border-radius:var(--r);font-size:13px;display:none;line-height:1.5}
+.msg.err{background:rgba(224,96,96,.09);border:1px solid rgba(224,96,96,.22);color:var(--error);display:block}
+.msg.info{background:var(--amber-dim);border:1px solid var(--border-hi);color:#d4af50;display:block}
+.msg.ok{background:rgba(94,192,128,.08);border:1px solid rgba(94,192,128,.22);color:var(--success);display:block}
+
+/* Result */
+.resc{display:none;padding:26px 30px;border-top:1px solid var(--border);animation:fadeUp .4s ease}
+.resc.show{display:block}
+.reshd{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px}
+.reslabel{display:flex;align-items:center;gap:7px;font-size:13px;font-weight:700;color:var(--success)}
+.dlbtn{display:flex;align-items:center;gap:6px;padding:8px 18px;border-radius:var(--r);background:var(--amber-dim);border:1px solid var(--border-hi);color:var(--amber);font-family:inherit;font-size:12.5px;font-weight:700;cursor:pointer;transition:all var(--t)}
+.dlbtn:hover{background:rgba(245,200,66,.13);transform:translateY(-1px)}
+.cmpgrid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.cmpc{position:relative;border-radius:var(--r);overflow:hidden;background:var(--bg3);border:1px solid var(--border)}
+.cmplabel{position:absolute;top:9px;right:9px;z-index:2;padding:3px 9px;border-radius:100px;background:rgba(8,8,8,.82);font-size:10px;color:var(--muted2);font-family:'DM Sans',sans-serif}
+[data-lang="en"] .cmplabel{right:auto;left:9px}
+.cmpc.res .cmplabel{color:var(--amber)}
+.cmpc img{width:100%;height:230px;object-fit:contain;display:block}
+.upbanner{margin-top:14px;padding:16px 18px;background:var(--amber-dim);border:1px solid var(--border-hi);border-radius:var(--r);display:none}
+.upbanner p{font-size:13px;color:#c8a840;margin-bottom:11px}
+.upbtn{width:100%;padding:11px;background:linear-gradient(135deg,var(--amber),var(--amber2));color:#090600;border:none;border-radius:var(--r);font-family:inherit;font-size:14px;font-weight:800;cursor:pointer;transition:all var(--t)}
+.upbtn:hover{transform:translateY(-1px);box-shadow:0 8px 22px rgba(245,200,66,.28)}
+
+/* ── TOOLS ── */
+.tools{position:relative;z-index:1;padding:90px 20px;max-width:1060px;margin:0 auto}
+.shd{text-align:center;margin-bottom:58px}
+.eyebrow{display:inline-flex;align-items:center;gap:7px;padding:5px 14px;background:var(--amber-dim);border:1px solid var(--border-hi);border-radius:100px;font-size:10.5px;color:var(--amber);font-weight:800;letter-spacing:.9px;text-transform:uppercase;margin-bottom:18px;font-family:'DM Sans',sans-serif}
+h2.stitle{font-family:'Playfair Display',serif;font-size:clamp(30px,4.8vw,52px);font-weight:700;line-height:1.1;margin-bottom:14px}
+h2.stitle-ar{font-family:'Tajawal',sans-serif;font-size:clamp(26px,4.2vw,46px);font-weight:900}
+.ssub{font-size:15px;color:var(--muted2);max-width:460px;margin:0 auto;line-height:1.75}
+
+.tgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.tcard{position:relative;background:var(--bg2);border:1px solid var(--border);border-radius:var(--r-lg);padding:26px 22px 54px;transition:all var(--t) var(--ease);overflow:hidden;cursor:default;text-decoration:none;color:inherit;display:block}
+.tcard::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 80% 55% at 50% 0%,var(--cg,rgba(245,200,66,.05)),transparent);opacity:0;transition:opacity var(--t)}
+.tcard:hover{border-color:rgba(255,255,255,.11);transform:translateY(-4px);box-shadow:0 22px 48px rgba(0,0,0,.42)}
+.tcard:hover::before{opacity:1}
+.tcard.feat{grid-column:span 2;--cg:rgba(245,200,66,.09);border-color:var(--border-hi);background:linear-gradient(135deg,rgba(245,200,66,.03),var(--bg2))}
+.tbadge{display:inline-flex;align-items:center;gap:5px;padding:3px 9px;border-radius:100px;font-size:9.5px;font-weight:800;letter-spacing:.5px;text-transform:uppercase;margin-bottom:18px;font-family:'DM Sans',sans-serif}
+.blive{background:rgba(94,192,128,.1);border:1px solid rgba(94,192,128,.25);color:var(--success)}
+.bsoon{background:rgba(130,130,130,.07);border:1px solid rgba(130,130,130,.18);color:var(--muted2)}
+.bhot{background:rgba(245,120,60,.09);border:1px solid rgba(245,120,60,.25);color:#f07040}
+.ticon{width:46px;height:46px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:21px;margin-bottom:15px;background:var(--bg3);border:1px solid var(--border)}
+.tname{font-family:'Playfair Display',serif;font-size:19px;font-weight:700;margin-bottom:7px}
+.tname-ar{font-family:'Tajawal',sans-serif;font-size:17px;font-weight:800}
+.tdesc{font-size:12.5px;color:var(--muted2);line-height:1.7}
+.tarr{position:absolute;bottom:22px;left:22px;font-size:16px;color:var(--muted);transition:all var(--t)}
+[data-lang="ar"] .tarr{left:auto;right:22px}
+.tcard:hover .tarr{color:var(--amber);transform:translateX(-4px)}
+[data-lang="en"] .tcard:hover .tarr{transform:translateX(4px)}
+
+/* ── HOW ── */
+.how{position:relative;z-index:1;padding:72px 20px;border-top:1px solid var(--border);background:var(--bg2)}
+.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--border);border:1px solid var(--border);border-radius:var(--r-xl);overflow:hidden;max-width:860px;margin:52px auto 0}
+.step{background:var(--bg2);padding:34px 26px;text-align:center;transition:background var(--t)}
+.step:hover{background:var(--bg3)}
+.stepn{font-family:'Playfair Display',serif;font-style:italic;font-size:44px;font-weight:400;background:linear-gradient(135deg,var(--amber),var(--amber2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;display:block;margin-bottom:14px}
+.stept{font-size:15px;font-weight:700;margin-bottom:7px}
+.stept-ar{font-family:'Tajawal',sans-serif}
+.stepd{font-size:12.5px;color:var(--muted2);line-height:1.65}
+
+/* ── AUTH MODAL ── */
+.overlay{position:fixed;inset:0;z-index:500;background:rgba(0,0,0,.88);backdrop-filter:blur(10px);display:flex;align-items:center;justify-content:center;padding:20px;opacity:0;pointer-events:none;transition:opacity var(--t)}
+.overlay.open{opacity:1;pointer-events:all}
+.modal{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r-xl);padding:38px;width:100%;max-width:390px;position:relative;transform:translateY(14px);transition:transform var(--t)}
+.overlay.open .modal{transform:translateY(0)}
+.mx{position:absolute;top:16px;left:16px;width:30px;height:30px;border-radius:50%;background:var(--bg3);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--muted);font-size:14px;transition:all var(--t)}
+[data-lang="en"] .mx{left:auto;right:16px}
+.mx:hover{color:var(--white)}
+.mlogo{font-family:'Josefin Sans',sans-serif;font-weight:700;letter-spacing:5px;font-size:22px;color:var(--amber);text-align:center;margin-bottom:5px}
+.mtag{text-align:center;font-size:12.5px;color:var(--muted);margin-bottom:24px}
+.perks{background:var(--amber-dim);border:1px solid var(--border-hi);border-radius:var(--r);padding:13px 15px;margin-bottom:20px}
+.perks-t{font-size:11.5px;font-weight:800;color:var(--amber);margin-bottom:9px;letter-spacing:.3px}
+.perk{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--muted2);margin-bottom:6px}
+.perk:last-child{margin-bottom:0}
+.mtabs{display:flex;background:var(--bg3);border-radius:11px;padding:3px;gap:3px;margin-bottom:20px}
+.mtab{flex:1;padding:8px;text-align:center;border-radius:9px;cursor:pointer;font-size:12.5px;font-weight:600;color:var(--muted);border:none;background:transparent;transition:all var(--t);font-family:inherit}
+.mtab.on{background:var(--amber-dim);color:var(--amber);border:1px solid var(--border-hi)}
+.fg{margin-bottom:13px}
+.fl{display:block;font-size:11.5px;color:var(--muted);margin-bottom:6px;font-family:'DM Sans',sans-serif}
+.fi{width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);padding:10px 14px;color:var(--white);font-family:'DM Sans',sans-serif;font-size:13.5px;outline:none;transition:border-color var(--t);direction:ltr}
+.fi:focus{border-color:rgba(245,200,66,.38)}
+.mbtn{width:100%;padding:12px;background:linear-gradient(135deg,var(--amber),var(--amber2));color:#090600;border:none;border-radius:var(--r);font-family:inherit;font-size:14.5px;font-weight:900;cursor:pointer;transition:all var(--t);margin-top:5px}
+.mbtn:hover{transform:translateY(-1px);box-shadow:0 8px 22px rgba(245,200,66,.28)}
+.mmsg{font-size:12px;text-align:center;margin-top:10px;min-height:16px}
+.mmsg.err{color:var(--error)}.mmsg.ok{color:var(--success)}
+
+/* ── FOOTER ── */
+footer{position:relative;z-index:1;border-top:1px solid var(--border);padding:36px 36px 28px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:18px}
+.flogo{font-family:'Josefin Sans',sans-serif;font-weight:700;letter-spacing:5px;font-size:16px;color:var(--amber)}
+.fctr{font-size:11.5px;color:var(--muted);text-align:center;flex:1}
+.fctr .h{color:var(--amber)}
+.flinks{display:flex;gap:18px}
+.flink{font-size:11.5px;color:var(--muted);text-decoration:none;transition:color var(--t);font-family:'DM Sans',sans-serif}
+.flink:hover{color:var(--amber)}
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
+
+@media(max-width:768px){
+  nav{padding:0 14px}
+  .hero{padding:86px 14px 44px}
+  .sec,.psec{padding:18px}
+  .arow{flex-direction:column}
+  .genbtn{width:100%;justify-content:center}
+  .cmpgrid,.tgrid{grid-template-columns:1fr}
+  .tcard.feat{grid-column:span 1}
+  .steps{grid-template-columns:1fr}
+  .hstat-v{font-size:17px}
+  .hstat-l{font-size:10px}
+  footer{flex-direction:column;text-align:center}
+  .flinks{justify-content:center}
+}
+  </style>
+</head>
+<body>
+<div class="mesh"></div>
+
+<!-- NAV -->
+<nav>
+  <a href="#" class="logo">LOOM</a>
+  <div class="nav-r">
+    <div class="ltoggle">
+      <button class="lbtn" id="ben" onclick="setLang('en')">EN</button>
+      <button class="lbtn on" id="bar" onclick="setLang('ar')">AR</button>
+    </div>
+    <div class="cpill" id="cpill">
+      <span class="cpill-dot"></span>
+      <span id="cv">١ مجاناً</span>
+    </div>
+    <button class="nbtn nbtn-ghost" id="loginBtn" onclick="openM()">
+      <span data-ar="دخول" data-en="Sign in">دخول</span>
+    </button>
+    <div id="userMenu" style="display:none">
+      <button class="nbtn nbtn-ghost" onclick="sOut()"><span data-ar="خروج" data-en="Sign out">خروج</span></button>
+    </div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="banner" onclick="document.querySelector('.tools').scrollIntoView({behavior:'smooth'})">
+    <span class="banner-tag">MAVEN SUITE</span>
+    <span class="banner-txt" data-ar="اكتشف كل أدوات Maven" data-en="Explore all Maven tools">اكتشف كل أدوات Maven</span>
+    <span class="banner-arr" data-ar="◀" data-en="▶">◀</span>
+  </div>
+
+  <h1 class="htitle htitle-ar" id="htitleAr">صوّر منتجك<br/><em>باحترافية</em></h1>
+  <h1 class="htitle" id="htitleEn" style="display:none">Your products,<br/><em>studio-perfect</em></h1>
+
+  <p class="hsub" id="hsubAr">ارفع صورة منتجك، صف التعديل المطلوب، واحصل على نتيجة احترافية في ثوانٍ</p>
+  <p class="hsub" id="hsubEn" style="display:none">Upload your product photo, describe the edit you want, and get a studio-quality result in seconds.</p>
+
+  <div class="hstats">
+    <div class="hstat"><span class="hstat-v">10s</span><span class="hstat-l" data-ar="وقت المعالجة" data-en="Processing time">وقت المعالجة</span></div>
+    <div class="hstat"><span class="hstat-v">AR+EN</span><span class="hstat-l" data-ar="دعم ثنائي اللغة" data-en="Bilingual support">دعم ثنائي اللغة</span></div>
+    <div class="hstat"><span class="hstat-v">5/day</span><span class="hstat-l" data-ar="صور مجانية يومياً" data-en="Free daily credits">صور مجانية يومياً</span></div>
+  </div>
+
+  <!-- APP CARD -->
+  <div class="appwrap">
+    <div class="appcard">
+
+      <!-- Upload -->
+      <div class="sec">
+        <div class="udrop" id="udrop">
+          <input type="file" id="filein" accept="image/jpeg,image/png,image/webp"/>
+          <div class="uicon">📦</div>
+          <div class="utitle" id="utitle" data-ar="ارفع صورة منتجك هنا" data-en="Drop your product image here">ارفع صورة منتجك هنا</div>
+          <div class="uhint" data-ar="JPEG · PNG · WEBP · حتى 10MB" data-en="JPEG · PNG · WEBP · Up to 10MB">JPEG · PNG · WEBP · حتى 10MB</div>
+        </div>
+        <div class="prevwrap" id="prevwrap">
+          <span class="prevx" onclick="clrImg()">✕</span>
+          <img id="previmg" src="" alt=""/>
+        </div>
+      </div>
+
+      <!-- Prompt -->
+      <div class="psec">
+        <div class="plabel-row">
+          <div class="plabel" id="plabel" data-ar="Prompt" data-en="Prompt">Prompt</div>
+          <button class="enhance-btn" id="enhanceBtn" onclick="enhancePrompt()" title="تحسين البرومت بالذكاء الاصطناعي">
+            <span class="enhance-icon">✦</span>
+            <span class="enhance-txt" data-ar="تحسين" data-en="Enhance">تحسين</span>
+            <span class="enhance-spin" id="eSpin"></span>
+          </button>
+        </div>
+        <textarea class="ptxt" id="ptxt" placeholder="مثال: خلفية بيضاء نقية مع ظل ناعم وإضاءة استوديو..."></textarea>
+        <div class="chips" id="chips-ar">
+          <span class="chip" onclick="chip(this)">خلفية بيضاء نظيفة</span>
+          <span class="chip" onclick="chip(this)">إضاءة استوديو</span>
+          <span class="chip" onclick="chip(this)">خلفية داكنة فاخرة</span>
+          <span class="chip" onclick="chip(this)">خلفية طبيعية</span>
+          <span class="chip" onclick="chip(this)">أضف ظل ناعم</span>
+          <span class="chip" onclick="chip(this)">ازل الخلفية</span>
+        </div>
+        <div class="chips" id="chips-en" style="display:none">
+          <span class="chip" onclick="chip(this)">Pure white background</span>
+          <span class="chip" onclick="chip(this)">Studio lighting</span>
+          <span class="chip" onclick="chip(this)">Luxury dark background</span>
+          <span class="chip" onclick="chip(this)">Natural outdoor setting</span>
+          <span class="chip" onclick="chip(this)">Add soft shadow</span>
+          <span class="chip" onclick="chip(this)">Remove background</span>
+        </div>
+      </div>
+
+      <!-- Message -->
+      <div class="msgwrap"><div class="msg" id="mmsg"></div></div>
+
+      <!-- Action -->
+      <div class="arow">
+        <div class="ainfo" id="ainfo" data-ar="Ctrl+Enter للتشغيل السريع" data-en="Ctrl+Enter to generate">Ctrl+Enter للتشغيل السريع</div>
+        <button class="genbtn" id="genbtn" onclick="gen()">
+          <div class="spin"></div><span class="bstar">✦</span>
+          <span id="genTxt" data-ar="تعديل الصورة" data-en="Edit Image">تعديل الصورة</span>
+        </button>
+      </div>
+
+      <!-- Result -->
+      <div class="resc" id="resc">
+        <div class="reshd">
+          <div class="reslabel">✅ <span id="resTxt" data-ar="تم التعديل بنجاح" data-en="Edit complete">تم التعديل بنجاح</span></div>
+          <button class="dlbtn" onclick="dl()">⬇ <span data-ar="تحميل" data-en="Download">تحميل</span></button>
+        </div>
+        <div class="cmpgrid">
+          <div class="cmpc"><span class="cmplabel" data-ar="الأصل" data-en="Original">الأصل</span><img id="oimg" src="" alt=""/></div>
+          <div class="cmpc res"><span class="cmplabel" data-ar="المعدّل ✦" data-en="Edited ✦">المعدّل ✦</span><img id="rimg" src="" alt=""/></div>
+        </div>
+        <div class="upbanner" id="upbanner">
+          <p id="upTxt" data-ar="🎉 استمتعت بصورتك المجانية! سجّل الآن واحصل على 5 صور يومياً مجاناً" data-en="🎉 You used your free edit! Sign up for 5 free edits every day">🎉 استمتعت بصورتك المجانية! سجّل الآن واحصل على 5 صور يومياً</p>
+          <button class="upbtn" onclick="openM()"><span data-ar="إنشاء حساب مجاني ✦" data-en="Create free account ✦">إنشاء حساب مجاني ✦</span></button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TOOLS -->
+<section class="tools">
+  <div class="shd">
+    <div class="eyebrow">✦ <span data-ar="مجموعة Maven" data-en="Maven Suite">مجموعة Maven</span></div>
+    <h2 class="stitle stitle-ar" id="stAr">أدوات صُنعت<br/>لتصنع الفرق</h2>
+    <h2 class="stitle" id="stEn" style="display:none">Tools built to<br/><em>make you stand out</em></h2>
+    <p class="ssub" id="ssAr">مش مجرد أداة — احنا بنبني منظومة كاملة لأصحاب المنتجات والمتاجر الإلكترونية</p>
+    <p class="ssub" id="ssEn" style="display:none">Not just a tool — we're building a full ecosystem for product owners and e-commerce builders.</p>
+  </div>
+  <div class="tgrid">
+    <div class="tcard feat" style="--cg:rgba(245,200,66,.1)">
+      <div class="tbadge blive">● Live</div>
+      <div class="ticon">🪡</div>
+      <div class="tname tname-ar" id="t1n">Loom</div>
+      <p class="tdesc" id="t1d" data-ar="حوّل أي صورة منتج عادية إلى لقطة استوديو احترافية في ثوانٍ. غيّر الخلفية، عدّل الإضاءة، واحصل على نتيجة تنافس أكبر العلامات التجارية." data-en="Transform any product photo into a studio-quality shot in seconds. Change backgrounds, fix lighting, and get results that rival top brands.">حوّل أي صورة منتج عادية إلى لقطة استوديو احترافية في ثوانٍ. غيّر الخلفية، عدّل الإضاءة، واحصل على نتيجة تنافس أكبر العلامات التجارية.</p>
+      <span class="tarr">←</span>
+    </div>
+    <div class="tcard" style="--cg:rgba(100,210,255,.05)">
+      <div class="tbadge bsoon">Soon</div>
+      <div class="ticon">⚡</div>
+      <div class="tname tname-ar">Nano</div>
+      <p class="tdesc" data-ar="اضغط صورك بدون أي خسارة في الجودة. سرّع متجرك وحسّن ترتيبك في جوجل." data-en="Compress images with zero quality loss. Speed up your store and boost Google rankings.">اضغط صورك بدون أي خسارة في الجودة. سرّع متجرك وحسّن ترتيبك في جوجل.</p>
+      <span class="tarr">←</span>
+    </div>
+    <div class="tcard" style="--cg:rgba(255,210,60,.06)">
+      <div class="tbadge bhot">🔥 Hot</div>
+      <div class="ticon">🍌</div>
+      <div class="tname tname-ar">Banana Pro</div>
+      <p class="tdesc" data-ar="أنشئ محتوى تسويقي لمنتجاتك بالذكاء الاصطناعي — كابشن، هاشتاقات، إعلانات. بالعربي والإنجليزي." data-en="Generate AI marketing content for products — captions, hashtags, ad copy. Arabic & English.">أنشئ محتوى تسويقي لمنتجاتك بالذكاء الاصطناعي — كابشن، هاشتاقات، إعلانات. بالعربي والإنجليزي.</p>
+      <span class="tarr">←</span>
+    </div>
+    <div class="tcard" style="--cg:rgba(180,130,255,.05)">
+      <div class="tbadge bsoon">Soon</div>
+      <div class="ticon">✂️</div>
+      <div class="tname tname-ar">Crop King</div>
+      <p class="tdesc" data-ar="قصّ وأعد تحجيم صورك لكل منصة تلقائياً — إنستقرام، تيك توك، أمازون، نون." data-en="Auto-resize for every platform — Instagram, TikTok, Amazon, Noon.">قصّ وأعد تحجيم صورك لكل منصة تلقائياً — إنستقرام، تيك توك، أمازون، نون.</p>
+      <span class="tarr">←</span>
+    </div>
+    <div class="tcard" style="--cg:rgba(255,100,100,.05)">
+      <div class="tbadge bsoon">Soon</div>
+      <div class="ticon">🎨</div>
+      <div class="tname tname-ar">Palette</div>
+      <p class="tdesc" data-ar="استخرج ألوان علامتك التجارية من صورك وأنشئ ثيم متجانس لمتجرك بضغطة زر." data-en="Extract brand colors from your images and generate a cohesive store theme instantly.">استخرج ألوان علامتك التجارية من صورك وأنشئ ثيم متجانس لمتجرك بضغطة زر.</p>
+      <span class="tarr">←</span>
+    </div>
+  </div>
+</section>
+
+<!-- HOW -->
+<section class="how">
+  <div class="shd" style="max-width:1060px;margin:0 auto">
+    <div class="eyebrow">✦ <span data-ar="كيف يعمل" data-en="How it works">كيف يعمل</span></div>
+    <h2 class="stitle stitle-ar" id="hwAr">ثلاث خطوات بس</h2>
+    <h2 class="stitle" id="hwEn" style="display:none">Three simple steps</h2>
+  </div>
+  <div class="steps" style="max-width:1060px;margin:48px auto 0">
+    <div class="step">
+      <span class="stepn">01</span>
+      <div class="stept stept-ar" data-ar="ارفع صورتك" data-en="Upload">ارفع صورتك</div>
+      <p class="stepd" data-ar="ارفع أي صورة منتج، حتى لو التقطتها بهاتفك" data-en="Upload any product photo, even shot on your phone.">ارفع أي صورة منتج، حتى لو التقطتها بهاتفك</p>
+    </div>
+    <div class="step">
+      <span class="stepn">02</span>
+      <div class="stept stept-ar" data-ar="صف ما تريد" data-en="Describe">صف ما تريد</div>
+      <p class="stepd" data-ar="اكتب التعديل بالعربي أو الإنجليزي بكل بساطة" data-en="Write what you want in Arabic or English, naturally.">اكتب التعديل بالعربي أو الإنجليزي بكل بساطة</p>
+    </div>
+    <div class="step">
+      <span class="stepn">03</span>
+      <div class="stept stept-ar" data-ar="حمّل النتيجة" data-en="Download">حمّل النتيجة</div>
+      <p class="stepd" data-ar="نتيجة بجودة عالية في ثوانٍ تناسب المتاجر والإعلانات" data-en="High-quality result in seconds, ready for stores & ads.">نتيجة بجودة عالية في ثوانٍ تناسب المتاجر والإعلانات</p>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="flogo">LOOM</div>
+  <div class="fctr">Made with <span class="h">❤️</span> by Maven &nbsp;·&nbsp; <span data-ar="© 2025 جميع الحقوق محفوظة" data-en="© 2025 All rights reserved">© 2025 جميع الحقوق محفوظة</span></div>
+  <div class="flinks">
+    <a href="privacy.html" class="flink" data-ar="الخصوصية" data-en="Privacy">الخصوصية</a>
+    <a href="terms.html" class="flink" data-ar="الشروط" data-en="Terms">الشروط</a>
+  </div>
+</footer>
+
+<!-- AUTH MODAL -->
+<div class="overlay" id="ov" onclick="clovOuter(event)">
+  <div class="modal">
+    <span class="mx" onclick="closeM()">✕</span>
+    <div class="mlogo">LOOM</div>
+    <p class="mtag" data-ar="منصة تعديل صور المنتجات" data-en="Product Image Studio">منصة تعديل صور المنتجات</p>
+    <div class="perks">
+      <div class="perks-t">✦ <span data-ar="مزايا الحساب المجاني" data-en="Free account perks">مزايا الحساب المجاني</span></div>
+      <div class="perk">🎨 <span data-ar="5 صور يومياً مجاناً" data-en="5 free edits daily">5 صور يومياً مجاناً</span></div>
+      <div class="perk">⚡ <span data-ar="أولوية في المعالجة" data-en="Priority processing">أولوية في المعالجة</span></div>
+      <div class="perk">🛠️ <span data-ar="وصول مبكر لأدوات Maven" data-en="Early access to Maven tools">وصول مبكر لأدوات Maven</span></div>
+    </div>
+    <div class="mtabs">
+      <button class="mtab on" id="tin" onclick="mTab('in')"><span data-ar="دخول" data-en="Sign in">دخول</span></button>
+      <button class="mtab" id="tup" onclick="mTab('up')"><span data-ar="حساب جديد" data-en="Sign up">حساب جديد</span></button>
+    </div>
+    <div class="fg"><label class="fl"><span data-ar="البريد الإلكتروني" data-en="Email address">البريد الإلكتروني</span></label><input type="email" class="fi" id="ae" placeholder="you@example.com"/></div>
+    <div class="fg"><label class="fl"><span data-ar="كلمة المرور" data-en="Password">كلمة المرور</span></label><input type="password" class="fi" id="ap" placeholder="••••••••"/></div>
+    <button class="mbtn" onclick="doAuth()"><span id="mbtxt" data-ar="تسجيل الدخول" data-en="Sign in">تسجيل الدخول</span></button>
+    <div class="mmsg" id="mmsgM"></div>
+  </div>
+</div>
+
+<script>
+const API='', DAILY=5;
+let lang=localStorage.getItem('ll')||'ar';
+let sid=localStorage.getItem('ls')||'s'+Math.random().toString(36).slice(2)+Date.now().toString(36);
+let tok=localStorage.getItem('lt')||null, usr=JSON.parse(localStorage.getItem('lu')||'null');
+let file=null, res64=null, ctab='in';
+localStorage.setItem('ls',sid);
+
+/* ── LANG ── */
+function setLang(l){
+  lang=l; localStorage.setItem('ll',l);
+  const h=document.documentElement;
+  h.setAttribute('lang',l); h.setAttribute('dir',l==='ar'?'rtl':'ltr'); h.setAttribute('data-lang',l);
+  document.getElementById('ben').classList.toggle('on',l==='en');
+  document.getElementById('bar').classList.toggle('on',l==='ar');
+  // Update all data-ar / data-en text nodes
+  document.querySelectorAll('[data-ar]').forEach(el=>{
+    if(el.tagName==='INPUT'||el.tagName==='TEXTAREA') return;
+    el.textContent=l==='ar'?el.dataset.ar:el.dataset.en;
+  });
+  // Toggle bilingual blocks
+  const togglePairs=[
+    ['htitleAr','htitleEn'],['hsubAr','hsubEn'],
+    ['stAr','stEn'],['ssAr','ssEn'],['hwAr','hwEn']
+  ];
+  togglePairs.forEach(([a,e])=>{
+    const ea=document.getElementById(a), ee=document.getElementById(e);
+    if(ea) ea.style.display=l==='ar'?'':'none';
+    if(ee) ee.style.display=l==='en'?'':'none';
+  });
+  document.getElementById('chips-ar').style.display=l==='ar'?'':'none';
+  document.getElementById('chips-en').style.display=l==='en'?'':'none';
+  // Prompt placeholder
+  document.getElementById('ptxt').placeholder=l==='ar'
+    ?'مثال: خلفية بيضاء نقية مع ظل ناعم وإضاءة استوديو...'
+    :'e.g. Pure white background with soft shadow and studio lighting...';
+  // Enhance button tooltip
+  const eb=document.getElementById('enhanceBtn');
+  if(eb) eb.title=l==='ar'?'تحسين البرومت بالذكاء الاصطناعي':'Enhance prompt with AI';
+}
+
+window.addEventListener('load',()=>{setLang(lang);updHdr();loadCred();setupDrop()});
+
+/* ── HEADER ── */
+function updHdr(){
+  document.getElementById('loginBtn').style.display=usr?'none':'';
+  document.getElementById('userMenu').style.display=usr?'':'none';
+}
+async function loadCred(){
+  try{
+    const h={'x-session-id':sid};
+    if(tok) h['Authorization']='Bearer '+tok;
+    const d=await fetch(API+'/api/credits',{headers:h}).then(r=>r.json());
+    document.getElementById('cv').textContent=d.type==='user'
+      ?`${d.remaining}/${DAILY}`
+      :(d.canEdit?(lang==='ar'?'١ مجاناً':'1 free'):(lang==='ar'?'سجّل':'Sign up'));
+  }catch{}
+}
+
+/* ── UPLOAD ── */
+document.getElementById('filein').addEventListener('change',e=>{if(e.target.files[0])handleFile(e.target.files[0])});
+function setupDrop(){
+  const z=document.getElementById('udrop');
+  z.addEventListener('dragover',e=>{e.preventDefault();z.classList.add('over')});
+  z.addEventListener('dragleave',()=>z.classList.remove('over'));
+  z.addEventListener('drop',e=>{e.preventDefault();z.classList.remove('over');if(e.dataTransfer.files[0])handleFile(e.dataTransfer.files[0])});
+}
+function handleFile(f){
+  if(!f.type.startsWith('image/')){showMsg('err',lang==='ar'?'الملف ليس صورة':'File is not an image');return}
+  if(f.size>10*1024*1024){showMsg('err',lang==='ar'?'الصورة أكبر من 10MB':'Image exceeds 10MB');return}
+  file=f;
+  const r=new FileReader();
+  r.onload=e=>{
+    document.getElementById('previmg').src=e.target.result;
+    document.getElementById('oimg').src=e.target.result;
+    document.getElementById('prevwrap').classList.add('show');
+    document.getElementById('udrop').style.display='none';
+    document.getElementById('resc').classList.remove('show');
+    clrMsg();
+  };
+  r.readAsDataURL(f);
+}
+function clrImg(){
+  file=null;
+  document.getElementById('prevwrap').classList.remove('show');
+  document.getElementById('udrop').style.display='';
+  document.getElementById('filein').value='';
+  document.getElementById('resc').classList.remove('show');
+  clrMsg();
+}
+function chip(el){document.getElementById('ptxt').value=el.textContent.trim()}
+
+/* ── ENHANCE PROMPT ── */
+async function enhancePrompt(){
+  const ta=document.getElementById('ptxt');
+  const original=ta.value.trim();
+  if(!original){
+    showMsg('info', lang==='ar'?'اكتب برومت أولاً ثم اضغط تحسين':'Write a prompt first, then click Enhance');
+    return;
+  }
+  const btn=document.getElementById('enhanceBtn');
+  btn.disabled=true; btn.classList.add('enhancing');
+
+  try{
+    const systemPrompt=`You are an expert AI image editing prompt engineer specializing in product photography.
+Your job: take a user's simple prompt and rewrite it into a detailed, professional prompt for AI image editing.
+Rules:
+- Keep the same core intent
+- Add professional photography details (lighting, shadows, background quality, composition)
+- Be specific and descriptive
+- Keep it under 80 words
+- Respond ONLY with the improved prompt, no explanations, no quotation marks
+- If the input is in Arabic, respond in Arabic. If English, respond in English.`;
+
+    const resp=await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+        model:'claude-sonnet-4-20250514',
+        max_tokens:200,
+        system: systemPrompt,
+        messages:[{role:'user',content:`Enhance this image editing prompt: "${original}"`}]
+      })
+    });
+    const data=await resp.json();
+    if(data.content?.[0]?.text){
+      ta.value=data.content[0].text.trim();
+      ta.style.borderColor='rgba(245,200,66,.45)';
+      setTimeout(()=>ta.style.borderColor='',2000);
+    }
+  }catch{
+    showMsg('err', lang==='ar'?'تعذر تحسين البرومت، حاول مرة أخرى':'Could not enhance prompt, try again');
+  }finally{
+    btn.disabled=false; btn.classList.remove('enhancing');
+  }
+}
+
+
+async function gen(){
+  if(!file){showMsg('err',lang==='ar'?'الرجاء رفع صورة أولاً':'Please upload an image first');return}
+  const p=document.getElementById('ptxt').value.trim();
+  if(!p){showMsg('err',lang==='ar'?'الرجاء كتابة التعديل المطلوب':'Please describe the edit');return}
+  setLoad(true);clrMsg();
+  try{
+    const fd=new FormData();
+    fd.append('image',file);fd.append('prompt',p);fd.append('sessionId',sid);
+    const h={'x-session-id':sid};
+    if(tok) h['Authorization']='Bearer '+tok;
+    const resp=await fetch(API+'/api/edit',{method:'POST',headers:h,body:fd});
+    const data=await resp.json();
+    if(!resp.ok){
+      if(data.requiresAuth){showMsg('info',lang==='ar'?'🎉 استهلكت الكريديت المجاني — سجّل للحصول على 5 صور يومياً!':'🎉 Free credit used — sign up for 5 free daily edits!');openM()}
+      else showMsg('err',data.error_ar||data.error||(lang==='ar'?'حدث خطأ':'Something went wrong'));
+      return;
+    }
+    res64=data.image;
+    document.getElementById('rimg').src='data:image/png;base64,'+data.image;
+    document.getElementById('resc').classList.add('show');
+    document.getElementById('upbanner').style.display=data.requiresAuthForMore?'block':'none';
+    document.getElementById('resc').scrollIntoView({behavior:'smooth',block:'nearest'});
+    document.getElementById('cv').textContent=tok?`${data.remaining_credits}/${DAILY}`:(lang==='ar'?'سجّل':'Sign up');
+  }catch{showMsg('err',lang==='ar'?'تعذر الاتصال بالخادم':'Could not reach server')}
+  finally{setLoad(false)}
+}
+function setLoad(s){const b=document.getElementById('genbtn');b.disabled=s;b.classList.toggle('loading',s)}
+function dl(){if(!res64)return;const a=document.createElement('a');a.href='data:image/png;base64,'+res64;a.download='loom-'+Date.now()+'.png';a.click()}
+
+/* ── MESSAGES ── */
+function showMsg(t,tx){const e=document.getElementById('mmsg');e.textContent=tx;e.className='msg '+t}
+function clrMsg(){document.getElementById('mmsg').className='msg'}
+
+/* ── MODAL ── */
+function openM(){document.getElementById('ov').classList.add('open')}
+function closeM(){document.getElementById('ov').classList.remove('open')}
+function clovOuter(e){if(e.target===document.getElementById('ov'))closeM()}
+function mTab(t){
+  ctab=t;
+  document.getElementById('tin').classList.toggle('on',t==='in');
+  document.getElementById('tup').classList.toggle('on',t==='up');
+  const btxt=document.getElementById('mbtxt');
+  btxt.textContent=lang==='ar'?(t==='in'?'تسجيل الدخول':'إنشاء حساب'):(t==='in'?'Sign in':'Create account');
+  document.getElementById('mmsgM').textContent='';document.getElementById('mmsgM').className='mmsg';
+}
+async function doAuth(){
+  const em=document.getElementById('ae').value.trim(),pw=document.getElementById('ap').value;
+  const mel=document.getElementById('mmsgM');
+  if(!em||!pw){mel.textContent=lang==='ar'?'يرجى ملء جميع الحقول':'Please fill in all fields';mel.className='mmsg err';return}
+  try{
+    const ep=ctab==='in'?'/api/auth/signin':'/api/auth/signup';
+    const res=await fetch(API+ep,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email:em,password:pw})});
+    const data=await res.json();
+    if(!res.ok){mel.textContent=data.error;mel.className='mmsg err';return}
+    if(ctab==='up'){mel.textContent=lang==='ar'?'✅ تم إنشاء الحساب! سجّل الدخول الآن':'✅ Account created! Sign in now';mel.className='mmsg ok';mTab('in');return}
+    tok=data.token;usr=data.user;
+    localStorage.setItem('lt',tok);localStorage.setItem('lu',JSON.stringify(usr));
+    closeM();updHdr();loadCred();
+  }catch{mel.textContent=lang==='ar'?'خطأ في الاتصال':'Connection error';mel.className='mmsg err'}
+}
+function sOut(){tok=usr=null;localStorage.removeItem('lt');localStorage.removeItem('lu');updHdr();loadCred()}
+
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeM();if((e.ctrlKey||e.metaKey)&&e.key==='Enter')gen()});
+</script>
+</body>
+</html>
