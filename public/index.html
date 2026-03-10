@@ -201,7 +201,25 @@ h2.stitle-ar{font-family:'Tajawal',sans-serif;font-size:clamp(26px,4.2vw,46px);f
 .stept-ar{font-family:'Tajawal',sans-serif}
 .stepd{font-size:12.5px;color:var(--muted2);line-height:1.65}
 
-/* ── MAVEN WORLD BAR ── */
+/* ── HISTORY ── */
+.hsec{position:relative;z-index:1;padding:60px 20px;border-top:1px solid var(--border);max-width:1060px;margin:0 auto;display:none}
+.hsec.visible{display:block}
+.hsec-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:24px}
+.hsec-title{font-family:'Playfair Display',serif;font-size:22px;font-weight:700}
+.hsec-clear{background:none;border:1px solid var(--border);border-radius:var(--r);padding:6px 14px;color:var(--muted2);font-family:inherit;font-size:12px;cursor:pointer;transition:all var(--t)}
+.hsec-clear:hover{border-color:rgba(255,80,80,.4);color:#ff6060}
+.hgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:12px}
+.hcard{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r-lg);overflow:hidden;cursor:pointer;transition:all var(--t)}
+.hcard:hover{border-color:rgba(245,200,66,.3);transform:translateY(-2px);box-shadow:0 12px 32px rgba(0,0,0,.4)}
+.hcard-img{width:100%;height:130px;object-fit:cover;display:block;background:var(--bg3)}
+.hcard-info{padding:10px 12px}
+.hcard-prompt{font-size:11.5px;color:var(--muted2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:4px}
+.hcard-date{font-size:10px;color:var(--muted);font-family:'DM Sans',sans-serif}
+.hcard-reuse{display:flex;align-items:center;justify-content:flex-end;padding:0 12px 10px;gap:6px}
+.hcard-btn{font-size:10px;padding:3px 8px;border-radius:100px;border:1px solid var(--border);background:none;color:var(--muted2);cursor:pointer;font-family:inherit;transition:all var(--t)}
+.hcard-btn:hover{border-color:var(--amber);color:var(--amber)}
+.hempty{text-align:center;padding:40px 20px;color:var(--muted);font-size:13px}
+.hloading{text-align:center;padding:30px;color:var(--muted);font-size:13px}
 .mworld-bar{width:100%;background:linear-gradient(90deg,rgba(245,200,66,.12),rgba(245,200,66,.06),rgba(245,200,66,.12));border-bottom:1px solid rgba(245,200,66,.18);padding:9px 20px;display:flex;align-items:center;justify-content:center;gap:10px;cursor:pointer;transition:background var(--t);position:relative;z-index:50}
 .mworld-bar:hover{background:linear-gradient(90deg,rgba(245,200,66,.2),rgba(245,200,66,.1),rgba(245,200,66,.2))}
 .mworld-bar-badge{background:rgba(245,200,66,.2);border:1px solid rgba(245,200,66,.4);border-radius:100px;padding:2px 9px;font-size:10px;font-weight:800;color:var(--amber);letter-spacing:.8px;text-transform:uppercase;font-family:'DM Sans',sans-serif;flex-shrink:0}
@@ -545,6 +563,21 @@ footer{position:relative;z-index:1;border-top:1px solid var(--border);padding:36
   </div>
 </section>
 
+<!-- HISTORY -->
+<div class="hsec" id="hsec">
+  <div class="hsec-head">
+    <div>
+      <div class="eyebrow">🕐 <span data-ar="سجل التعديلات" data-en="Edit History">سجل التعديلات</span></div>
+      <div class="stitle stitle-ar" id="hTitleAr" style="font-size:clamp(20px,3vw,28px);margin-top:8px">آخر 20 تعديل</div>
+      <div class="stitle" id="hTitleEn" style="font-size:clamp(20px,3vw,28px);margin-top:8px;display:none">Last 20 edits</div>
+    </div>
+    <button class="hsec-clear" onclick="clearHistory()" data-ar="مسح السجل" data-en="Clear history">مسح السجل</button>
+  </div>
+  <div id="hgrid" class="hgrid">
+    <div class="hloading" data-ar="جاري التحميل..." data-en="Loading...">جاري التحميل...</div>
+  </div>
+</div>
+
 <!-- HOW -->
 <section class="how">
   <div class="shd" style="max-width:1060px;margin:0 auto">
@@ -692,7 +725,7 @@ function setLang(l){
   if(eb) eb.title=l==='ar'?'تحسين البرومت بالذكاء الاصطناعي':'Enhance prompt with AI';
 }
 
-window.addEventListener('load',()=>{setLang(lang);updHdr();loadCred();setupDrop()});
+window.addEventListener('load',()=>{setLang(lang);updHdr();loadCred();setupDrop();loadHistory();loadHistoryCache();});
 
 /* ── HEADER ── */
 function updHdr(){
@@ -832,6 +865,8 @@ async function gen(){
     if(data.requiresAuthForMore && !tok){ setTimeout(()=>{ if(!tok) openM(); }, 8000); }
     // Show Banana Pro popup after successful edit
     showWPopup();
+    // Refresh history for logged-in users
+    if(tok){ loadHistory(); loadHistoryCache(); }
   }catch{showMsg('err',lang==='ar'?'تعذر الاتصال بالخادم':'Could not reach server')}
   finally{setLoad(false)}
 }
@@ -952,10 +987,80 @@ function loginSuccess(data){
   tok=data.token; usr=data.user;
   localStorage.setItem('lt',tok);
   localStorage.setItem('lu',JSON.stringify(usr));
-  closeM(); updHdr(); loadCred();
+  closeM(); updHdr(); loadCred(); loadHistory(); loadHistoryCache();
 }
 
-function sOut(){tok=usr=null;localStorage.removeItem('lt');localStorage.removeItem('lu');updHdr();loadCred()}
+// ── HISTORY ──────────────────────────────────────────────────────────────────
+async function loadHistory(){
+  const sec = document.getElementById('hsec');
+  if(!tok){ sec.classList.remove('visible'); return; }
+  sec.classList.add('visible');
+  const grid = document.getElementById('hgrid');
+  grid.innerHTML = `<div class="hloading">${lang==='ar'?'جاري التحميل...':'Loading...'}</div>`;
+  try{
+    const r = await fetch(API+'/api/history',{headers:{'Authorization':'Bearer '+tok,'x-session-id':sid}});
+    if(!r.ok){ grid.innerHTML=`<div class="hempty">${lang==='ar'?'تعذر تحميل السجل':'Could not load history'}</div>`; return; }
+    const {history} = await r.json();
+    if(!history.length){ grid.innerHTML=`<div class="hempty">${lang==='ar'?'لا يوجد سجل بعد — ابدأ بتعديل صورة!':'No history yet — start editing!'}</div>`; return; }
+    grid.innerHTML = history.map(h=>{
+      const date = new Date(h.created_at).toLocaleDateString(lang==='ar'?'ar-AE':'en-GB',{month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'});
+      const img = `data:image/png;base64,${h.edited_img}`;
+      return `<div class="hcard" onclick="reuseFromHistory('${h.id}')">
+        <img class="hcard-img" src="${img}" alt="edit" loading="lazy"/>
+        <div class="hcard-info">
+          <div class="hcard-prompt">${h.prompt}</div>
+          <div class="hcard-date">${date}</div>
+        </div>
+        <div class="hcard-reuse">
+          <button class="hcard-btn" onclick="event.stopPropagation();downloadFromHistory('${h.id}')" data-ar="تحميل" data-en="Download">${lang==='ar'?'تحميل':'Download'}</button>
+        </div>
+      </div>`;
+    }).join('');
+  }catch{ grid.innerHTML=`<div class="hempty">${lang==='ar'?'حدث خطأ':'Something went wrong'}</div>`; }
+}
+
+// Store history items for quick access
+let historyCache = [];
+async function loadHistoryCache(){
+  if(!tok) return;
+  try{
+    const r = await fetch(API+'/api/history',{headers:{'Authorization':'Bearer '+tok,'x-session-id':sid}});
+    if(r.ok){ const d = await r.json(); historyCache = d.history||[]; }
+  }catch{}
+}
+function reuseFromHistory(id){
+  const item = historyCache.find(h=>h.id===id);
+  if(!item) return;
+  // Set result image
+  res64 = item.edited_img;
+  document.getElementById('rimg').src = 'data:image/png;base64,'+item.edited_img;
+  if(item.original_img){
+    document.getElementById('oimg').src = 'data:image/png;base64,'+item.original_img;
+    document.getElementById('previmg').src = 'data:image/png;base64,'+item.original_img;
+    document.getElementById('prevwrap').classList.add('show');
+    document.getElementById('udrop').style.display='none';
+  }
+  document.getElementById('ptxt').value = item.prompt;
+  document.getElementById('resc').classList.add('show');
+  document.querySelector('.appcard').scrollIntoView({behavior:'smooth'});
+}
+function downloadFromHistory(id){
+  const item = historyCache.find(h=>h.id===id);
+  if(!item) return;
+  const a=document.createElement('a'); a.href='data:image/png;base64,'+item.edited_img; a.download='loom-edit.png'; a.click();
+}
+async function clearHistory(){
+  if(!tok) return;
+  const confirmed = confirm(lang==='ar'?'هتمسح كل السجل؟':'Clear all history?');
+  if(!confirmed) return;
+  try{
+    await fetch(API+'/api/history/clear',{method:'DELETE',headers:{'Authorization':'Bearer '+tok}});
+    historyCache=[];
+    loadHistory();
+  }catch{}
+}
+
+function sOut(){tok=usr=null;localStorage.removeItem('lt');localStorage.removeItem('lu');updHdr();loadCred();loadHistory();}
 
 // Google OAuth callback handling via Supabase hash fragments
 window.addEventListener('load',()=>{
