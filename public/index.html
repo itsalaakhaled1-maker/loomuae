@@ -168,7 +168,12 @@ h2.stitle-ar{font-family:'Tajawal',sans-serif;font-size:clamp(26px,4.2vw,46px);f
 .ssub{font-size:15px;color:var(--muted2);max-width:460px;margin:0 auto;line-height:1.75}
 
 .tgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
-.tcard{position:relative;background:var(--bg2);border:1px solid var(--border);border-radius:var(--r-lg);padding:26px 22px 54px;transition:all var(--t) var(--ease);overflow:hidden;cursor:default;text-decoration:none;color:inherit;display:block}
+.tcard{position:relative;background:var(--bg2);border:1px solid var(--border);border-radius:var(--r-lg);padding:18px 18px 44px;transition:all var(--t) var(--ease);overflow:hidden;cursor:default;text-decoration:none;color:inherit;display:block}
+.tcard-head{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.tcard-icon{font-size:20px;width:36px;height:36px;background:var(--bg3);border:1px solid var(--border);border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.tcard-name{font-family:'DM Sans',sans-serif;font-size:14px;font-weight:800;color:var(--white);letter-spacing:.2px}
+.tcard-sub{color:var(--amber);font-size:11px;font-weight:700;letter-spacing:.4px;display:block;margin-top:1px}
+.tcard-sub-dim{color:var(--muted2)!important}
 .tcard::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 80% 55% at 50% 0%,var(--cg,rgba(245,200,66,.05)),transparent);opacity:0;transition:opacity var(--t)}
 .tcard:hover{border-color:rgba(255,255,255,.11);transform:translateY(-4px);box-shadow:0 22px 48px rgba(0,0,0,.42)}
 .tcard:hover::before{opacity:1}
@@ -196,7 +201,30 @@ h2.stitle-ar{font-family:'Tajawal',sans-serif;font-size:clamp(26px,4.2vw,46px);f
 .stept-ar{font-family:'Tajawal',sans-serif}
 .stepd{font-size:12.5px;color:var(--muted2);line-height:1.65}
 
-/* ── LOADING OVERLAY ── */
+/* ── MAVEN WORLD BAR ── */
+.mworld-bar{width:100%;background:linear-gradient(90deg,rgba(245,200,66,.12),rgba(245,200,66,.06),rgba(245,200,66,.12));border-bottom:1px solid rgba(245,200,66,.18);padding:9px 20px;display:flex;align-items:center;justify-content:center;gap:10px;cursor:pointer;transition:background var(--t);position:relative;z-index:50}
+.mworld-bar:hover{background:linear-gradient(90deg,rgba(245,200,66,.2),rgba(245,200,66,.1),rgba(245,200,66,.2))}
+.mworld-bar-badge{background:rgba(245,200,66,.2);border:1px solid rgba(245,200,66,.4);border-radius:100px;padding:2px 9px;font-size:10px;font-weight:800;color:var(--amber);letter-spacing:.8px;text-transform:uppercase;font-family:'DM Sans',sans-serif;flex-shrink:0}
+.mworld-bar-txt{font-size:13px;color:rgba(255,255,255,.85)}
+.mworld-bar-txt strong{color:var(--amber)}
+.mworld-bar-arr{font-size:13px;color:var(--amber);margin-right:2px}
+/* ── WORLD POPUP ── */
+.wpopup-ov{position:fixed;inset:0;z-index:700;display:flex;align-items:flex-end;justify-content:center;padding:20px;pointer-events:none;opacity:0;transition:opacity .4s}
+.wpopup-ov.show{opacity:1;pointer-events:all}
+.wpopup{background:var(--bg2);border:1px solid rgba(245,200,66,.3);border-radius:20px;padding:24px 22px;width:100%;max-width:420px;transform:translateY(30px);transition:transform .4s cubic-bezier(.34,1.56,.64,1);box-shadow:0 30px 80px rgba(0,0,0,.7),0 0 0 1px rgba(245,200,66,.08)}
+.wpopup-ov.show .wpopup{transform:translateY(0)}
+.wpopup-close{position:absolute;top:14px;left:14px;background:none;border:none;color:var(--muted);cursor:pointer;font-size:18px;padding:4px}
+.wpopup-head{display:flex;align-items:center;gap:12px;margin-bottom:14px}
+.wpopup-icon{width:46px;height:46px;background:linear-gradient(135deg,rgba(245,200,66,.2),rgba(245,200,66,.08));border:1px solid rgba(245,200,66,.3);border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0}
+.wpopup-title{font-size:15px;font-weight:800;color:var(--white)}
+.wpopup-sub{font-size:12px;color:var(--muted2);margin-top:2px}
+.wpopup-body{font-size:13px;color:rgba(255,255,255,.75);line-height:1.7;margin-bottom:16px}
+.wpopup-cta{display:flex;gap:8px}
+.wpopup-btn{flex:1;padding:11px;border-radius:var(--r);font-family:inherit;font-size:13px;font-weight:800;cursor:pointer;transition:all var(--t);text-align:center;text-decoration:none;display:flex;align-items:center;justify-content:center;gap:5px}
+.wpopup-btn.primary{background:linear-gradient(135deg,var(--amber),var(--amber2));color:#090600;border:none}
+.wpopup-btn.primary:hover{transform:translateY(-1px);box-shadow:0 8px 22px rgba(245,200,66,.3)}
+.wpopup-btn.ghost{background:transparent;border:1px solid var(--border);color:var(--muted2)}
+.wpopup-btn.ghost:hover{border-color:rgba(255,255,255,.2);color:var(--white)}
 .loverlay{position:fixed;inset:0;z-index:600;background:rgba(8,8,8,.92);backdrop-filter:blur(20px);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:28px;opacity:0;pointer-events:none;transition:opacity .4s}
 .loverlay.show{opacity:1;pointer-events:all}
 .lring{position:relative;width:90px;height:90px}
@@ -295,6 +323,36 @@ footer{position:relative;z-index:1;border-top:1px solid var(--border);padding:36
 </head>
 <body>
 <div class="mesh"></div>
+
+<!-- MAVEN WORLD BAR -->
+<div class="mworld-bar" onclick="window.open('https://www.loomuae.world','_blank')">
+  <span class="mworld-bar-badge">🌍 NEW</span>
+  <span class="mworld-bar-txt"><strong data-ar="Loom — AI Content Platform متاح الآن!" data-en="Loom — AI Content Platform is live!">Loom — AI Content Platform متاح الآن!</strong> <span data-ar="— كابشن + هاشتاجات + موسيقى ترند لمنتجاتك" data-en="— Captions + hashtags + trending music for your products">— كابشن + هاشتاجات + موسيقى ترند لمنتجاتك</span></span>
+  <span class="mworld-bar-arr">←</span>
+</div>
+
+<!-- WORLD POPUP -->
+<div class="wpopup-ov" id="wpopupOv">
+  <div class="wpopup" style="position:relative">
+    <button class="wpopup-close" onclick="closeWPopup()">✕</button>
+    <div class="wpopup-head">
+      <div class="wpopup-icon">✍️</div>
+      <div>
+        <div class="wpopup-title" data-ar="صورتك جاهزة؟ خليها تتكلم!" data-en="Photo ready? Now make it talk!">صورتك جاهزة؟ خليها تتكلم!</div>
+        <div class="wpopup-sub">Loom — AI Content Platform</div>
+      </div>
+    </div>
+    <p class="wpopup-body" id="wpopupBody" data-ar="الخطوة الجاية — ارفع صورتك المعدّلة على Banana Pro واحصل على كابشن احترافي وهاشتاجات ترند جاهزة للنشر 🚀" data-en="Next step — upload your edited photo to Banana Pro and get professional captions + trending hashtags ready to post 🚀">الخطوة الجاية — ارفع صورتك المعدّلة على Banana Pro واحصل على كابشن احترافي وهاشتاجات ترند جاهزة للنشر 🚀</p>
+    <div class="wpopup-cta">
+      <a class="wpopup-btn primary" href="https://www.loomuae.world" target="_blank">
+        <span>✍️</span> <span data-ar="جرّب Loom Content" data-en="Try Loom Content">جرّب Loom Content</span>
+      </a>
+      <button class="wpopup-btn ghost" onclick="closeWPopup()">
+        <span data-ar="لاحقاً" data-en="Later">لاحقاً</span>
+      </button>
+    </div>
+  </div>
+</div>
 
 <!-- NAV -->
 <nav>
@@ -431,37 +489,57 @@ footer{position:relative;z-index:1;border-top:1px solid var(--border);padding:36
   <div class="tgrid">
     <div class="tcard feat" style="--cg:rgba(245,200,66,.1)">
       <div class="tbadge blive">● Live</div>
-      <div class="ticon">🪡</div>
-      <div class="tname tname-ar" id="t1n">Loom</div>
-      <p class="tdesc" id="t1d" data-ar="حوّل أي صورة منتج عادية إلى لقطة استوديو احترافية في ثوانٍ. غيّر الخلفية، عدّل الإضاءة، واحصل على نتيجة تنافس أكبر العلامات التجارية." data-en="Transform any product photo into a studio-quality shot in seconds. Change backgrounds, fix lighting, and get results that rival top brands.">حوّل أي صورة منتج عادية إلى لقطة استوديو احترافية في ثوانٍ. غيّر الخلفية، عدّل الإضاءة، واحصل على نتيجة تنافس أكبر العلامات التجارية.</p>
+      <div class="tcard-head">
+        <span class="tcard-icon">🍌</span>
+        <div>
+          <div class="tcard-name">Loom <span class="tcard-sub">AI Product Studio</span></div>
+        </div>
+      </div>
+      <p class="tdesc" id="t1d" data-ar="حوّل أي صورة منتج إلى لقطة استوديو احترافية في ثوانٍ — غيّر الخلفية، عدّل الإضاءة، ونافس أكبر العلامات التجارية." data-en="Transform any product photo into a studio-quality shot in seconds. Change backgrounds, fix lighting, rival top brands.">حوّل أي صورة منتج إلى لقطة استوديو احترافية في ثوانٍ — غيّر الخلفية، عدّل الإضاءة، ونافس أكبر العلامات التجارية.</p>
       <span class="tarr">←</span>
     </div>
+    <a class="tcard" href="https://www.loomuae.world" target="_blank" style="--cg:rgba(255,210,60,.1);border-color:rgba(245,200,66,.2)">
+      <div class="tbadge blive">● Live</div>
+      <div class="tcard-head">
+        <span class="tcard-icon">✍️</span>
+        <div>
+          <div class="tcard-name">Loom <span class="tcard-sub">AI Content Platform</span></div>
+        </div>
+      </div>
+      <p class="tdesc" data-ar="كابشن + هاشتاجات + موسيقى ترند لمنتجاتك بالذكاء الاصطناعي. بالعربي والإنجليزي." data-en="AI captions + hashtags + trending music for your products. Arabic & English.">كابشن + هاشتاجات + موسيقى ترند لمنتجاتك بالذكاء الاصطناعي. بالعربي والإنجليزي.</p>
+      <span class="tarr">←</span>
+    </a>
     <div class="tcard" style="--cg:rgba(100,210,255,.05)">
       <div class="tbadge bsoon">Soon</div>
-      <div class="ticon">⚡</div>
-      <div class="tname tname-ar">Nano</div>
+      <div class="tcard-head">
+        <span class="tcard-icon">⚡</span>
+        <div>
+          <div class="tcard-name">Loom <span class="tcard-sub tcard-sub-dim">Nano</span></div>
+        </div>
+      </div>
       <p class="tdesc" data-ar="اضغط صورك بدون أي خسارة في الجودة. سرّع متجرك وحسّن ترتيبك في جوجل." data-en="Compress images with zero quality loss. Speed up your store and boost Google rankings.">اضغط صورك بدون أي خسارة في الجودة. سرّع متجرك وحسّن ترتيبك في جوجل.</p>
-      <span class="tarr">←</span>
-    </div>
-    <div class="tcard" style="--cg:rgba(255,210,60,.06)">
-      <div class="tbadge bhot">🔥 Hot</div>
-      <div class="ticon">🍌</div>
-      <div class="tname tname-ar">Banana Pro</div>
-      <p class="tdesc" data-ar="أنشئ محتوى تسويقي لمنتجاتك بالذكاء الاصطناعي — كابشن، هاشتاقات، إعلانات. بالعربي والإنجليزي." data-en="Generate AI marketing content for products — captions, hashtags, ad copy. Arabic & English.">أنشئ محتوى تسويقي لمنتجاتك بالذكاء الاصطناعي — كابشن، هاشتاقات، إعلانات. بالعربي والإنجليزي.</p>
       <span class="tarr">←</span>
     </div>
     <div class="tcard" style="--cg:rgba(180,130,255,.05)">
       <div class="tbadge bsoon">Soon</div>
-      <div class="ticon">✂️</div>
-      <div class="tname tname-ar">Crop King</div>
+      <div class="tcard-head">
+        <span class="tcard-icon">✂️</span>
+        <div>
+          <div class="tcard-name">Loom <span class="tcard-sub tcard-sub-dim">Crop King</span></div>
+        </div>
+      </div>
       <p class="tdesc" data-ar="قصّ وأعد تحجيم صورك لكل منصة تلقائياً — إنستقرام، تيك توك، أمازون، نون." data-en="Auto-resize for every platform — Instagram, TikTok, Amazon, Noon.">قصّ وأعد تحجيم صورك لكل منصة تلقائياً — إنستقرام، تيك توك، أمازون، نون.</p>
       <span class="tarr">←</span>
     </div>
     <div class="tcard" style="--cg:rgba(255,100,100,.05)">
       <div class="tbadge bsoon">Soon</div>
-      <div class="ticon">🎨</div>
-      <div class="tname tname-ar">Palette</div>
-      <p class="tdesc" data-ar="استخرج ألوان علامتك التجارية من صورك وأنشئ ثيم متجانس لمتجرك بضغطة زر." data-en="Extract brand colors from your images and generate a cohesive store theme instantly.">استخرج ألوان علامتك التجارية من صورك وأنشئ ثيم متجانس لمتجرك بضغطة زر.</p>
+      <div class="tcard-head">
+        <span class="tcard-icon">🎨</span>
+        <div>
+          <div class="tcard-name">Loom <span class="tcard-sub tcard-sub-dim">Palette</span></div>
+        </div>
+      </div>
+      <p class="tdesc" data-ar="استخرج ألوان علامتك التجارية من صورك وأنشئ ثيم متجانس لمتجرك بضغطة زر." data-en="Extract brand colors and generate a cohesive store theme instantly.">استخرج ألوان علامتك التجارية من صورك وأنشئ ثيم متجانس لمتجرك بضغطة زر.</p>
       <span class="tarr">←</span>
     </div>
   </div>
@@ -510,7 +588,7 @@ footer{position:relative;z-index:1;border-top:1px solid var(--border);padding:36
       <circle class="lring-track" cx="45" cy="45" r="38"/>
       <circle class="lring-fill" cx="45" cy="45" r="38"/>
     </svg>
-    <div class="lring-icon">🪡</div>
+    <div class="lring-icon">🍌</div>
   </div>
   <div class="ltitle">LOOM</div>
   <div class="lsteps">
@@ -752,6 +830,8 @@ async function gen(){
     document.getElementById('cv').textContent=tok?`${data.remaining_credits}/${DAILY}`:(lang==='ar'?'سجّل':'Sign up');
     // Show signup modal after 8 seconds for anonymous users who used their free credit
     if(data.requiresAuthForMore && !tok){ setTimeout(()=>{ if(!tok) openM(); }, 8000); }
+    // Show Banana Pro popup after successful edit
+    showWPopup();
   }catch{showMsg('err',lang==='ar'?'تعذر الاتصال بالخادم':'Could not reach server')}
   finally{setLoad(false)}
 }
@@ -810,6 +890,8 @@ function clrMsg(){document.getElementById('mmsg').className='msg'}
 /* ── MODAL ── */
 function openM(){document.getElementById('ov').classList.add('open')}
 function closeM(){document.getElementById('ov').classList.remove('open')}
+function closeWPopup(){document.getElementById('wpopupOv').classList.remove('show')}
+function showWPopup(){setTimeout(()=>document.getElementById('wpopupOv').classList.add('show'),5000)}
 function clovOuter(e){if(e.target===document.getElementById('ov'))closeM()}
 
 let curTab='in';
