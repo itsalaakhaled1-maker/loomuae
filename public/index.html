@@ -243,22 +243,27 @@ h2.stitle-ar{font-family:'Tajawal',sans-serif;font-size:clamp(26px,4.2vw,46px);f
 .mworld-bar-txt strong{color:var(--amber)}
 .mworld-bar-arr{font-size:13px;color:var(--amber);margin-right:2px}
 /* ── WORLD POPUP ── */
-.wpopup-ov{position:fixed;inset:0;z-index:700;display:flex;align-items:flex-end;justify-content:center;padding:20px;pointer-events:none;opacity:0;transition:opacity .4s}
+/* ── CELEBRATION POPUP ── */
+.wpopup-ov{position:fixed;inset:0;z-index:700;display:flex;align-items:center;justify-content:center;padding:20px;pointer-events:none;opacity:0;transition:opacity .4s;background:rgba(0,0,0,.65);backdrop-filter:blur(12px)}
 .wpopup-ov.show{opacity:1;pointer-events:all}
-.wpopup{background:var(--bg2);border:1px solid rgba(245,200,66,.3);border-radius:20px;padding:24px 22px;width:100%;max-width:420px;transform:translateY(30px);transition:transform .4s cubic-bezier(.34,1.56,.64,1);box-shadow:0 30px 80px rgba(0,0,0,.7),0 0 0 1px rgba(245,200,66,.08)}
-.wpopup-ov.show .wpopup{transform:translateY(0)}
-.wpopup-close{position:absolute;top:14px;left:14px;background:none;border:none;color:var(--muted);cursor:pointer;font-size:18px;padding:4px}
-.wpopup-head{display:flex;align-items:center;gap:12px;margin-bottom:14px}
-.wpopup-icon{width:46px;height:46px;background:linear-gradient(135deg,rgba(245,200,66,.2),rgba(245,200,66,.08));border:1px solid rgba(245,200,66,.3);border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0}
-.wpopup-title{font-size:15px;font-weight:800;color:var(--white)}
-.wpopup-sub{font-size:12px;color:var(--muted2);margin-top:2px}
-.wpopup-body{font-size:13px;color:rgba(255,255,255,.75);line-height:1.7;margin-bottom:16px}
-.wpopup-cta{display:flex;gap:8px}
-.wpopup-btn{flex:1;padding:11px;border-radius:var(--r);font-family:inherit;font-size:13px;font-weight:800;cursor:pointer;transition:all var(--t);text-align:center;text-decoration:none;display:flex;align-items:center;justify-content:center;gap:5px}
-.wpopup-btn.primary{background:linear-gradient(135deg,var(--amber),var(--amber2));color:#090600;border:none}
-.wpopup-btn.primary:hover{transform:translateY(-1px);box-shadow:0 8px 22px rgba(245,200,66,.3)}
-.wpopup-btn.ghost{background:transparent;border:1px solid var(--border);color:var(--muted2)}
-.wpopup-btn.ghost:hover{border-color:rgba(255,255,255,.2);color:var(--white)}
+.wpopup{background:linear-gradient(160deg,#1a1600,#0f0f0f);border:1px solid rgba(245,200,66,.25);border-radius:24px;padding:0;width:100%;max-width:400px;transform:scale(.92) translateY(20px);transition:transform .45s cubic-bezier(.34,1.56,.64,1);box-shadow:0 40px 100px rgba(0,0,0,.8),0 0 0 1px rgba(245,200,66,.06),0 0 80px rgba(245,200,66,.06);overflow:hidden}
+.wpopup-ov.show .wpopup{transform:scale(1) translateY(0)}
+.wpopup-hero{background:linear-gradient(135deg,rgba(245,200,66,.15),rgba(245,200,66,.04));border-bottom:1px solid rgba(245,200,66,.12);padding:28px 24px 22px;text-align:center;position:relative}
+.wpopup-confetti{font-size:36px;margin-bottom:10px;display:block;animation:wpbounce .6s ease both}
+.wpopup-htitle{font-family:'Josefin Sans',sans-serif;font-size:20px;font-weight:700;letter-spacing:1px;color:var(--white);margin-bottom:5px}
+.wpopup-hsub{font-size:12.5px;color:rgba(255,255,255,.5);letter-spacing:.3px}
+.wpopup-close{position:absolute;top:12px;right:14px;background:rgba(255,255,255,.07);border:none;color:rgba(255,255,255,.5);cursor:pointer;font-size:14px;padding:4px 8px;border-radius:8px;transition:all var(--t)}
+.wpopup-close:hover{background:rgba(255,255,255,.12);color:var(--white)}
+.wpopup-body2{padding:20px 24px 24px}
+.wpopup-features{display:flex;flex-direction:column;gap:9px;margin-bottom:20px}
+.wpopup-feat{display:flex;align-items:center;gap:10px;font-size:13px;color:rgba(255,255,255,.75)}
+.wpopup-feat-icon{width:28px;height:28px;background:rgba(245,200,66,.1);border:1px solid rgba(245,200,66,.2);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0}
+.wpopup-cta2{display:flex;flex-direction:column;gap:8px}
+.wpopup-main-btn{width:100%;padding:14px;background:linear-gradient(135deg,var(--amber),var(--amber2));color:#090600;border:none;border-radius:14px;font-family:inherit;font-size:14px;font-weight:900;cursor:pointer;transition:all var(--t);display:flex;align-items:center;justify-content:center;gap:8px;text-decoration:none;letter-spacing:.3px}
+.wpopup-main-btn:hover{transform:translateY(-2px);box-shadow:0 12px 32px rgba(245,200,66,.35)}
+.wpopup-skip{width:100%;background:none;border:none;color:var(--muted);font-family:inherit;font-size:12px;cursor:pointer;padding:6px;transition:color var(--t)}
+.wpopup-skip:hover{color:rgba(255,255,255,.6)}
+@keyframes wpbounce{0%{transform:scale(.5);opacity:0}70%{transform:scale(1.2)}100%{transform:scale(1);opacity:1}}
 .loverlay{position:fixed;inset:0;z-index:600;background:rgba(8,8,8,.92);backdrop-filter:blur(20px);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:28px;opacity:0;pointer-events:none;transition:opacity .4s}
 .loverlay.show{opacity:1;pointer-events:all}
 .lring{position:relative;width:90px;height:90px}
@@ -367,23 +372,25 @@ footer{position:relative;z-index:1;border-top:1px solid var(--border);padding:36
 
 <!-- WORLD POPUP -->
 <div class="wpopup-ov" id="wpopupOv">
-  <div class="wpopup" style="position:relative">
-    <button class="wpopup-close" onclick="closeWPopup()">✕</button>
-    <div class="wpopup-head">
-      <div class="wpopup-icon" style="font-size:26px">🎉</div>
-      <div>
-        <div class="wpopup-title" data-ar="صورتك جاهزة واحترافية! 🔥" data-en="Your photo is ready! 🔥">صورتك جاهزة واحترافية! 🔥</div>
-        <div class="wpopup-sub" data-ar="الخطوة الجاية — خليها توصل للكل" data-en="Next step — make it reach everyone">الخطوة الجاية — خليها توصل للكل</div>
-      </div>
+  <div class="wpopup">
+    <div class="wpopup-hero">
+      <button class="wpopup-close" onclick="closeWPopup()">✕</button>
+      <span class="wpopup-confetti">🎉</span>
+      <div class="wpopup-htitle" id="wpTitle">صورتك جاهزة واحترافية!</div>
+      <div class="wpopup-hsub" id="wpSub">الخطوة الجاية — خليها توصل للكل</div>
     </div>
-    <p class="wpopup-body" data-ar="دلوقتي اعمل لصورتك كابشن + هاشتاجات SEO احترافية بالعربي والإنجليزي مع <strong style='color:var(--amber)'>Loom AI SEO Content</strong> ✍️" data-en="Now generate professional SEO captions + hashtags in Arabic & English with <strong style='color:var(--amber)'>Loom AI SEO Content</strong> ✍️">دلوقتي اعمل لصورتك كابشن + هاشتاجات SEO احترافية بالعربي والإنجليزي مع <strong style="color:var(--amber)">Loom AI SEO Content</strong> ✍️</p>
-    <div class="wpopup-cta">
-      <a class="wpopup-btn primary" href="https://www.loomuae.world" target="_blank">
-        <span>✍️</span> <span data-ar="جرّب Loom AI SEO Content" data-en="Try Loom AI SEO Content">جرّب Loom AI SEO Content</span>
-      </a>
-      <button class="wpopup-btn ghost" onclick="closeWPopup()">
-        <span data-ar="لاحقاً" data-en="Later">لاحقاً</span>
-      </button>
+    <div class="wpopup-body2">
+      <div class="wpopup-features">
+        <div class="wpopup-feat"><div class="wpopup-feat-icon">✍️</div><span id="wpF1">كابشن احترافي بالعربي والإنجليزي</span></div>
+        <div class="wpopup-feat"><div class="wpopup-feat-icon">#️⃣</div><span id="wpF2">هاشتاجات SEO تزيد ظهورك في جوجل</span></div>
+        <div class="wpopup-feat"><div class="wpopup-feat-icon">🎵</div><span id="wpF3">موسيقى ترند مقترحة للنشر</span></div>
+      </div>
+      <div class="wpopup-cta2">
+        <a class="wpopup-main-btn" href="https://www.loomuae.world" target="_blank" onclick="closeWPopup()">
+          <span>✍️</span><span id="wpCta">جرّب Loom AI SEO Content — مجاناً</span>
+        </a>
+        <button class="wpopup-skip" onclick="closeWPopup()" id="wpSkip">لاحقاً</button>
+      </div>
     </div>
   </div>
 </div>
@@ -944,7 +951,19 @@ function clrMsg(){document.getElementById('mmsg').className='msg'}
 function openM(){document.getElementById('ov').classList.add('open')}
 function closeM(){document.getElementById('ov').classList.remove('open')}
 function closeWPopup(){document.getElementById('wpopupOv').classList.remove('show')}
-function showWPopup(){setTimeout(()=>document.getElementById('wpopupOv').classList.add('show'),4000)}
+function showWPopup(){
+  setTimeout(()=>{
+    const ar = lang==='ar';
+    document.getElementById('wpTitle').textContent = ar ? 'صورتك جاهزة واحترافية! 🔥' : 'Your photo looks amazing! 🔥';
+    document.getElementById('wpSub').textContent = ar ? 'الخطوة الجاية — خليها توصل للكل' : 'Next step — make it reach everyone';
+    document.getElementById('wpF1').textContent = ar ? 'كابشن احترافي بالعربي والإنجليزي' : 'Professional captions in Arabic & English';
+    document.getElementById('wpF2').textContent = ar ? 'هاشتاجات SEO تزيد ظهورك في جوجل' : 'SEO hashtags to boost your Google reach';
+    document.getElementById('wpF3').textContent = ar ? 'موسيقى ترند مقترحة للنشر' : 'Trending music suggestions for posting';
+    document.getElementById('wpCta').textContent = ar ? 'جرّب Loom AI SEO Content — مجاناً' : 'Try Loom AI SEO Content — Free';
+    document.getElementById('wpSkip').textContent = ar ? 'لاحقاً' : 'Later';
+    document.getElementById('wpopupOv').classList.add('show');
+  }, 4000);
+}
 function clovOuter(e){if(e.target===document.getElementById('ov'))closeM()}
 
 let curTab='in';
