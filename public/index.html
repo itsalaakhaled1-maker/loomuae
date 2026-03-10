@@ -244,30 +244,29 @@ h2.stitle-ar{font-family:'Tajawal',sans-serif;font-size:clamp(26px,4.2vw,46px);f
 .mworld-bar-txt{font-size:13px;color:rgba(255,255,255,.85)}
 .mworld-bar-txt strong{color:var(--amber)}
 .mworld-bar-arr{font-size:13px;color:var(--amber);margin-right:2px}
-/* ── INTRO ── */
-.intro-ov{position:fixed;inset:0;z-index:9999;background:#000;overflow:hidden;cursor:pointer}
-.intro-ov.out{animation:iOut .7s ease forwards;pointer-events:none}
-@keyframes iOut{to{opacity:0;transform:scale(1.04)}}
-#introCanvas{position:absolute;top:0;left:0;width:100%;height:100%;display:block}
-.intro-bars-t,.intro-bars-b{position:absolute;left:0;right:0;height:10vh;background:#000;z-index:4;transition:height 1s cubic-bezier(.77,0,.175,1)}
-.intro-bars-t{top:0}.intro-bars-b{bottom:0}
-.intro-bars-t.open,.intro-bars-b.open{height:0}
-.intro-center{position:absolute;inset:0;z-index:5;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;padding-top:10vh;pointer-events:none}
-.intro-tag{font-family:'DM Sans',sans-serif;font-size:11px;letter-spacing:6px;color:rgba(255,255,255,0);text-transform:uppercase;margin-bottom:16px;transition:color .8s ease}
-.intro-tag.show{color:rgba(255,255,255,.4)}
-.intro-logo-wrap{overflow:hidden;margin-bottom:10px}
-.intro-logo-txt{font-family:'Josefin Sans',sans-serif;font-size:clamp(46px,12vw,90px);font-weight:700;letter-spacing:clamp(8px,3vw,20px);background:linear-gradient(135deg,#F5C842 0%,#fff 45%,#F5C842 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;transform:translateY(110%);transition:transform 1s cubic-bezier(.16,1,.3,1)}
-.intro-logo-txt.show{transform:translateY(0)}
-.intro-sub-wrap{overflow:hidden}
-.intro-sub-txt{font-size:clamp(9px,2vw,12px);letter-spacing:clamp(3px,1.5vw,8px);color:rgba(255,255,255,0);text-transform:uppercase;font-family:'DM Sans',sans-serif;transform:translateY(100%);transition:transform .8s cubic-bezier(.16,1,.3,1) .15s,color .8s ease .15s}
-.intro-sub-txt.show{transform:translateY(0);color:rgba(255,255,255,.35)}
-.intro-pill{position:absolute;z-index:5;font-size:10px;font-weight:800;letter-spacing:2px;text-transform:uppercase;font-family:'DM Sans',sans-serif;padding:5px 14px;border-radius:100px;opacity:0;transition:opacity .5s,transform .5s;transform:translateY(6px)}
-.intro-pill.show{opacity:1;transform:translateY(0)}
-.intro-pill-before{background:rgba(0,0,0,.5);backdrop-filter:blur(8px);color:rgba(255,255,255,.6);border:1px solid rgba(255,255,255,.2);top:calc(50% + 20px);right:calc(50% + 20px);bottom:auto}
-.intro-pill-after{background:rgba(245,200,66,.15);backdrop-filter:blur(8px);border:1px solid rgba(245,200,66,.45);color:#F5C842;top:calc(50% + 20px);left:calc(50% + 20px);bottom:auto}
-.intro-skip{position:fixed;bottom:24px;right:24px;background:none;border:none;color:rgba(255,255,255,.18);font-family:inherit;font-size:10px;cursor:pointer;transition:color .3s;z-index:10000;letter-spacing:2px;text-transform:uppercase;pointer-events:all}
-.intro-skip:hover{color:rgba(255,255,255,.5)}
-@media(max-width:500px){.intro-pill-before{top:calc(50% + 50px);right:calc(50% + 10px)}.intro-pill-after{top:calc(50% + 50px);left:calc(50% + 10px)}}
+
+/* ── INTRO (ADVANCED STYLE) ── */
+.intro-ov{position:fixed;inset:0;z-index:9999;background:#050505;overflow:hidden;cursor:pointer;font-family:'Tajawal','DM Sans',sans-serif;}
+.intro-ov.out{animation:iOut .8s cubic-bezier(.77,0,.175,1) forwards;pointer-events:none}
+@keyframes iOut{to{opacity:0;transform:scale(1.05)}}
+#introCanvas{position:absolute;top:0;left:0;width:100%;height:100%;display:block;z-index:1}
+.intro-ui{position:absolute;top:6%;left:0;right:0;z-index:5;display:flex;flex-direction:column;align-items:center;text-align:center;pointer-events:none}
+.intro-tag{font-family:'DM Sans',sans-serif;font-size:11px;letter-spacing:4px;color:var(--amber);text-transform:uppercase;font-weight:800;margin-bottom:8px;opacity:0;transform:translateY(-10px);transition:all .8s ease}
+.intro-tag.show{opacity:1;transform:translateY(0)}
+.intro-logo-txt{font-family:'Josefin Sans',sans-serif;font-size:clamp(40px,10vw,70px);font-weight:700;letter-spacing:10px;background:linear-gradient(135deg,#F5C842 0%,#fff 50%,#F5C842 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;opacity:0;transform:translateY(-20px);transition:all 1s cubic-bezier(.16,1,.3,1) .2s}
+.intro-logo-txt.show{opacity:1;transform:translateY(0)}
+.intro-sub-txt{font-size:clamp(12px,3vw,16px);color:rgba(255,255,255,.6);margin-top:4px;opacity:0;transition:all .8s ease .4s}
+.intro-sub-txt.show{opacity:1}
+
+.intro-pill{position:absolute;z-index:5;font-size:12px;font-weight:800;padding:6px 16px;border-radius:100px;opacity:0;transition:opacity .4s ease;pointer-events:none}
+.intro-pill.show{opacity:1}
+.intro-pill-before{background:rgba(0,0,0,.6);backdrop-filter:blur(8px);color:rgba(255,255,255,.8);border:1px solid rgba(255,255,255,.15)}
+.intro-pill-after{background:rgba(245,200,66,.15);backdrop-filter:blur(8px);border:1px solid rgba(245,200,66,.5);color:#F5C842;box-shadow:0 0 20px rgba(245,200,66,.2)}
+
+.intro-skip{position:fixed;bottom:30px;right:30px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);color:rgba(255,255,255,.5);font-family:inherit;font-size:11px;font-weight:700;cursor:pointer;padding:10px 24px;border-radius:100px;transition:all .3s;z-index:10000;letter-spacing:1px;backdrop-filter:blur(5px)}
+.intro-skip:hover{background:rgba(255,255,255,.1);color:#fff}
+@media(max-width:500px){.intro-skip{bottom:20px;right:20px;padding:8px 16px}}
+
 .wpopup-ov{position:fixed;inset:0;z-index:700;display:flex;align-items:center;justify-content:center;padding:20px;pointer-events:none;opacity:0;transition:opacity .4s;background:rgba(0,0,0,.65);backdrop-filter:blur(12px)}
 .wpopup-ov.show{opacity:1;pointer-events:all}
 .wpopup{background:linear-gradient(160deg,#1a1600,#0f0f0f);border:1px solid rgba(245,200,66,.25);border-radius:24px;padding:0;width:100%;max-width:400px;transform:scale(.92) translateY(20px);transition:transform .45s cubic-bezier(.34,1.56,.64,1);box-shadow:0 40px 100px rgba(0,0,0,.8),0 0 0 1px rgba(245,200,66,.06),0 0 80px rgba(245,200,66,.06);overflow:hidden}
@@ -388,19 +387,18 @@ footer{position:relative;z-index:1;border-top:1px solid var(--border);padding:36
 
 <div class="intro-ov" id="introOv" onclick="skipIntro()">
   <canvas id="introCanvas"></canvas>
-  <div class="intro-bars-t" id="iBarT"></div>
-  <div class="intro-bars-b" id="iBarB"></div>
-  <div class="intro-center">
+  <div class="intro-ui">
     <div class="intro-tag" id="iTag">AI Product Studio</div>
-    <div class="intro-logo-wrap"><div class="intro-logo-txt" id="iLogo">LOOM</div></div>
-    <div class="intro-sub-wrap"><div class="intro-sub-txt" id="iSub">Transform your product photos</div></div>
+    <div class="intro-logo-txt" id="iLogo">LOOM</div>
+    <div class="intro-sub-txt" id="iSub" data-ar="حوّل صور منتجاتك إلى لقطات احترافية" data-en="Transform your product photos instantly">حوّل صور منتجاتك إلى لقطات احترافية</div>
   </div>
   <div class="intro-pill intro-pill-before" id="iPillBefore">قبل</div>
   <div class="intro-pill intro-pill-after" id="iPillAfter">بعد ✦</div>
-  <button class="intro-skip" onclick="event.stopPropagation();skipIntro()">SKIP</button>
+  <button class="intro-skip" onclick="event.stopPropagation();skipIntro()">تخطي (SKIP)</button>
 </div>
-<img id="introImgBefore" src="Grape model 01.png" style="display:none"/>
-<img id="introImgAfter" src="grape.jpg" style="display:none"/>
+
+<img id="introImgBefore" src="grape.jpg" style="display:none"/>
+<img id="introImgAfter" src="Grape model 01.png" style="display:none"/>
 <div class="mesh"></div>
 
 <div class="mworld-bar" onclick="window.open('https://www.loomuae.world','_blank')">
@@ -737,14 +735,14 @@ let sid=localStorage.getItem('ls')||'s'+Math.random().toString(36).slice(2)+Date
 let tok=localStorage.getItem('lt')||null, usr=JSON.parse(localStorage.getItem('lu')||'null');
 let refreshTok=localStorage.getItem('lrt')||null;
 
-// ── INTRO ─────────────────────────────────────────────────────────────────────
+// ── INTRO (ADVANCED) ─────────────────────────────────────────────────────────
 (function(){
   let gone = false;
   function skipIntro(){
     if(gone) return; gone = true;
     const ov = document.getElementById('introOv');
     ov.classList.add('out');
-    setTimeout(()=>{ ov.style.display='none'; }, 720);
+    setTimeout(()=>{ ov.style.display='none'; }, 800);
   }
   window.skipIntro = skipIntro;
   document.addEventListener('keydown', e=>{ if(e.key==='Escape'||e.key===' ') skipIntro(); });
@@ -752,198 +750,181 @@ let refreshTok=localStorage.getItem('lrt')||null;
   window.addEventListener('load', ()=>{
     const canvas = document.getElementById('introCanvas');
     const ctx = canvas.getContext('2d');
-    const imgB = document.getElementById('introImgBefore');
-    const imgA = document.getElementById('introImgAfter');
+    const imgBefore = document.getElementById('introImgBefore'); // grape.jpg
+    const imgAfter = document.getElementById('introImgAfter');   // Grape model 01.png
+    
+    const pillBefore = document.getElementById('iPillBefore');
+    const pillAfter = document.getElementById('iPillAfter');
 
     function resize(){
-      const w = window.innerWidth, h = window.innerHeight;
-      canvas.width = w; canvas.height = h;
-      canvas.style.width = w + 'px'; canvas.style.height = h + 'px';
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
     }
     resize();
     window.addEventListener('resize', resize);
 
-    // حساب أبعاد ومكان الكارت في منتصف الشاشة
+    // حساب أبعاد الكارت بشكل متطور ليناسب الموبايل واللاب توب
     function getCardBounds() {
       const cw = canvas.width, ch = canvas.height;
-      const maxW = Math.min(cw * 0.85, 700);
-      const maxH = Math.min(ch * 0.55, 450);
+      const maxW = Math.min(cw * 0.85, 450); 
+      const maxH = Math.min(ch * 0.65, 550);
       const x = (cw - maxW) / 2;
-      const y = (ch - maxH) / 2 + 50; // إزاحة للأسفل لترك مساحة للنص
+      const y = (ch - maxH) / 2 + (ch * 0.05); // إزاحة بسيطة للأسفل
       return {x, y, w: maxW, h: maxH};
     }
 
-    // رسم الصورة داخل حدود الكارت فقط
-    function drawImg(img, alpha, saturation, brightness, revealX){
+    // رسم الصورة لملء الكارت بالكامل (Object-fit: cover)
+    function drawImageCover(img, bounds, scale=1) {
       if(!img.complete || !img.naturalWidth) return;
-      const cw = canvas.width, ch = canvas.height;
-      const bounds = getCardBounds();
-      
       const ir = img.naturalWidth / img.naturalHeight;
       const cr = bounds.w / bounds.h;
       let dw, dh;
-      
-      // Cover effect inside the card
       if(cr > ir){ dw = bounds.w; dh = bounds.w / ir; }
       else       { dh = bounds.h; dw = bounds.h * ir; }
-
-      const imgX = bounds.x + (bounds.w - dw) / 2;
-      const imgY = bounds.y + (bounds.h - dh) / 2;
-
-      ctx.save();
-      ctx.globalAlpha = alpha;
-      if(saturation < 1 || brightness !== 1){
-        ctx.filter = `saturate(${saturation*100}%) brightness(${brightness*100}%)`;
-      }
-
-      // تحديد الإطار بحواف دائرية
-      ctx.beginPath();
-      if(ctx.roundRect) ctx.roundRect(bounds.x, bounds.y, bounds.w, bounds.h, 24);
-      else ctx.rect(bounds.x, bounds.y, bounds.w, bounds.h);
-      ctx.clip();
-
-      if(revealX !== undefined){
-        ctx.beginPath();
-        ctx.rect(0, 0, revealX, ch);
-        ctx.clip();
-      }
-
-      ctx.drawImage(img, imgX, imgY, dw, dh);
       
-      // رسم إطار خفيف حول الكارت
-      ctx.filter = 'none';
-      ctx.globalAlpha = 1;
-      ctx.lineWidth = 1;
-      ctx.strokeStyle = 'rgba(255, 255, 255, 0.1)';
-      if(ctx.roundRect) ctx.roundRect(bounds.x, bounds.y, bounds.w, bounds.h, 24);
-      else ctx.rect(bounds.x, bounds.y, bounds.w, bounds.h);
+      dw *= scale; dh *= scale;
+      const dx = bounds.x + (bounds.w - dw) / 2;
+      const dy = bounds.y + (bounds.h - dh) / 2;
+      
+      ctx.drawImage(img, dx, dy, dw, dh);
+    }
+
+    // رسم خط الليزر المتوهج
+    function drawScanner(x, bounds) {
+      // خط الليزر
+      ctx.beginPath();
+      ctx.moveTo(x, bounds.y);
+      ctx.lineTo(x, bounds.y + bounds.h);
+      ctx.lineWidth = 3;
+      ctx.strokeStyle = '#F5C842';
+      ctx.shadowColor = '#F5C842';
+      ctx.shadowBlur = 15;
       ctx.stroke();
-      
-      ctx.restore();
+      ctx.shadowBlur = 0;
+
+      // تدرج الليزر الخلفي
+      const grad = ctx.createLinearGradient(x-80, 0, x, 0);
+      grad.addColorStop(0, 'rgba(245,200,66,0)');
+      grad.addColorStop(0.8, 'rgba(245,200,66,0.3)');
+      grad.addColorStop(1, 'rgba(245,200,66,0.6)');
+      ctx.fillStyle = grad;
+      ctx.fillRect(x-80, bounds.y, 80, bounds.h);
     }
 
-    const particles = [];
-    function spawnParticles(x, bounds, progress){
-      if(Math.random() > 0.4) return;
-      for(let i=0; i<3; i++){
-        particles.push({
-          x: x + (Math.random()-0.5)*20,
-          y: bounds.y + Math.random()*bounds.h,
-          vx: (Math.random()-0.5)*1.5,
-          vy: -Math.random()*1.5-0.5,
-          life: 1, decay: 0.015+Math.random()*0.02,
-          r: Math.random()*3+1,
-          hue: 40+Math.random()*20
-        });
-      }
-    }
-    function updateParticles(){
-      for(let i=particles.length-1; i>=0; i--){
-        const p = particles[i];
-        p.x += p.vx; p.y += p.vy; p.life -= p.decay;
-        if(p.life <= 0) particles.splice(i,1);
-        else {
-          ctx.save();
-          ctx.globalAlpha = p.life * 0.7;
-          ctx.fillStyle = `hsl(${p.hue},90%,65%)`;
-          ctx.beginPath();
-          ctx.arc(p.x, p.y, p.r*p.life, 0, Math.PI*2);
-          ctx.fill();
-          ctx.restore();
-        }
-      }
-    }
+    const T = { start: performance.now() };
 
-    function drawVignette(alpha){
-      const cw=canvas.width, ch=canvas.height;
-      const grad = ctx.createRadialGradient(cw/2,ch/2,ch*0.25, cw/2,ch/2,ch*0.85);
-      grad.addColorStop(0,'rgba(0,0,0,0)');
-      grad.addColorStop(1,`rgba(0,0,0,${alpha})`);
-      ctx.save(); ctx.globalAlpha=1;
-      ctx.fillStyle=grad; ctx.fillRect(0,0,cw,ch); ctx.restore();
-    }
-
-    function drawShimmer(x, bounds){
-      const grad=ctx.createLinearGradient(x-30,0,x+30,0);
-      grad.addColorStop(0,'rgba(255,255,255,0)');
-      grad.addColorStop(0.5,'rgba(255,220,120,0.9)');
-      grad.addColorStop(1,'rgba(255,255,255,0)');
-      ctx.save(); 
-      ctx.beginPath();
-      if(ctx.roundRect) ctx.roundRect(bounds.x, bounds.y, bounds.w, bounds.h, 24);
-      else ctx.rect(bounds.x, bounds.y, bounds.w, bounds.h);
-      ctx.clip();
-      ctx.fillStyle=grad; 
-      ctx.fillRect(x-30, bounds.y, 60, bounds.h); 
-      ctx.restore();
-    }
-
-    const T = { start: performance.now(), morphing: false, revealX: 0 };
-
-    setTimeout(()=>{ if(!gone){ document.getElementById('iBarT').classList.add('open'); document.getElementById('iBarB').classList.add('open'); }}, 200);
-    setTimeout(()=>{ if(!gone) document.getElementById('iPillBefore').classList.add('show'); }, 600);
-    setTimeout(()=>{ if(!gone){ T.morphing=true; document.getElementById('iPillBefore').classList.remove('show'); }}, 1800);
-    setTimeout(()=>{ if(!gone) document.getElementById('iPillAfter').classList.add('show'); }, 3000);
-    setTimeout(()=>{ if(!gone){ document.getElementById('iTag').classList.add('show'); document.getElementById('iLogo').classList.add('show'); document.getElementById('iSub').classList.add('show'); }}, 3300);
-    setTimeout(skipIntro, 5800);
+    // توقيت ظهور عناصر الواجهة (النصوص)
+    setTimeout(()=>{ if(!gone){ document.getElementById('iTag').classList.add('show'); document.getElementById('iLogo').classList.add('show'); document.getElementById('iSub').classList.add('show'); }}, 300);
+    setTimeout(skipIntro, 6500);
 
     function tick(){
       if(gone) return;
       requestAnimationFrame(tick);
       const now = performance.now();
       const elapsed = now - T.start;
-      const cw=canvas.width, ch=canvas.height;
       const bounds = getCardBounds();
+      const cw = canvas.width, ch = canvas.height;
       
       ctx.clearRect(0,0,cw,ch);
-      ctx.fillStyle='#080808'; ctx.fillRect(0,0,cw,ch); // خلفية متناسقة مع الموقع
+      
+      // خلفية سينمائية محيطية (Ambient Glow)
+      const bgGrad = ctx.createRadialGradient(cw/2, ch/2, 50, cw/2, ch/2, Math.max(cw, ch));
+      bgGrad.addColorStop(0, 'rgba(40, 30, 10, 1)');
+      bgGrad.addColorStop(1, '#050505');
+      ctx.fillStyle = bgGrad;
+      ctx.fillRect(0,0,cw,ch);
 
-      if(!T.morphing){
-        const sat = Math.max(0.25, 0.25 + 0.1*Math.sin(elapsed*0.001));
-        drawImg(imgB, 1, sat, 0.85);
-        drawVignette(0.4);
+      // تأثير الطفو (Floating) للكارت بالكامل
+      const floatY = Math.sin(elapsed * 0.002) * 10;
+      bounds.y += floatY;
+
+      // إعداد ظل الكارت والقص الداخلي (Clipping)
+      ctx.save();
+      ctx.shadowColor = 'rgba(0,0,0,0.8)';
+      ctx.shadowBlur = 40;
+      ctx.shadowOffsetY = 20;
+      ctx.beginPath();
+      if(ctx.roundRect) ctx.roundRect(bounds.x, bounds.y, bounds.w, bounds.h, 24);
+      else ctx.rect(bounds.x, bounds.y, bounds.w, bounds.h);
+      ctx.fillStyle = '#111';
+      ctx.fill();
+      ctx.shadowColor = 'transparent';
+      ctx.clip(); // أي شيء سيُرسم الآن سيكون داخل الكارت فقط
+
+      // توقيتات الأنيميشن
+      const startWait = 1200;
+      const scanDur = 2000;
+      const endWait = 2500;
+
+      if (elapsed < startWait) {
+        // 1. عرض الصورة "قبل"
+        drawImageCover(imgBefore, bounds);
+        updatePill(pillBefore, bounds, true, true);
+        updatePill(pillAfter, bounds, false, false);
+      } 
+      else if (elapsed < startWait + scanDur) {
+        // 2. عملية المسح (Scanning)
+        const progress = (elapsed - startWait) / scanDur;
+        // تسارع الانيميشن ليكون ناعم في البداية والنهاية
+        const eased = progress < 0.5 ? 4 * progress**3 : 1 - Math.pow(-2 * progress + 2, 3) / 2;
+        const scanX = bounds.x + (eased * bounds.w);
+
+        // رسم الصورة "قبل" كخلفية كاملة
+        drawImageCover(imgBefore, bounds);
+
+        // قص ورسم الصورة "بعد" تزامناً مع حركة الليزر
+        ctx.save();
+        ctx.beginPath();
+        ctx.rect(bounds.x, bounds.y, scanX - bounds.x, bounds.h);
+        ctx.clip();
+        const afterScale = 1 + (progress * 0.05); // تأثير زووم سينمائي أثناء المسح
+        drawImageCover(imgAfter, bounds, afterScale);
+        ctx.restore();
+
+        drawScanner(scanX, bounds);
+
+        // إخفاء/إظهار الكلمات (قبل وبعد) بالتزامن مع الليزر
+        if(progress > 0.1) updatePill(pillBefore, bounds, false, true);
+        if(progress > 0.8) updatePill(pillAfter, bounds, true, false);
+      } 
+      else {
+        // 3. عرض الصورة "بعد" بالكامل مع تأثير (Ken Burns) البطيء
+        const postProgress = (elapsed - (startWait + scanDur)) / endWait;
+        const finalScale = 1.05 + (postProgress * 0.05);
+        drawImageCover(imgAfter, bounds, finalScale);
+        updatePill(pillAfter, bounds, true, false);
+      }
+
+      // إطار زجاجي رفيع حول الكارت
+      ctx.lineWidth = 1;
+      ctx.strokeStyle = 'rgba(255,255,255,0.15)';
+      ctx.stroke();
+      ctx.restore(); // إنهاء حدود الكارت
+    }
+
+    // دالة للتحكم في مكان وظهور الكلمات (Pills) لتتحرك مع الكارت العائم
+    function updatePill(el, bounds, show, isBefore) {
+      if(show) {
+        el.classList.add('show');
+        // حساب المكان بشكل دقيق داخل حدود الكارت
+        const px = isBefore ? bounds.x + 20 : bounds.x + bounds.w - el.offsetWidth - 20;
+        const py = bounds.y + bounds.h - el.offsetHeight - 20;
+        
+        el.style.left = px + 'px';
+        el.style.top = py + 'px';
       } else {
-        const morphElapsed = elapsed - 1800;
-        const morphDur = 1100;
-        const progress = Math.min(morphElapsed / morphDur, 1);
-        const eased = progress<0.5 ? 4*progress**3 : 1-(-2*progress+2)**3/2;
-        
-        T.revealX = bounds.x + (eased * bounds.w);
-
-        drawImg(imgB, 1, 0.25, 0.85);
-        drawImg(imgA, 1, 1, 1, T.revealX);
-        
-        if(progress < 1) drawShimmer(T.revealX, bounds);
-        if(progress < 1) spawnParticles(T.revealX, bounds, progress);
-        updateParticles();
-        drawVignette(0.2);
-
-        if(progress >= 1){
-          const kbElapsed = morphElapsed - morphDur;
-          const scale = 1 + kbElapsed * 0.00004;
-          const clampedScale = Math.min(scale, 1.05);
-          
-          ctx.save();
-          ctx.translate(cw/2, ch/2);
-          ctx.scale(clampedScale, clampedScale);
-          ctx.translate(-cw/2, -ch/2);
-          
-          ctx.fillStyle='#080808'; ctx.fillRect(0,0,cw,ch);
-          drawImg(imgA, 1, 1, 1);
-          ctx.restore();
-          
-          drawVignette(0.2);
-          if(particles.length) updateParticles();
-        }
+        el.classList.remove('show');
       }
     }
 
+    // البدء فقط بعد تحميل كلا الصورتين
     let loaded = 0;
     function onLoad(){ if(++loaded===2) tick(); }
-    imgB.complete ? onLoad() : imgB.addEventListener('load', onLoad);
-    imgA.complete ? onLoad() : imgA.addEventListener('load', onLoad);
+    imgBefore.complete ? onLoad() : imgBefore.addEventListener('load', onLoad);
+    imgAfter.complete ? onLoad() : imgAfter.addEventListener('load', onLoad);
   });
 })();
+
 async function refreshToken(){
   if(!refreshTok) return false;
   try{
