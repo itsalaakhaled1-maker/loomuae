@@ -201,6 +201,23 @@ app.post('/api/auth/signin', async (req, res) => {
   const name = data.user.user_metadata?.full_name || data.user.email?.split('@')[0] || '';
   res.json({
     token: data.session.access_token,
+    refresh_token: data.session.refresh_token,
+    user: { id: data.user.id, email: data.user.email, name }
+  });
+});
+
+// Auth: Refresh Token
+app.post('/api/auth/refresh', async (req, res) => {
+  const { refresh_token } = req.body;
+  if (!refresh_token) return res.status(400).json({ error: 'Refresh token required' });
+
+  const { data, error } = await supabase.auth.refreshSession({ refresh_token });
+  if (error || !data.session) return res.status(401).json({ error: 'Session expired, please login again' });
+
+  const name = data.user.user_metadata?.full_name || data.user.email?.split('@')[0] || '';
+  res.json({
+    token: data.session.access_token,
+    refresh_token: data.session.refresh_token,
     user: { id: data.user.id, email: data.user.email, name }
   });
 });
