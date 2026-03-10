@@ -49,11 +49,11 @@ const upload = multer({
 // ─── Auth Middleware ────────────────────────────────────────────────────────
 async function getUser(req) {
   const authHeader = req.headers.authorization;
-  if (!authHeader) return null;
+  if (!authHeader) return { user: null, tokenProvided: false };
   const token = authHeader.replace('Bearer ', '');
   const { data: { user }, error } = await supabase.auth.getUser(token);
-  if (error || !user) return null;
-  return user;
+  if (error || !user) return { user: null, tokenProvided: true }; // token was sent but invalid/expired
+  return { user, tokenProvided: true };
 }
 
 // ─── Credits Logic ──────────────────────────────────────────────────────────
@@ -259,9 +259,12 @@ app.post('/api/auth/callback', async (req, res) => {
 
 // Get credits status
 app.get('/api/credits', async (req, res) => {
-  const user = await getUser(req);
+  const { user, tokenProvided } = await getUser(req);
   const sessionId = req.headers['x-session-id'];
 
+  if (tokenProvided && !user) {
+    return res.status(401).json({ error: 'Session expired', error_ar: 'انتهت الجلسة' });
+  }
   if (user) {
     const credits = await checkUserCredits(user.id);
     res.json({ type: 'user', ...credits, daily_limit: 3 });
@@ -316,10 +319,15 @@ Prompt to enhance: "${prompt}"` }]
 app.post('/api/edit', upload.single('image'), async (req, res) => {
   try {
     const { prompt, sessionId } = req.body;
-    const user = await getUser(req);
+    const { user, tokenProvided } = await getUser(req);
 
     if (!req.file) return res.status(400).json({ error: 'No image uploaded' });
     if (!prompt || prompt.trim().length < 3) return res.status(400).json({ error: 'Please provide a description' });
+
+    // ── Token expired ──
+    if (tokenProvided && !user) {
+      return res.status(401).json({ error: 'Session expired', error_ar: 'انتهت الجلسة، سجّل دخولك مجدداً' });
+    }
 
     // ── Check Credits ──
     if (user) {
