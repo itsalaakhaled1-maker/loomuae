@@ -244,8 +244,19 @@ h2.stitle-ar{font-family:'Tajawal',sans-serif;font-size:clamp(26px,4.2vw,46px);f
 .mworld-bar-txt{font-size:13px;color:rgba(255,255,255,.85)}
 .mworld-bar-txt strong{color:var(--amber)}
 .mworld-bar-arr{font-size:13px;color:var(--amber);margin-right:2px}
-/* ── WORLD POPUP ── */
-/* ── CELEBRATION POPUP ── */
+/* ── INTRO LOADING SCREEN ── */
+.intro-ov{position:fixed;inset:0;z-index:9999;background:#000;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:30px;transition:opacity .9s ease,transform .9s ease}
+.intro-ov.out{opacity:0;pointer-events:none;transform:scale(1.04)}
+.intro-logo{font-family:'Josefin Sans',sans-serif;font-size:clamp(38px,10vw,64px);font-weight:700;letter-spacing:8px;background:linear-gradient(135deg,#F5C842,#E8A800);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:8px}
+.intro-sub{font-size:12px;color:rgba(255,255,255,.3);letter-spacing:4px;text-transform:uppercase;margin-bottom:50px;font-family:'DM Sans',sans-serif}
+.intro-msg-wrap{min-height:52px;display:flex;align-items:center;justify-content:center;margin-bottom:20px}
+.intro-msg{font-size:clamp(14px,3.5vw,17px);color:rgba(255,255,255,.85);font-family:'DM Sans',sans-serif;text-align:center;max-width:380px;line-height:1.6;animation:msgIn .4s ease both}
+@keyframes msgIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.intro-bar-wrap{width:min(340px,85vw);height:3px;background:rgba(255,255,255,.07);border-radius:3px;overflow:hidden;margin-bottom:14px}
+.intro-bar{height:100%;width:0%;background:linear-gradient(90deg,#F5C842,#E8A800);border-radius:3px;transition:width .6s cubic-bezier(.4,0,.2,1);box-shadow:0 0 12px rgba(245,200,66,.5)}
+.intro-pct{font-size:12px;color:rgba(255,255,255,.25);font-family:'DM Sans',sans-serif;letter-spacing:1px}
+.intro-skip{position:fixed;bottom:28px;left:50%;transform:translateX(-50%);background:rgba(255,255,255,.05);backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,.1);border-radius:100px;padding:9px 22px;color:rgba(255,255,255,.4);font-family:inherit;font-size:12px;cursor:pointer;transition:all .3s;z-index:10000;letter-spacing:.5px}
+.intro-skip:hover{background:rgba(255,255,255,.1);color:rgba(255,255,255,.7)}
 .wpopup-ov{position:fixed;inset:0;z-index:700;display:flex;align-items:center;justify-content:center;padding:20px;pointer-events:none;opacity:0;transition:opacity .4s;background:rgba(0,0,0,.65);backdrop-filter:blur(12px)}
 .wpopup-ov.show{opacity:1;pointer-events:all}
 .wpopup{background:linear-gradient(160deg,#1a1600,#0f0f0f);border:1px solid rgba(245,200,66,.25);border-radius:24px;padding:0;width:100%;max-width:400px;transform:scale(.92) translateY(20px);transition:transform .45s cubic-bezier(.34,1.56,.64,1);box-shadow:0 40px 100px rgba(0,0,0,.8),0 0 0 1px rgba(245,200,66,.06),0 0 80px rgba(245,200,66,.06);overflow:hidden}
@@ -363,6 +374,20 @@ footer{position:relative;z-index:1;border-top:1px solid var(--border);padding:36
   </style>
 </head>
 <body>
+
+<!-- INTRO LOADING SCREEN -->
+<div class="intro-ov" id="introOv">
+  <div class="intro-logo">LOOM</div>
+  <div class="intro-sub">AI Product Studio</div>
+  <div class="intro-msg-wrap">
+    <div class="intro-msg" id="introMsg">جاري التحضير...</div>
+  </div>
+  <div class="intro-bar-wrap">
+    <div class="intro-bar" id="introBar"></div>
+  </div>
+  <div class="intro-pct" id="introPct">0%</div>
+  <button class="intro-skip" onclick="skipIntro()">تخطى — ESC</button>
+</div>
 <div class="mesh"></div>
 
 <!-- MAVEN WORLD BAR -->
@@ -718,7 +743,82 @@ let sid=localStorage.getItem('ls')||'s'+Math.random().toString(36).slice(2)+Date
 let tok=localStorage.getItem('lt')||null, usr=JSON.parse(localStorage.getItem('lu')||'null');
 let refreshTok=localStorage.getItem('lrt')||null;
 
-// ── AUTO TOKEN REFRESH ────────────────────────────────────────────────────────
+// ── INTRO LOADING SCREEN ──────────────────────────────────────────────────────
+(function(){
+  const steps = [
+    { pct: 5,  msg: '⚡ جاري تشغيل الـ AI...' },
+    { pct: 15, msg: '📦 بنجيب صور المنتجات القديمة الوحشة...' },
+    { pct: 28, msg: '😬 الـ AI شاف صورتك وقال "ياه ده إيه"...' },
+    { pct: 42, msg: '🎨 بنعوّض عن سنين التصوير الفاشل...' },
+    { pct: 55, msg: '🧠 الذكاء الاصطناعي بيتعلم من أخطاء المصورين البشر...' },
+    { pct: 68, msg: '✨ بنحوّل الصورة العادية لتحفة فنية... نسبياً 😅' },
+    { pct: 79, msg: '📸 تم استبدال الكاميرا بالـ AI بنجاح!' },
+    { pct: 88, msg: '🚀 اللمسات الأخيرة... والأهم!' },
+    { pct: 96, msg: '🔥 جاهز! الـ AI أحسن منك بـ 99.9% — مش إحنا قلنا 😂' },
+    { pct: 100, msg: '✅ تم التحميل — يلا نشتغل!' },
+  ];
+
+  let introGone = false;
+  let stepIdx = 0;
+  let currentPct = 0;
+  let animFrame;
+
+  function skipIntro(){
+    if(introGone) return;
+    introGone = true;
+    cancelAnimationFrame(animFrame);
+    const ov = document.getElementById('introOv');
+    ov.classList.add('out');
+    setTimeout(()=>{ ov.style.display='none'; }, 900);
+  }
+  window.skipIntro = skipIntro;
+  document.addEventListener('keydown', e=>{ if(e.key==='Escape') skipIntro(); });
+
+  function setMsg(msg){
+    const el = document.getElementById('introMsg');
+    el.style.animation = 'none';
+    el.offsetHeight; // reflow
+    el.style.animation = 'msgIn .4s ease both';
+    el.textContent = msg;
+  }
+
+  function runSteps(){
+    if(introGone || stepIdx >= steps.length) return;
+    const step = steps[stepIdx++];
+    const barEl = document.getElementById('introBar');
+    const pctEl = document.getElementById('introPct');
+
+    setMsg(step.msg);
+
+    // Animate percentage
+    const from = currentPct;
+    const to = step.pct;
+    const duration = stepIdx === steps.length ? 600 : (800 + Math.random()*400);
+    const start = performance.now();
+
+    function tick(now){
+      if(introGone) return;
+      const p = Math.min((now - start) / duration, 1);
+      const eased = p < .5 ? 2*p*p : -1+(4-2*p)*p;
+      const val = Math.round(from + (to - from) * eased);
+      barEl.style.width = val + '%';
+      pctEl.textContent = val + '%';
+      currentPct = val;
+      if(p < 1){ animFrame = requestAnimationFrame(tick); }
+      else {
+        currentPct = to;
+        if(to === 100){ setTimeout(skipIntro, 900); }
+        else { setTimeout(runSteps, duration * 0.4 + 200); }
+      }
+    }
+    animFrame = requestAnimationFrame(tick);
+  }
+
+  window.addEventListener('load', ()=>{
+    // Small delay before starting
+    setTimeout(runSteps, 300);
+  });
+})();
 async function refreshToken(){
   if(!refreshTok) return false;
   try{
