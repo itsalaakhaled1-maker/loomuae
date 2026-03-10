@@ -27,6 +27,13 @@ app.use(cors({
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
 
+// Explicit favicon route
+app.get('/favicon.svg', (req, res) => {
+  res.setHeader('Content-Type', 'image/svg+xml');
+  res.setHeader('Cache-Control', 'public, max-age=86400');
+  res.sendFile(path.join(__dirname, 'public', 'favicon.svg'));
+});
+
 // Rate limiter - protect API
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
