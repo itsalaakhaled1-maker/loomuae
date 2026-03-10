@@ -716,6 +716,33 @@ const API='', DAILY=3;
 let lang=localStorage.getItem('ll')||'ar';
 let sid=localStorage.getItem('ls')||'s'+Math.random().toString(36).slice(2)+Date.now().toString(36);
 let tok=localStorage.getItem('lt')||null, usr=JSON.parse(localStorage.getItem('lu')||'null');
+let refreshTok=localStorage.getItem('lrt')||null;
+
+// ── AUTO TOKEN REFRESH ────────────────────────────────────────────────────────
+async function refreshToken(){
+  if(!refreshTok) return false;
+  try{
+    const r = await fetch(API+'/api/auth/refresh',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({refresh_token: refreshTok})
+    });
+    if(!r.ok){ // refresh failed - logout
+      tok=usr=refreshTok=null;
+      localStorage.removeItem('lt'); localStorage.removeItem('lu'); localStorage.removeItem('lrt');
+      updHdr(); loadCred();
+      return false;
+    }
+    const d = await r.json();
+    tok = d.token; refreshTok = d.refresh_token; usr = d.user;
+    localStorage.setItem('lt', tok);
+    localStorage.setItem('lrt', refreshTok);
+    localStorage.setItem('lu', JSON.stringify(usr));
+    return true;
+  }catch{ return false; }
+}
+// Refresh every 45 minutes (tokens expire in 60 min)
+setInterval(()=>{ if(tok && refreshTok) refreshToken(); }, 45*60*1000);
 let file=null, res64=null;
 localStorage.setItem('ls',sid);
 
@@ -861,10 +888,29 @@ async function gen(){
     const resp=await fetch(API+'/api/edit',{method:'POST',headers:h,body:fd});
     const data=await resp.json();
     if(!resp.ok){
-      // Token expired - log out and ask to re-login
+      // Token expired - try refresh first
       if(resp.status===401){
-        tok=null; usr=null;
-        localStorage.removeItem('lt'); localStorage.removeItem('lu');
+        const refreshed = await refreshToken();
+        if(refreshed){
+          // Retry the request with new token
+          h['Authorization'] = 'Bearer '+tok;
+          const retry = await fetch(API+'/api/edit',{method:'POST',headers:h,body:fd});
+          const retryData = await retry.json();
+          if(retry.ok){
+            // Success after refresh - continue normally
+            hideLoad();
+            res64=retryData.image;
+            document.getElementById('rimg').src='data:'+retryData.mimeType+';base64,'+retryData.image;
+            document.getElementById('resc').classList.add('show');
+            updCredUI(retryData.remaining_credits);
+            showWPopup();
+            if(tok){ loadHistoryCache(); }
+            return;
+          }
+        }
+        // Refresh failed - logout
+        tok=usr=refreshTok=null;
+        localStorage.removeItem('lt'); localStorage.removeItem('lu'); localStorage.removeItem('lrt');
         updHdr();
         showMsg('info', lang==='ar'?'انتهت جلستك — سجّل الدخول مرة أخرى':'Session expired — please sign in again');
         setTimeout(()=>openM(), 2000);
@@ -1023,9 +1069,10 @@ async function doAuth(){
 
 
 function loginSuccess(data){
-  tok=data.token; usr=data.user;
+  tok=data.token; usr=data.user; refreshTok=data.refresh_token||null;
   localStorage.setItem('lt',tok);
   localStorage.setItem('lu',JSON.stringify(usr));
+  if(refreshTok) localStorage.setItem('lrt',refreshTok);
   closeM(); updHdr(); loadCred(); loadHistoryCache();
 }
 
@@ -1118,7 +1165,7 @@ async function clearHistory(){
   }catch{}
 }
 
-function sOut(){tok=usr=null;localStorage.removeItem('lt');localStorage.removeItem('lu');updHdr();loadCred();historyCache=[];closeHistory();}
+function sOut(){tok=usr=refreshTok=null;localStorage.removeItem('lt');localStorage.removeItem('lu');localStorage.removeItem('lrt');updHdr();loadCred();historyCache=[];closeHistory();}
 
 // Google OAuth callback handling via Supabase hash fragments
 window.addEventListener('load',()=>{
