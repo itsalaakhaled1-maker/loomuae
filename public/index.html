@@ -248,7 +248,7 @@ h2.stitle-ar{font-family:'Tajawal',sans-serif;font-size:clamp(26px,4.2vw,46px);f
 .intro-ov{position:fixed;inset:0;z-index:9999;background:#000;overflow:hidden;cursor:pointer}
 .intro-ov.out{animation:iOut .7s ease forwards;pointer-events:none}
 @keyframes iOut{to{opacity:0;transform:scale(1.04)}}
-#introCanvas{position:absolute;inset:0;width:100%;height:100%}
+#introCanvas{position:absolute;top:0;left:0;width:100%;height:100%;display:block}
 .intro-bars-t,.intro-bars-b{position:absolute;left:0;right:0;height:10vh;background:#000;z-index:4;transition:height 1s cubic-bezier(.77,0,.175,1)}
 .intro-bars-t{top:0}.intro-bars-b{bottom:0}
 .intro-bars-t.open,.intro-bars-b.open{height:0}
@@ -776,8 +776,11 @@ let refreshTok=localStorage.getItem('lrt')||null;
     const imgA = document.getElementById('introImgAfter');
 
     function resize(){
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
+      const w = window.innerWidth, h = window.innerHeight;
+      canvas.width = w;
+      canvas.height = h;
+      canvas.style.width = w + 'px';
+      canvas.style.height = h + 'px';
     }
     resize();
     window.addEventListener('resize', resize);
