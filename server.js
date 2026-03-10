@@ -437,8 +437,8 @@ app.post('/api/edit', upload.single('image'), async (req, res) => {
         await supabase.from('edit_history').insert({
           user_id: user.id,
           prompt: prompt.trim(),
-          original_img: imageBase64.substring(0, 50000), // trim to avoid huge storage
-          edited_img: editedImageBase64.substring(0, 50000),
+          original_img: imageBase64,
+          edited_img: editedImageBase64,
         });
         // Keep only last 20
         const { data: oldRows } = await supabase
