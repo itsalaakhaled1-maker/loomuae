@@ -274,7 +274,30 @@ app.get('/api/credits', async (req, res) => {
   }
 });
 
-// ─── Enhance Prompt ──────────────────────────────────────────────────────────
+// ─── Edit History ────────────────────────────────────────────────────────────
+app.get('/api/history', async (req, res) => {
+  const { user } = await getUser(req);
+  if (!user) return res.status(401).json({ error: 'Login required' });
+
+  const { data, error } = await supabase
+    .from('edit_history')
+    .select('id, prompt, edited_img, original_img, created_at')
+    .eq('user_id', user.id)
+    .order('created_at', { ascending: false })
+    .limit(20);
+
+  if (error) return res.status(500).json({ error: error.message });
+  res.json({ history: data || [] });
+});
+
+app.delete('/api/history/clear', async (req, res) => {
+  const { user } = await getUser(req);
+  if (!user) return res.status(401).json({ error: 'Login required' });
+  await supabase.from('edit_history').delete().eq('user_id', user.id);
+  res.json({ success: true });
+});
+
+
 app.post('/api/enhance', async (req, res) => {
   const { prompt } = req.body;
   if (!prompt) return res.status(400).json({ error: 'Prompt required' });
@@ -403,11 +426,31 @@ app.post('/api/edit', upload.single('image'), async (req, res) => {
       return res.status(500).json({ error: 'Image generation failed. Please try again.' });
     }
 
-    // ── Deduct Credit ──
+    // ── Deduct Credit & Save History ──
     if (user) {
       await useUserCredit(user.id);
       const newCredits = await checkUserCredits(user.id);
       const remaining = newCredits.remaining;
+
+      // Save to history (keep last 20 per user)
+      try {
+        await supabase.from('edit_history').insert({
+          user_id: user.id,
+          prompt: prompt.trim(),
+          original_img: imageBase64.substring(0, 50000), // trim to avoid huge storage
+          edited_img: editedImageBase64.substring(0, 50000),
+        });
+        // Keep only last 20
+        const { data: oldRows } = await supabase
+          .from('edit_history')
+          .select('id')
+          .eq('user_id', user.id)
+          .order('created_at', { ascending: false })
+          .range(20, 999);
+        if (oldRows?.length) {
+          await supabase.from('edit_history').delete().in('id', oldRows.map(r => r.id));
+        }
+      } catch(e) { /* non-critical */ }
 
       res.json({
         success: true,
