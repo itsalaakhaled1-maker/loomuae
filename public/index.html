@@ -201,25 +201,41 @@ h2.stitle-ar{font-family:'Tajawal',sans-serif;font-size:clamp(26px,4.2vw,46px);f
 .stept-ar{font-family:'Tajawal',sans-serif}
 .stepd{font-size:12.5px;color:var(--muted2);line-height:1.65}
 
-/* ── HISTORY ── */
-.hsec{position:relative;z-index:1;padding:60px 20px;border-top:1px solid var(--border);max-width:1060px;margin:0 auto;display:none}
-.hsec.visible{display:block}
-.hsec-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:24px}
-.hsec-title{font-family:'Playfair Display',serif;font-size:22px;font-weight:700}
-.hsec-clear{background:none;border:1px solid var(--border);border-radius:var(--r);padding:6px 14px;color:var(--muted2);font-family:inherit;font-size:12px;cursor:pointer;transition:all var(--t)}
-.hsec-clear:hover{border-color:rgba(255,80,80,.4);color:#ff6060}
-.hgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:12px}
-.hcard{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r-lg);overflow:hidden;cursor:pointer;transition:all var(--t)}
-.hcard:hover{border-color:rgba(245,200,66,.3);transform:translateY(-2px);box-shadow:0 12px 32px rgba(0,0,0,.4)}
-.hcard-img{width:100%;height:130px;object-fit:cover;display:block;background:var(--bg3)}
-.hcard-info{padding:10px 12px}
-.hcard-prompt{font-size:11.5px;color:var(--muted2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:4px}
-.hcard-date{font-size:10px;color:var(--muted);font-family:'DM Sans',sans-serif}
-.hcard-reuse{display:flex;align-items:center;justify-content:flex-end;padding:0 12px 10px;gap:6px}
-.hcard-btn{font-size:10px;padding:3px 8px;border-radius:100px;border:1px solid var(--border);background:none;color:var(--muted2);cursor:pointer;font-family:inherit;transition:all var(--t)}
-.hcard-btn:hover{border-color:var(--amber);color:var(--amber)}
-.hempty{text-align:center;padding:40px 20px;color:var(--muted);font-size:13px}
-.hloading{text-align:center;padding:30px;color:var(--muted);font-size:13px}
+/* ── HISTORY SIDEBAR ── */
+.hbar-btn{display:none;align-items:center;gap:6px;padding:6px 12px;background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);color:var(--muted2);font-family:inherit;font-size:12px;cursor:pointer;transition:all var(--t)}
+.hbar-btn:hover{border-color:rgba(245,200,66,.4);color:var(--amber)}
+.hbar-btn.show{display:flex}
+.hsidebar-ov{position:fixed;inset:0;z-index:800;background:rgba(0,0,0,.6);backdrop-filter:blur(6px);opacity:0;pointer-events:none;transition:opacity .35s}
+.hsidebar-ov.open{opacity:1;pointer-events:all}
+.hsidebar{position:fixed;top:0;right:0;height:100%;width:min(440px,95vw);background:var(--bg2);border-left:1px solid var(--border);z-index:801;transform:translateX(100%);transition:transform .38s cubic-bezier(.4,0,.2,1);display:flex;flex-direction:column;overflow:hidden}
+[data-lang="en"] .hsidebar{right:auto;left:0;border-left:none;border-right:1px solid var(--border);transform:translateX(-100%)}
+.hsidebar-ov.open .hsidebar{transform:translateX(0)}
+[data-lang="en"] .hsidebar-ov.open .hsidebar{transform:translateX(0)}
+.hsidebar-hd{display:flex;align-items:center;justify-content:space-between;padding:18px 20px;border-bottom:1px solid var(--border);flex-shrink:0}
+.hsidebar-title{font-family:'DM Sans',sans-serif;font-size:15px;font-weight:800;color:var(--white);display:flex;align-items:center;gap:8px}
+.hsidebar-actions{display:flex;align-items:center;gap:8px}
+.hsidebar-close{background:none;border:none;color:var(--muted);cursor:pointer;font-size:20px;padding:2px 6px;transition:color var(--t)}
+.hsidebar-close:hover{color:var(--white)}
+.hsidebar-clr{background:none;border:1px solid var(--border);border-radius:var(--r);padding:4px 10px;color:var(--muted2);font-family:inherit;font-size:11px;cursor:pointer;transition:all var(--t)}
+.hsidebar-clr:hover{border-color:rgba(255,80,80,.4);color:#ff6060}
+.hsidebar-body{flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:14px;scrollbar-width:thin;scrollbar-color:rgba(245,200,66,.2) transparent}
+/* Before/After Cards */
+.hitem{background:var(--bg3);border:1px solid var(--border);border-radius:var(--r-lg);overflow:hidden;transition:border-color var(--t)}
+.hitem:hover{border-color:rgba(245,200,66,.25)}
+.hitem-imgs{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--border)}
+.hitem-side{position:relative;overflow:hidden}
+.hitem-side img{width:100%;height:140px;object-fit:cover;display:block}
+.hitem-label{position:absolute;bottom:6px;right:6px;background:rgba(0,0,0,.7);backdrop-filter:blur(4px);border-radius:100px;padding:2px 8px;font-size:9.5px;font-weight:700;color:rgba(255,255,255,.8);font-family:'DM Sans',sans-serif;letter-spacing:.4px}
+.hitem-label.edited{background:rgba(245,200,66,.2);border:1px solid rgba(245,200,66,.3);color:var(--amber)}
+.hitem-info{padding:10px 14px 12px;display:flex;align-items:center;justify-content:space-between;gap:10px}
+.hitem-prompt{font-size:12px;color:var(--muted2);flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.hitem-date{font-size:10px;color:var(--muted);font-family:'DM Sans',sans-serif;flex-shrink:0}
+.hitem-btns{display:flex;gap:6px;padding:0 14px 12px}
+.hitem-btn{flex:1;padding:7px;border-radius:var(--r);font-family:inherit;font-size:11.5px;font-weight:700;cursor:pointer;transition:all var(--t);border:1px solid var(--border);background:none;color:var(--muted2)}
+.hitem-btn:hover{border-color:rgba(245,200,66,.4);color:var(--amber)}
+.hitem-btn.primary{background:rgba(245,200,66,.1);border-color:rgba(245,200,66,.3);color:var(--amber)}
+.hempty{text-align:center;padding:50px 20px;color:var(--muted);font-size:13px;line-height:1.8}
+.hloading{text-align:center;padding:40px;color:var(--muted);font-size:13px}
 .mworld-bar{width:100%;background:linear-gradient(90deg,rgba(245,200,66,.12),rgba(245,200,66,.06),rgba(245,200,66,.12));border-bottom:1px solid rgba(245,200,66,.18);padding:9px 20px;display:flex;align-items:center;justify-content:center;gap:10px;cursor:pointer;transition:background var(--t);position:relative;z-index:50}
 .mworld-bar:hover{background:linear-gradient(90deg,rgba(245,200,66,.2),rgba(245,200,66,.1),rgba(245,200,66,.2))}
 .mworld-bar-badge{background:rgba(245,200,66,.2);border:1px solid rgba(245,200,66,.4);border-radius:100px;padding:2px 9px;font-size:10px;font-weight:800;color:var(--amber);letter-spacing:.8px;text-transform:uppercase;font-family:'DM Sans',sans-serif;flex-shrink:0}
@@ -391,7 +407,8 @@ footer{position:relative;z-index:1;border-top:1px solid var(--border);padding:36
       <span data-ar="دخول" data-en="Sign in">دخول</span>
     </button>
     <div id="userMenu" style="display:none;align-items:center;gap:8px;display:none">
-      <span id="userName" style="font-size:12px;color:var(--muted2);max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap"></span>
+      <button class="hbar-btn show" id="histBtn" onclick="openHistory()">🕐 <span data-ar="السجل" data-en="History">السجل</span></button>
+      <span id="userName" style="font-size:12px;color:var(--muted2);max-width:100px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap"></span>
       <button class="nbtn nbtn-ghost" onclick="sOut()"><span data-ar="خروج" data-en="Sign out">خروج</span></button>
     </div>
   </div>
@@ -563,18 +580,19 @@ footer{position:relative;z-index:1;border-top:1px solid var(--border);padding:36
   </div>
 </section>
 
-<!-- HISTORY -->
-<div class="hsec" id="hsec">
-  <div class="hsec-head">
-    <div>
-      <div class="eyebrow">🕐 <span data-ar="سجل التعديلات" data-en="Edit History">سجل التعديلات</span></div>
-      <div class="stitle stitle-ar" id="hTitleAr" style="font-size:clamp(20px,3vw,28px);margin-top:8px">آخر 20 تعديل</div>
-      <div class="stitle" id="hTitleEn" style="font-size:clamp(20px,3vw,28px);margin-top:8px;display:none">Last 20 edits</div>
+<!-- HISTORY SIDEBAR -->
+<div class="hsidebar-ov" id="hsidebarOv" onclick="if(event.target===this)closeHistory()">
+  <div class="hsidebar">
+    <div class="hsidebar-hd">
+      <div class="hsidebar-title">🕐 <span data-ar="سجل التعديلات" data-en="Edit History">سجل التعديلات</span></div>
+      <div class="hsidebar-actions">
+        <button class="hsidebar-clr" onclick="clearHistory()" data-ar="مسح الكل" data-en="Clear all">مسح الكل</button>
+        <button class="hsidebar-close" onclick="closeHistory()">✕</button>
+      </div>
     </div>
-    <button class="hsec-clear" onclick="clearHistory()" data-ar="مسح السجل" data-en="Clear history">مسح السجل</button>
-  </div>
-  <div id="hgrid" class="hgrid">
-    <div class="hloading" data-ar="جاري التحميل..." data-en="Loading...">جاري التحميل...</div>
+    <div class="hsidebar-body" id="hsidebarBody">
+      <div class="hloading" data-ar="جاري التحميل..." data-en="Loading...">جاري التحميل...</div>
+    </div>
   </div>
 </div>
 
@@ -725,7 +743,7 @@ function setLang(l){
   if(eb) eb.title=l==='ar'?'تحسين البرومت بالذكاء الاصطناعي':'Enhance prompt with AI';
 }
 
-window.addEventListener('load',()=>{setLang(lang);updHdr();loadCred();setupDrop();loadHistory();loadHistoryCache();});
+window.addEventListener('load',()=>{setLang(lang);updHdr();loadCred();setupDrop();if(tok)loadHistoryCache();});
 
 /* ── HEADER ── */
 function updHdr(){
@@ -866,7 +884,7 @@ async function gen(){
     // Show Banana Pro popup after successful edit
     showWPopup();
     // Refresh history for logged-in users
-    if(tok){ loadHistory(); loadHistoryCache(); }
+    if(tok){ loadHistoryCache(); }
   }catch{showMsg('err',lang==='ar'?'تعذر الاتصال بالخادم':'Could not reach server')}
   finally{setLoad(false)}
 }
@@ -987,39 +1005,58 @@ function loginSuccess(data){
   tok=data.token; usr=data.user;
   localStorage.setItem('lt',tok);
   localStorage.setItem('lu',JSON.stringify(usr));
-  closeM(); updHdr(); loadCred(); loadHistory(); loadHistoryCache();
+  closeM(); updHdr(); loadCred(); loadHistoryCache();
 }
 
-// ── HISTORY ──────────────────────────────────────────────────────────────────
+// ── HISTORY SIDEBAR ──────────────────────────────────────────────────────────
+function openHistory(){ 
+  if(!tok) return;
+  document.getElementById('hsidebarOv').classList.add('open');
+  document.body.style.overflow='hidden';
+  loadHistory();
+}
+function closeHistory(){
+  document.getElementById('hsidebarOv').classList.remove('open');
+  document.body.style.overflow='';
+}
 async function loadHistory(){
-  const sec = document.getElementById('hsec');
-  if(!tok){ sec.classList.remove('visible'); return; }
-  sec.classList.add('visible');
-  const grid = document.getElementById('hgrid');
-  grid.innerHTML = `<div class="hloading">${lang==='ar'?'جاري التحميل...':'Loading...'}</div>`;
+  if(!tok) return;
+  const body = document.getElementById('hsidebarBody');
+  body.innerHTML = `<div class="hloading">${lang==='ar'?'جاري التحميل...':'Loading...'}</div>`;
   try{
     const r = await fetch(API+'/api/history',{headers:{'Authorization':'Bearer '+tok,'x-session-id':sid}});
-    if(!r.ok){ grid.innerHTML=`<div class="hempty">${lang==='ar'?'تعذر تحميل السجل':'Could not load history'}</div>`; return; }
+    if(!r.ok){ body.innerHTML=`<div class="hempty">${lang==='ar'?'تعذر تحميل السجل':'Could not load history'}</div>`; return; }
     const {history} = await r.json();
-    if(!history.length){ grid.innerHTML=`<div class="hempty">${lang==='ar'?'لا يوجد سجل بعد — ابدأ بتعديل صورة!':'No history yet — start editing!'}</div>`; return; }
-    grid.innerHTML = history.map(h=>{
+    historyCache = history;
+    if(!history.length){ 
+      body.innerHTML=`<div class="hempty">${lang==='ar'?'📭 لا يوجد سجل بعد\nابدأ بتعديل صورة وستظهر هنا!':'📭 No history yet\nStart editing and it will appear here!'}</div>`; 
+      return; 
+    }
+    body.innerHTML = history.map(h=>{
       const date = new Date(h.created_at).toLocaleDateString(lang==='ar'?'ar-AE':'en-GB',{month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'});
-      const img = `data:image/png;base64,${h.edited_img}`;
-      return `<div class="hcard" onclick="reuseFromHistory('${h.id}')">
-        <img class="hcard-img" src="${img}" alt="edit" loading="lazy"/>
-        <div class="hcard-info">
-          <div class="hcard-prompt">${h.prompt}</div>
-          <div class="hcard-date">${date}</div>
+      const origSrc = h.original_img ? `data:image/png;base64,${h.original_img}` : '';
+      const editSrc = `data:image/png;base64,${h.edited_img}`;
+      const origSide = origSrc 
+        ? `<div class="hitem-side"><img src="${origSrc}" loading="lazy"/><span class="hitem-label">${lang==='ar'?'الأصل':'Before'}</span></div>`
+        : `<div class="hitem-side" style="background:var(--bg2);display:flex;align-items:center;justify-content:center;height:140px;font-size:11px;color:var(--muted)">${lang==='ar'?'لا توجد صورة':'No image'}</div>`;
+      return `<div class="hitem">
+        <div class="hitem-imgs">
+          ${origSide}
+          <div class="hitem-side"><img src="${editSrc}" loading="lazy"/><span class="hitem-label edited">${lang==='ar'?'المعدّل':'After'}</span></div>
         </div>
-        <div class="hcard-reuse">
-          <button class="hcard-btn" onclick="event.stopPropagation();downloadFromHistory('${h.id}')" data-ar="تحميل" data-en="Download">${lang==='ar'?'تحميل':'Download'}</button>
+        <div class="hitem-info">
+          <div class="hitem-prompt" title="${h.prompt}">${h.prompt}</div>
+          <div class="hitem-date">${date}</div>
+        </div>
+        <div class="hitem-btns">
+          <button class="hitem-btn primary" onclick="reuseFromHistory('${h.id}')">${lang==='ar'?'↩ إعادة استخدام':'↩ Reuse'}</button>
+          <button class="hitem-btn" onclick="downloadFromHistory('${h.id}')">${lang==='ar'?'⬇ تحميل':'⬇ Download'}</button>
         </div>
       </div>`;
     }).join('');
-  }catch{ grid.innerHTML=`<div class="hempty">${lang==='ar'?'حدث خطأ':'Something went wrong'}</div>`; }
+  }catch{ body.innerHTML=`<div class="hempty">${lang==='ar'?'حدث خطأ':'Something went wrong'}</div>`; }
 }
 
-// Store history items for quick access
 let historyCache = [];
 async function loadHistoryCache(){
   if(!tok) return;
@@ -1031,7 +1068,6 @@ async function loadHistoryCache(){
 function reuseFromHistory(id){
   const item = historyCache.find(h=>h.id===id);
   if(!item) return;
-  // Set result image
   res64 = item.edited_img;
   document.getElementById('rimg').src = 'data:image/png;base64,'+item.edited_img;
   if(item.original_img){
@@ -1042,6 +1078,7 @@ function reuseFromHistory(id){
   }
   document.getElementById('ptxt').value = item.prompt;
   document.getElementById('resc').classList.add('show');
+  closeHistory();
   document.querySelector('.appcard').scrollIntoView({behavior:'smooth'});
 }
 function downloadFromHistory(id){
@@ -1060,7 +1097,7 @@ async function clearHistory(){
   }catch{}
 }
 
-function sOut(){tok=usr=null;localStorage.removeItem('lt');localStorage.removeItem('lu');updHdr();loadCred();loadHistory();}
+function sOut(){tok=usr=null;localStorage.removeItem('lt');localStorage.removeItem('lu');updHdr();loadCred();historyCache=[];closeHistory();}
 
 // Google OAuth callback handling via Supabase hash fragments
 window.addEventListener('load',()=>{
