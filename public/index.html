@@ -782,15 +782,16 @@ let refreshTok=localStorage.getItem('lrt')||null;
     resize();
     window.addEventListener('resize', resize);
 
-    // Draw image centered + covering canvas
+    // Draw image COVER — always fills canvas fully on any screen size
     function drawImg(img, alpha, saturation, brightness, revealX){
-      if(!img.complete) return;
+      if(!img.complete || !img.naturalWidth) return;
       const cw = canvas.width, ch = canvas.height;
       const ir = img.naturalWidth / img.naturalHeight;
       const cr = cw / ch;
       let dw, dh, dx, dy;
-      if(ir > cr){ dh = ch; dw = dh * ir; dx = (cw-dw)/2; dy = 0; }
-      else { dw = cw; dh = dw / ir; dx = 0; dy = (ch-dh)/2; }
+      // Cover: scale to whichever dimension fills canvas, center the other
+      if(cr > ir){ dw = cw; dh = cw / ir; dx = 0; dy = (ch - dh) / 2; }
+      else        { dh = ch; dw = ch * ir; dy = 0; dx = (cw - dw) / 2; }
 
       ctx.save();
       ctx.globalAlpha = alpha;
