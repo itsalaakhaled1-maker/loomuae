@@ -59,13 +59,12 @@ async function getUser(req) {
   if (!authHeader) return { user: null, tokenProvided: false };
   const token = authHeader.replace('Bearer ', '');
   const { data: { user }, error } = await supabase.auth.getUser(token);
-  if (error || !user) return { user: null, tokenProvided: true }; // token was sent but invalid/expired
+  if (error || !user) return { user: null, tokenProvided: true };
   return { user, tokenProvided: true };
 }
 
 // ─── Credits Logic ──────────────────────────────────────────────────────────
 
-// For anonymous users: track by session_id cookie/header
 async function checkAnonymousCredit(sessionId) {
   const today = new Date().toISOString().split('T')[0];
 
@@ -76,7 +75,6 @@ async function checkAnonymousCredit(sessionId) {
     .single();
 
   if (error || !data) {
-    // New session - has 1 free credit
     return { canEdit: true, isNew: true };
   }
 
@@ -101,7 +99,7 @@ async function useAnonymousCredit(sessionId) {
   }
 }
 
-// For logged-in users: 5 credits/day
+// For logged-in users: check plan and credits
 async function checkUserCredits(userId) {
   const today = new Date().toISOString().split('T')[0];
 
@@ -112,14 +110,28 @@ async function checkUserCredits(userId) {
     .single();
 
   if (error || !data) {
-    // First time user - create record
     await supabase.from('user_credits').insert({
       user_id: userId,
       used_today: 0,
-      last_reset: today
+      last_reset: today,
+      plan: 'free',
+      monthly_credits: 3
     });
-    return { canEdit: true, remaining: 3 };
+    return { canEdit: true, remaining: 3, plan: 'free' };
   }
+
+  // Check if subscription expired
+  if (data.subscription_end_date && new Date(data.subscription_end_date) < new Date()) {
+    await supabase.from('user_credits').update({
+      plan: 'free',
+      monthly_credits: 3,
+      subscription_end_date: null
+    }).eq('user_id', userId);
+    data.plan = 'free';
+    data.monthly_credits = 3;
+  }
+
+  const limit = data.monthly_credits || 3;
 
   // Reset if new day
   if (data.last_reset !== today) {
@@ -127,11 +139,11 @@ async function checkUserCredits(userId) {
       used_today: 0,
       last_reset: today
     }).eq('user_id', userId);
-    return { canEdit: true, remaining: 3 };
+    return { canEdit: true, remaining: limit, plan: data.plan || 'free' };
   }
 
-  const remaining = 3 - data.used_today;
-  return { canEdit: remaining > 0, remaining: Math.max(0, remaining) };
+  const remaining = limit - data.used_today;
+  return { canEdit: remaining > 0, remaining: Math.max(0, remaining), plan: data.plan || 'free' };
 }
 
 async function useUserCredit(userId) {
@@ -141,12 +153,10 @@ async function useUserCredit(userId) {
 
 // ─── Routes ─────────────────────────────────────────────────────────────────
 
-// Health check
 app.get('/api/health', (req, res) => {
   res.json({ status: 'ok', service: 'Loom API' });
 });
 
-// Auth: Google OAuth - get redirect URL
 app.get('/api/auth/google', async (req, res) => {
   const { data, error } = await supabase.auth.signInWithOAuth({
     provider: 'google',
@@ -158,12 +168,10 @@ app.get('/api/auth/google', async (req, res) => {
   res.json({ url: data.url });
 });
 
-// Auth: Google OAuth callback
 app.get('/api/auth/callback', async (req, res) => {
   res.redirect(`${process.env.FRONTEND_URL}/#auth-callback`);
 });
 
-// Auth: Exchange Google access token
 app.post('/api/auth/google-token', async (req, res) => {
   const { access_token } = req.body;
   if (!access_token) return res.status(400).json({ error: 'Token required' });
@@ -175,7 +183,6 @@ app.post('/api/auth/google-token', async (req, res) => {
   });
 });
 
-// Auth: Sign Up (Email + Name)
 app.post('/api/auth/signup', async (req, res) => {
   const { email, password, name } = req.body;
   if (!email || !password) return res.status(400).json({ error: 'Email and password required' });
@@ -191,7 +198,6 @@ app.post('/api/auth/signup', async (req, res) => {
   res.json({ message: 'Account created! You can now sign in.', user: data.user });
 });
 
-// Auth: Sign In (Email)
 app.post('/api/auth/signin', async (req, res) => {
   const { email, password } = req.body;
 
@@ -206,7 +212,6 @@ app.post('/api/auth/signin', async (req, res) => {
   });
 });
 
-// Auth: Refresh Token
 app.post('/api/auth/refresh', async (req, res) => {
   const { refresh_token } = req.body;
   if (!refresh_token) return res.status(400).json({ error: 'Refresh token required' });
@@ -222,7 +227,6 @@ app.post('/api/auth/refresh', async (req, res) => {
   });
 });
 
-// Auth: Send Phone OTP
 app.post('/api/auth/phone/send', async (req, res) => {
   const { phone } = req.body;
   if (!phone) return res.status(400).json({ error: 'Phone number required' });
@@ -232,7 +236,6 @@ app.post('/api/auth/phone/send', async (req, res) => {
   res.json({ message: 'OTP sent successfully' });
 });
 
-// Auth: Verify Phone OTP
 app.post('/api/auth/phone/verify', async (req, res) => {
   const { phone, token, name } = req.body;
   if (!phone || !token) return res.status(400).json({ error: 'Phone and token required' });
@@ -240,7 +243,6 @@ app.post('/api/auth/phone/verify', async (req, res) => {
   const { data, error } = await supabase.auth.verifyOtp({ phone, token, type: 'sms' });
   if (error) return res.status(400).json({ error: error.message });
 
-  // Update name if provided
   if (name && data.user) {
     await supabase.auth.admin.updateUserById(data.user.id, {
       user_metadata: { full_name: name }
@@ -254,19 +256,6 @@ app.post('/api/auth/phone/verify', async (req, res) => {
   });
 });
 
-// Auth: Google OAuth — get redirect URL
-app.get('/api/auth/google', async (req, res) => {
-  const { data, error } = await supabase.auth.signInWithOAuth({
-    provider: 'google',
-    options: {
-      redirectTo: `${process.env.FRONTEND_URL}/auth/callback`
-    }
-  });
-  if (error) return res.status(500).json({ error: error.message });
-  res.json({ url: data.url });
-});
-
-// Auth: OAuth Callback — exchange code for session
 app.post('/api/auth/callback', async (req, res) => {
   const { code } = req.body;
   if (!code) return res.status(400).json({ error: 'Code required' });
@@ -281,7 +270,6 @@ app.post('/api/auth/callback', async (req, res) => {
   });
 });
 
-// Get credits status
 app.get('/api/credits', async (req, res) => {
   const { user, tokenProvided } = await getUser(req);
   const sessionId = req.headers['x-session-id'];
@@ -291,7 +279,7 @@ app.get('/api/credits', async (req, res) => {
   }
   if (user) {
     const credits = await checkUserCredits(user.id);
-    res.json({ type: 'user', ...credits, daily_limit: 3 });
+    res.json({ type: 'user', ...credits, daily_limit: credits.remaining + (credits.canEdit ? 0 : 0) });
   } else {
     const credits = await checkAnonymousCredit(sessionId || 'unknown');
     res.json({ type: 'anonymous', canEdit: credits.canEdit, remaining: credits.canEdit ? 1 : 0, daily_limit: 1 });
@@ -320,7 +308,6 @@ app.delete('/api/history/clear', async (req, res) => {
   await supabase.from('edit_history').delete().eq('user_id', user.id);
   res.json({ success: true });
 });
-
 
 app.post('/api/enhance', async (req, res) => {
   const { prompt } = req.body;
@@ -362,7 +349,6 @@ Prompt to enhance: "${prompt}"` }]
   }
 });
 
-
 app.post('/api/edit', upload.single('image'), async (req, res) => {
   try {
     const { prompt, sessionId } = req.body;
@@ -371,20 +357,19 @@ app.post('/api/edit', upload.single('image'), async (req, res) => {
     if (!req.file) return res.status(400).json({ error: 'No image uploaded' });
     if (!prompt || prompt.trim().length < 3) return res.status(400).json({ error: 'Please provide a description' });
 
-    // ── Token expired ──
     if (tokenProvided && !user) {
       return res.status(401).json({ error: 'Session expired', error_ar: 'انتهت الجلسة، سجّل دخولك مجدداً' });
     }
 
-    // ── Check Credits ──
     if (user) {
       const credits = await checkUserCredits(user.id);
       if (!credits.canEdit) {
         return res.status(403).json({
           error: 'Daily limit reached',
           error_ar: 'انتهت الكريديتس اليومية',
-          message: 'You have used all 3 daily credits. Come back tomorrow!',
-          remaining: 0
+          message: 'You have used all your credits. Upgrade your plan or come back tomorrow!',
+          remaining: 0,
+          plan: credits.plan
         });
       }
     } else {
@@ -403,11 +388,9 @@ app.post('/api/edit', upload.single('image'), async (req, res) => {
       }
     }
 
-    // ── Call Gemini ──
     const imageBase64 = req.file.buffer.toString('base64');
     const mimeType = req.file.mimetype;
 
-    // Build the prompt - enhanced for product photography
     const enhancedPrompt = buildProductPrompt(prompt);
 
     const GEMINI_KEY = process.env.GEMINI_API_KEY;
@@ -450,13 +433,10 @@ app.post('/api/edit', upload.single('image'), async (req, res) => {
       return res.status(500).json({ error: 'Image generation failed. Please try again.' });
     }
 
-    // ── Deduct Credit & Save History ──
     if (user) {
       await useUserCredit(user.id);
       const newCredits = await checkUserCredits(user.id);
-      const remaining = newCredits.remaining;
 
-      // Save to history (keep last 20 per user)
       try {
         await supabase.from('edit_history').insert({
           user_id: user.id,
@@ -464,7 +444,6 @@ app.post('/api/edit', upload.single('image'), async (req, res) => {
           original_img: imageBase64,
           edited_img: editedImageBase64,
         });
-        // Keep only last 20
         const { data: oldRows } = await supabase
           .from('edit_history')
           .select('id')
@@ -480,7 +459,8 @@ app.post('/api/edit', upload.single('image'), async (req, res) => {
         success: true,
         image: editedImageBase64,
         mimeType: 'image/png',
-        remaining_credits: remaining,
+        remaining_credits: newCredits.remaining,
+        plan: newCredits.plan,
         text: textResponse
       });
     } else {
@@ -528,6 +508,41 @@ ${userPrompt}
 
 OUTPUT: Return only the edited image, photorealistic, high quality, professional commercial photography standard.`;
 }
+
+// ─── Gumroad Webhook ─────────────────────────────────────────────────────────
+app.post('/api/gumroad/webhook', async (req, res) => {
+  try {
+    const { email, product_permalink, sale_timestamp } = req.body;
+    if (!email) return res.status(400).json({ error: 'No email' });
+
+    // Find user by email
+    const { data: userData, error: userError } = await supabase.auth.admin.listUsers();
+    if (userError) return res.status(500).json({ error: 'Error fetching users' });
+
+    const user = userData.users.find(u => u.email === email);
+    if (!user) return res.status(404).json({ error: 'User not found' });
+
+    // Set subscription end date (30 days)
+    const endDate = new Date();
+    endDate.setDate(endDate.getDate() + 30);
+
+    // Update user credits to Starter plan
+    await supabase.from('user_credits').upsert({
+      user_id: user.id,
+      plan: 'starter',
+      monthly_credits: 30,
+      used_today: 0,
+      last_reset: new Date().toISOString().split('T')[0],
+      subscription_end_date: endDate.toISOString()
+    }, { onConflict: 'user_id' });
+
+    console.log(`✅ Starter plan activated for ${email}`);
+    res.json({ success: true });
+  } catch (err) {
+    console.error('Webhook error:', err);
+    res.status(500).json({ error: err.message });
+  }
+});
 
 // ─── Fallback to Frontend ────────────────────────────────────────────────────
 app.get('*', (req, res) => {
