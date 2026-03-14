@@ -28,14 +28,12 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, 'public')));
 
-// Explicit favicon route
 app.get('/favicon.svg', (req, res) => {
   res.setHeader('Content-Type', 'image/svg+xml');
   res.setHeader('Cache-Control', 'public, max-age=86400');
   res.sendFile(path.join(__dirname, 'public', 'favicon.svg'));
 });
 
-// Rate limiter - protect only edit endpoint
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000,
   max: 30,
@@ -43,7 +41,6 @@ const limiter = rateLimit({
 });
 app.use('/api/edit', limiter);
 
-// Multer - memory storage (no disk)
 const upload = multer({
   storage: multer.memoryStorage(),
   limits: { fileSize: 10 * 1024 * 1024 },
@@ -53,6 +50,23 @@ const upload = multer({
     else cb(new Error('Only JPEG, PNG, WEBP images are allowed'));
   }
 });
+
+// ─── Analytics Logger ────────────────────────────────────────────────────────
+async function logEvent({ event_type, user_id = null, session_id = null, plan = null, success = true }) {
+  try {
+    await supabase.from('api_stats').insert({
+      event_type,
+      user_id,
+      session_id,
+      plan,
+      success,
+      model: 'gemini-flash',
+      tokens_est: event_type === 'image_edit' ? 1200 : event_type === 'enhance' ? 300 : 0
+    });
+  } catch (e) {
+    // non-critical, never break the main flow
+  }
+}
 
 // ─── Auth Middleware ────────────────────────────────────────────────────────
 async function getUser(req) {
@@ -65,7 +79,6 @@ async function getUser(req) {
 }
 
 // ─── Credits Logic ──────────────────────────────────────────────────────────
-
 async function checkAnonymousCredit(sessionId) {
   const { data, error } = await supabase
     .from('anonymous_usage')
@@ -73,14 +86,8 @@ async function checkAnonymousCredit(sessionId) {
     .eq('session_id', sessionId)
     .single();
 
-  if (error || !data) {
-    return { canEdit: true, isNew: true };
-  }
-
-  if (data.used) {
-    return { canEdit: false, isNew: false };
-  }
-
+  if (error || !data) return { canEdit: true, isNew: true };
+  if (data.used) return { canEdit: false, isNew: false };
   return { canEdit: true, isNew: false, existing: data };
 }
 
@@ -98,8 +105,6 @@ async function useAnonymousCredit(sessionId) {
   }
 }
 
-// For logged-in users: check plan and credits
-// ✅ NOW returns total_credits as well
 async function checkUserCredits(userId) {
   const today = new Date().toISOString().split('T')[0];
 
@@ -120,7 +125,6 @@ async function checkUserCredits(userId) {
     return { canEdit: true, remaining: 3, total_credits: 3, plan: 'free' };
   }
 
-  // Check if subscription expired
   if (data.subscription_end_date && new Date(data.subscription_end_date) < new Date()) {
     await supabase.from('user_credits').update({
       plan: 'free',
@@ -133,7 +137,6 @@ async function checkUserCredits(userId) {
 
   const limit = data.monthly_credits || 3;
 
-  // Reset if new day
   if (data.last_reset !== today) {
     await supabase.from('user_credits').update({
       used_today: 0,
@@ -146,7 +149,7 @@ async function checkUserCredits(userId) {
   return {
     canEdit: remaining > 0,
     remaining: Math.max(0, remaining),
-    total_credits: limit,           // ✅ الإضافة الجديدة
+    total_credits: limit,
     plan: data.plan || 'free'
   };
 }
@@ -157,7 +160,6 @@ async function useUserCredit(userId) {
 }
 
 // ─── Routes ─────────────────────────────────────────────────────────────────
-
 app.get('/api/health', (req, res) => {
   res.json({ status: 'ok', service: 'Loom API' });
 });
@@ -198,6 +200,10 @@ app.post('/api/auth/signup', async (req, res) => {
   });
 
   if (error) return res.status(400).json({ error: error.message });
+
+  // ✅ Log signup event
+  await logEvent({ event_type: 'signup', user_id: data.user.id, plan: 'free' });
+
   res.json({ message: 'Account created! You can now sign in.', user: data.user });
 });
 
@@ -206,6 +212,9 @@ app.post('/api/auth/signin', async (req, res) => {
 
   const { data, error } = await supabase.auth.signInWithPassword({ email, password });
   if (error) return res.status(401).json({ error: 'Invalid email or password' });
+
+  // ✅ Log signin event
+  await logEvent({ event_type: 'signin', user_id: data.user.id });
 
   const name = data.user.user_metadata?.full_name || data.user.email?.split('@')[0] || '';
   res.json({
@@ -233,7 +242,6 @@ app.post('/api/auth/refresh', async (req, res) => {
 app.post('/api/auth/phone/send', async (req, res) => {
   const { phone } = req.body;
   if (!phone) return res.status(400).json({ error: 'Phone number required' });
-
   const { error } = await supabase.auth.signInWithOtp({ phone });
   if (error) return res.status(400).json({ error: error.message });
   res.json({ message: 'OTP sent successfully' });
@@ -251,6 +259,8 @@ app.post('/api/auth/phone/verify', async (req, res) => {
       user_metadata: { full_name: name }
     });
   }
+
+  await logEvent({ event_type: 'signup_phone', user_id: data.user.id, plan: 'free' });
 
   const displayName = name || data.user.phone || '';
   res.json({
@@ -282,7 +292,6 @@ app.get('/api/credits', async (req, res) => {
   }
   if (user) {
     const credits = await checkUserCredits(user.id);
-    // ✅ بنبعت total_credits عشان الـ frontend يعرض remaining/total
     res.json({ type: 'user', ...credits });
   } else {
     const credits = await checkAnonymousCredit(sessionId || 'unknown');
@@ -317,6 +326,7 @@ app.post('/api/enhance', async (req, res) => {
   const { prompt } = req.body;
   if (!prompt) return res.status(400).json({ error: 'Prompt required' });
 
+  const { user } = await getUser(req);
   const GEMINI_KEY = process.env.GEMINI_API_KEY;
   const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.1-flash-image-preview:generateContent?key=${GEMINI_KEY}`;
 
@@ -346,6 +356,10 @@ Prompt to enhance: "${prompt}"` }]
     const data = await geminiRes.json();
     const enhanced = data?.candidates?.[0]?.content?.parts?.[0]?.text?.trim();
     if (!enhanced) return res.status(500).json({ error: 'Enhancement failed' });
+
+    // ✅ Log enhance event
+    await logEvent({ event_type: 'enhance', user_id: user?.id || null });
+
     res.json({ enhanced });
   } catch (err) {
     console.error('Enhance error:', err);
@@ -368,6 +382,7 @@ app.post('/api/edit', upload.single('image'), async (req, res) => {
     if (user) {
       const credits = await checkUserCredits(user.id);
       if (!credits.canEdit) {
+        await logEvent({ event_type: 'edit_blocked_no_credits', user_id: user.id, plan: credits.plan, success: false });
         return res.status(403).json({
           error: 'Daily limit reached',
           error_ar: 'انتهت الكريديتس اليومية',
@@ -382,6 +397,7 @@ app.post('/api/edit', upload.single('image'), async (req, res) => {
 
       const credits = await checkAnonymousCredit(sid);
       if (!credits.canEdit) {
+        await logEvent({ event_type: 'edit_blocked_anonymous', session_id: sid, success: false });
         return res.status(403).json({
           error: 'Free credit used',
           error_ar: 'استهلكت الكريديت المجاني',
@@ -394,7 +410,6 @@ app.post('/api/edit', upload.single('image'), async (req, res) => {
 
     const imageBase64 = req.file.buffer.toString('base64');
     const mimeType = req.file.mimetype;
-
     const enhancedPrompt = buildProductPrompt(prompt);
 
     const GEMINI_KEY = process.env.GEMINI_API_KEY;
@@ -419,8 +434,10 @@ app.post('/api/edit', upload.single('image'), async (req, res) => {
 
     const geminiData = await geminiRes.json();
     console.log('Gemini status:', geminiRes.status);
+
     if (!geminiRes.ok) {
       console.error('Gemini error:', JSON.stringify(geminiData?.error));
+      await logEvent({ event_type: 'image_edit', user_id: user?.id || null, success: false });
       return res.status(500).json({ error: 'Image generation failed', details: geminiData?.error?.message });
     }
 
@@ -434,12 +451,16 @@ app.post('/api/edit', upload.single('image'), async (req, res) => {
     }
 
     if (!editedImageBase64) {
+      await logEvent({ event_type: 'image_edit', user_id: user?.id || null, success: false });
       return res.status(500).json({ error: 'Image generation failed. Please try again.' });
     }
 
     if (user) {
       await useUserCredit(user.id);
       const newCredits = await checkUserCredits(user.id);
+
+      // ✅ Log successful edit
+      await logEvent({ event_type: 'image_edit', user_id: user.id, plan: newCredits.plan, success: true });
 
       try {
         await supabase.from('edit_history').insert({
@@ -464,13 +485,17 @@ app.post('/api/edit', upload.single('image'), async (req, res) => {
         image: editedImageBase64,
         mimeType: 'image/png',
         remaining_credits: newCredits.remaining,
-        total_credits: newCredits.total_credits,   // ✅
+        total_credits: newCredits.total_credits,
         plan: newCredits.plan,
         text: textResponse
       });
     } else {
       const sid = sessionId || req.headers['x-session-id'];
       await useAnonymousCredit(sid);
+
+      // ✅ Log anonymous edit
+      await logEvent({ event_type: 'image_edit', session_id: sid, plan: 'anonymous', success: true });
+
       res.json({
         success: true,
         image: editedImageBase64,
@@ -516,6 +541,7 @@ OUTPUT: Return only the edited image, photorealistic, high quality, professional
 }
 
 // ─── Gumroad Webhook ─────────────────────────────────────────────────────────
+// ✅ FIXED: now correctly handles both Starter and Loom Pro plans
 app.post('/api/gumroad/webhook', async (req, res) => {
   try {
     const { email, product_permalink, sale_timestamp } = req.body;
@@ -527,22 +553,121 @@ app.post('/api/gumroad/webhook', async (req, res) => {
     const user = userData.users.find(u => u.email === email);
     if (!user) return res.status(404).json({ error: 'User not found' });
 
+    // ✅ Determine plan based on product_permalink
+    let plan = 'starter';
+    let monthly_credits = 30;
+
+    if (product_permalink === 'fiqku') {
+      plan = 'pro';
+      monthly_credits = 70;
+    } else if (product_permalink === 'ixfwd') {
+      plan = 'starter';
+      monthly_credits = 30;
+    }
+
     const endDate = new Date();
     endDate.setDate(endDate.getDate() + 30);
 
     await supabase.from('user_credits').upsert({
       user_id: user.id,
-      plan: 'starter',
-      monthly_credits: 30,
+      plan,
+      monthly_credits,
       used_today: 0,
       last_reset: new Date().toISOString().split('T')[0],
       subscription_end_date: endDate.toISOString()
     }, { onConflict: 'user_id' });
 
-    console.log(`✅ Starter plan activated for ${email}`);
-    res.json({ success: true });
+    // ✅ Log subscription event
+    await logEvent({ event_type: 'subscription', user_id: user.id, plan, success: true });
+
+    console.log(`✅ ${plan} plan (${monthly_credits} credits) activated for ${email}`);
+    res.json({ success: true, plan, monthly_credits });
   } catch (err) {
     console.error('Webhook error:', err);
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// ─── Admin Analytics API ─────────────────────────────────────────────────────
+// ✅ NEW: endpoint to power your admin dashboard
+app.get('/api/admin/stats', async (req, res) => {
+  const adminKey = req.headers['x-admin-key'];
+  if (adminKey !== process.env.ADMIN_KEY) {
+    return res.status(401).json({ error: 'Unauthorized' });
+  }
+
+  try {
+    const today = new Date().toISOString().split('T')[0];
+    const thisMonth = new Date().toISOString().slice(0, 7);
+
+    // Total edits today
+    const { count: editsToday } = await supabase
+      .from('api_stats')
+      .select('*', { count: 'exact', head: true })
+      .eq('event_type', 'image_edit')
+      .eq('success', true)
+      .gte('created_at', today);
+
+    // Total edits this month
+    const { count: editsMonth } = await supabase
+      .from('api_stats')
+      .select('*', { count: 'exact', head: true })
+      .eq('event_type', 'image_edit')
+      .eq('success', true)
+      .gte('created_at', thisMonth);
+
+    // Total signups
+    const { count: signupsTotal } = await supabase
+      .from('api_stats')
+      .select('*', { count: 'exact', head: true })
+      .in('event_type', ['signup', 'signup_phone']);
+
+    // Active subscribers
+    const { count: subscribers } = await supabase
+      .from('user_credits')
+      .select('*', { count: 'exact', head: true })
+      .in('plan', ['starter', 'pro'])
+      .gt('subscription_end_date', new Date().toISOString());
+
+    // Starter vs Pro breakdown
+    const { count: starterCount } = await supabase
+      .from('user_credits')
+      .select('*', { count: 'exact', head: true })
+      .eq('plan', 'starter')
+      .gt('subscription_end_date', new Date().toISOString());
+
+    const { count: proCount } = await supabase
+      .from('user_credits')
+      .select('*', { count: 'exact', head: true })
+      .eq('plan', 'pro')
+      .gt('subscription_end_date', new Date().toISOString());
+
+    // Estimated cost (each edit ~$0.002)
+    const estimatedCostMonth = ((editsMonth || 0) * 0.002).toFixed(2);
+
+    // Last 7 days edits
+    const last7 = new Date();
+    last7.setDate(last7.getDate() - 7);
+    const { data: recentEdits } = await supabase
+      .from('api_stats')
+      .select('created_at')
+      .eq('event_type', 'image_edit')
+      .eq('success', true)
+      .gte('created_at', last7.toISOString())
+      .order('created_at', { ascending: true });
+
+    res.json({
+      edits_today: editsToday || 0,
+      edits_month: editsMonth || 0,
+      signups_total: signupsTotal || 0,
+      subscribers_active: subscribers || 0,
+      starter_count: starterCount || 0,
+      pro_count: proCount || 0,
+      estimated_cost_month_usd: estimatedCostMonth,
+      recent_edits: recentEdits || []
+    });
+  } catch (err) {
+    console.error('Admin stats error:', err);
     res.status(500).json({ error: err.message });
   }
 });
