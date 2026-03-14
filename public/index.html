@@ -955,8 +955,9 @@ footer{position:relative;z-index:1;border-top:1px solid var(--border);padding:36
           <span style="color:#c9a84c;">✦</span> Auto-activated instantly
         </li>
       </ul>
-      <a href="https://alaakhaled.gumroad.com/l/ixfwd" target="_blank" style="
+      <button onclick="openUpgradeModal()" style="
         display: block;
+        width: 100%;
         text-align: center;
         padding: 12px;
         border-radius: 8px;
@@ -964,13 +965,15 @@ footer{position:relative;z-index:1;border-top:1px solid var(--border);padding:36
         color: #0f1a0e;
         font-size: 13px;
         font-weight: 700;
-        text-decoration: none;
+        border: none;
+        cursor: pointer;
         letter-spacing: 0.5px;
         transition: opacity 0.2s;
+        font-family: inherit;
       "
       onmouseover="this.style.opacity='0.85'"
       onmouseout="this.style.opacity='1'"
-      >Subscribe — $5/mo</a>
+      >Subscribe — $5/mo</button>
     </div>
 
   </div>
@@ -995,8 +998,8 @@ footer{position:relative;z-index:1;border-top:1px solid var(--border);padding:36
           <div class="cmpc res"><span class="cmplabel" data-ar="المعدّل ✦" data-en="Edited ✦">المعدّل ✦</span><img id="rimg" src="" alt=""/></div>
         </div>
         <div class="upbanner" id="upbanner">
-          <p id="upTxt" data-ar="🎉 استمتعت بصورتك المجانية! سجّل الآن واحصل على 3 صور يومياً مجاناً" data-en="🎉 You used your free edit! Sign up for 3 free edits every day">🎉 استمتعت بصورتك المجانية! سجّل الآن واحصل على 3 صور يومياً</p>
-          <button class="upbtn" onclick="openM()"><span data-ar="إنشاء حساب مجاني ✦" data-en="Create free account ✦">إنشاء حساب مجاني ✦</span></button>
+          <p id="upTxt" data-ar="🎉 استمتعت بصورتك المجانية! اشترك بـ $5 واحصل على 30 صورة كل شهر" data-en="🎉 You used your free edit! Subscribe for 30 edits/month — only $5">🎉 استمتعت بصورتك المجانية! اشترك بـ $5 واحصل على 30 صورة كل شهر</p>
+          <button class="upbtn" onclick="openUpgradeModal()"><span data-ar="ترقّى الآن ✦" data-en="Upgrade Now ✦">ترقّى الآن ✦</span></button>
         </div>
       </div>
     </div>
@@ -1490,7 +1493,7 @@ async function gen(){
     document.getElementById('upbanner').style.display=data.requiresAuthForMore?'block':'none';
     document.getElementById('resc').scrollIntoView({behavior:'smooth',block:'nearest'});
     document.getElementById('cv').textContent=tok?`${data.remaining_credits}/${DAILY}`:(lang==='ar'?'سجّل':'Sign up');
-    if(data.requiresAuthForMore && !tok){ setTimeout(()=>{ if(!tok) openM(); }, 8000); }
+    if(data.requiresAuthForMore && !tok){ setTimeout(()=>{ if(!tok) openUpgradeModal(); }, 8000); }
     showWPopup();
     if(tok){ loadHistoryCache(); }
   }catch{showMsg('err',lang==='ar'?'تعذر الاتصال بالخادم':'Could not reach server')}
