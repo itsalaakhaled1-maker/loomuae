@@ -1731,5 +1731,43 @@ window.addEventListener('load',()=>{
 
 document.addEventListener('keydown',e=>{if(e.key==='Escape')closeM();if((e.ctrlKey||e.metaKey)&&e.key==='Enter')gen()});
 </script>
+  <!-- ══ UPGRADE MODAL ══════════════════════════════════════════════════════════ -->
+<div class="wpopup-ov" id="upgradeModal">
+  <div class="wpopup">
+    <div class="wpopup-hero">
+      <button class="wpopup-close" onclick="closeUpgradeModal()">✕</button>
+      <span class="wpopup-confetti">⚡</span>
+      <div class="wpopup-htitle" data-ar="ترقية إلى Starter" data-en="Upgrade to Starter">ترقية إلى Starter</div>
+      <div class="wpopup-hsub" data-ar="30 تعديل شهرياً بـ $5 فقط" data-en="30 edits/month for just $5">30 تعديل شهرياً بـ $5 فقط</div>
+    </div>
+    <div class="wpopup-body2">
+      <div class="wpopup-features">
+        <div class="wpopup-feat">
+          <div class="wpopup-feat-icon">🖼️</div>
+          <span data-ar="30 تعديل صورة كل شهر" data-en="30 image edits every month">30 تعديل صورة كل شهر</span>
+        </div>
+        <div class="wpopup-feat">
+          <div class="wpopup-feat-icon">✨</div>
+          <span data-ar="جودة عالية بالذكاء الاصطناعي" data-en="High quality AI results">جودة عالية بالذكاء الاصطناعي</span>
+        </div>
+        <div class="wpopup-feat">
+          <div class="wpopup-feat-icon">⚡</div>
+          <span data-ar="معالجة سريعة وفورية" data-en="Fast instant processing">معالجة سريعة وفورية</span>
+        </div>
+        <div class="wpopup-feat">
+          <div class="wpopup-feat-icon">🔒</div>
+          <span data-ar="بياناتك آمنة ومحمية" data-en="Your data is safe & private">بياناتك آمنة ومحمية</span>
+        </div>
+      </div>
+      <div class="wpopup-cta2">
+        <a class="wpopup-main-btn" href="https://loomuae.gumroad.com/l/starter" target="_blank" onclick="closeUpgradeModal()">
+          <span data-ar="اشترك دلوقتي — $5/شهر" data-en="Subscribe Now — $5/month">اشترك دلوقتي — $5/شهر</span>
+          <span>→</span>
+        </a>
+        <button class="wpopup-skip" onclick="closeUpgradeModal()" data-ar="مش دلوقتي" data-en="Not now">مش دلوقتي</button>
+      </div>
+    </div>
+  </div>
+</div>
 </body>
 </html>
