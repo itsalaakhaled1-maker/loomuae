@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Loom — Admin</title>
+<link href="https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@300;400;600;700&family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#07080a;--bg2:#0d0f12;--bg3:#13161b;--bg4:#1a1e25;
+  --border:rgba(255,255,255,0.06);--border-hi:rgba(99,179,113,0.25);
+  --green:#63b371;--green2:#3d8f4e;--green-dim:rgba(99,179,113,0.08);
+  --amber:#f5c842;--amber-dim:rgba(245,200,66,0.08);
+  --blue:#5b9cf6;--blue-dim:rgba(91,156,246,0.08);
+  --red:#e06060;--red-dim:rgba(224,96,96,0.08);
+  --white:#e8ebe4;--muted:#4a5160;--muted2:#7a8294;
+  --r:10px;--r-lg:16px;
+}
+html{scroll-behavior:smooth}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--white);min-height:100vh;overflow-x:hidden}
+
+/* grain */
+body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:9999;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.025'/%3E%3C/svg%3E");
+}
+
+/* ── LOGIN ── */
+#loginScreen{position:fixed;inset:0;z-index:100;background:var(--bg);display:flex;align-items:center;justify-content:center}
+.login-box{width:340px;text-align:center}
+.login-logo{font-family:'Josefin Sans',sans-serif;font-size:28px;font-weight:700;letter-spacing:6px;color:var(--green);margin-bottom:6px}
+.login-sub{font-size:12px;color:var(--muted2);letter-spacing:2px;text-transform:uppercase;margin-bottom:40px}
+.login-box input{width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);padding:13px 16px;color:var(--white);font-family:'DM Mono',monospace;font-size:14px;outline:none;text-align:center;letter-spacing:3px;transition:border-color .25s;margin-bottom:12px}
+.login-box input:focus{border-color:rgba(99,179,113,0.4)}
+.login-btn{width:100%;padding:13px;background:linear-gradient(135deg,var(--green),var(--green2));color:#0a1a0e;border:none;border-radius:var(--r);font-family:'Josefin Sans',sans-serif;font-size:14px;font-weight:700;letter-spacing:2px;cursor:pointer;transition:all .25s}
+.login-btn:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(99,179,113,0.25)}
+.login-err{font-size:12px;color:var(--red);margin-top:10px;min-height:16px}
+
+/* ── LAYOUT ── */
+#app{display:none;min-height:100vh}
+header{position:sticky;top:0;z-index:50;height:56px;display:flex;align-items:center;justify-content:space-between;padding:0 28px;background:rgba(7,8,10,.85);backdrop-filter:blur(20px);border-bottom:1px solid var(--border)}
+.hlogo{font-family:'Josefin Sans',sans-serif;font-size:16px;font-weight:700;letter-spacing:5px;color:var(--green)}
+.hbadge{display:flex;align-items:center;gap:7px;font-size:11px;color:var(--muted2);font-family:'DM Mono',monospace}
+.hbadge-dot{width:6px;height:6px;border-radius:50%;background:var(--green);animation:pulse 2s ease-in-out infinite}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(.8)}}
+.hrefresh{background:var(--bg3);border:1px solid var(--border);color:var(--muted2);font-family:inherit;font-size:11px;padding:5px 12px;border-radius:var(--r);cursor:pointer;transition:all .2s}
+.hrefresh:hover{border-color:rgba(99,179,113,.4);color:var(--green)}
+
+main{padding:28px;max-width:1200px;margin:0 auto}
+
+/* ── STAT CARDS ── */
+.stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:28px}
+.scard{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r-lg);padding:20px 22px;position:relative;overflow:hidden;transition:border-color .25s}
+.scard:hover{border-color:rgba(255,255,255,.1)}
+.scard::before{content:'';position:absolute;top:0;left:0;right:0;height:2px}
+.scard.green::before{background:linear-gradient(90deg,transparent,var(--green),transparent)}
+.scard.amber::before{background:linear-gradient(90deg,transparent,var(--amber),transparent)}
+.scard.blue::before{background:linear-gradient(90deg,transparent,var(--blue),transparent)}
+.scard.red::before{background:linear-gradient(90deg,transparent,var(--red),transparent)}
+.scard-label{font-size:11px;color:var(--muted2);text-transform:uppercase;letter-spacing:1.5px;font-family:'DM Mono',monospace;margin-bottom:10px}
+.scard-val{font-family:'Josefin Sans',sans-serif;font-size:36px;font-weight:700;color:var(--white);line-height:1;margin-bottom:6px}
+.scard-val.green{color:var(--green)}
+.scard-val.amber{color:var(--amber)}
+.scard-val.blue{color:var(--blue)}
+.scard-val.red{color:var(--red)}
+.scard-sub{font-size:11px;color:var(--muted)}
+
+/* ── GRID 2 ── */
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px}
+.grid3{display:grid;grid-template-columns:2fr 1fr;gap:14px;margin-bottom:14px}
+
+/* ── PANELS ── */
+.panel{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r-lg);padding:22px}
+.panel-hd{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px}
+.panel-title{font-family:'Josefin Sans',sans-serif;font-size:13px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:var(--muted2)}
+.panel-badge{font-size:10px;font-family:'DM Mono',monospace;padding:3px 9px;border-radius:100px;background:var(--green-dim);border:1px solid var(--border-hi);color:var(--green)}
+
+/* ── CHART ── */
+.chart-wrap{position:relative;height:180px}
+
+/* ── PLAN BARS ── */
+.plan-row{display:flex;flex-direction:column;gap:12px}
+.plan-item{display:flex;flex-direction:column;gap:6px}
+.plan-meta{display:flex;justify-content:space-between;align-items:center}
+.plan-name{font-size:12px;color:var(--muted2);font-family:'DM Mono',monospace}
+.plan-count{font-size:13px;font-weight:600;color:var(--white)}
+.plan-bar-track{height:6px;background:var(--bg4);border-radius:10px;overflow:hidden}
+.plan-bar-fill{height:100%;border-radius:10px;transition:width 1s cubic-bezier(.4,0,.2,1)}
+.plan-bar-fill.green{background:var(--green)}
+.plan-bar-fill.amber{background:var(--amber)}
+.plan-bar-fill.muted{background:var(--muted)}
+
+/* ── COST BREAKDOWN ── */
+.cost-rows{display:flex;flex-direction:column;gap:10px}
+.cost-row{display:flex;justify-content:space-between;align-items:center;padding:10px 14px;background:var(--bg3);border-radius:var(--r);border:1px solid var(--border)}
+.cost-label{font-size:12px;color:var(--muted2)}
+.cost-val{font-family:'DM Mono',monospace;font-size:13px;font-weight:500;color:var(--white)}
+.cost-val.green{color:var(--green)}
+.cost-val.amber{color:var(--amber)}
+
+/* ── LOADING ── */
+.skeleton{background:linear-gradient(90deg,var(--bg3) 25%,var(--bg4) 50%,var(--bg3) 75%);background-size:200% 100%;animation:shimmer 1.5s infinite;border-radius:6px;height:36px}
+@keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
+
+/* ── LAST UPDATED ── */
+.last-updated{font-size:11px;color:var(--muted);font-family:'DM Mono',monospace;text-align:center;margin-top:28px;padding-bottom:28px}
+
+@media(max-width:900px){
+  .stats-grid{grid-template-columns:repeat(2,1fr)}
+  .grid2,.grid3{grid-template-columns:1fr}
+  main{padding:16px}
+}
+@media(max-width:500px){
+  .stats-grid{grid-template-columns:1fr 1fr}
+  .scard-val{font-size:28px}
+}
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div id="loginScreen">
+  <div class="login-box">
+    <div class="login-logo">LOOM</div>
+    <div class="login-sub">Admin Dashboard</div>
+    <input type="password" id="keyInput" placeholder="••••••••••••" autocomplete="off" onkeydown="if(event.key==='Enter')doLogin()"/>
+    <button class="login-btn" onclick="doLogin()">ENTER</button>
+    <div class="login-err" id="loginErr"></div>
+  </div>
+</div>
+
+<!-- APP -->
+<div id="app">
+  <header>
+    <div class="hlogo">LOOM</div>
+    <div style="display:flex;align-items:center;gap:14px">
+      <div class="hbadge"><span class="hbadge-dot"></span> LIVE</div>
+      <button class="hrefresh" onclick="loadStats()">↻ Refresh</button>
+    </div>
+  </header>
+
+  <main>
+    <!-- STAT CARDS -->
+    <div class="stats-grid">
+      <div class="scard green">
+        <div class="scard-label">Edits Today</div>
+        <div class="scard-val green" id="valEditsToday">—</div>
+        <div class="scard-sub">image generations</div>
+      </div>
+      <div class="scard amber">
+        <div class="scard-label">Edits This Month</div>
+        <div class="scard-val amber" id="valEditsMonth">—</div>
+        <div class="scard-sub" id="subEditsMonth">loading...</div>
+      </div>
+      <div class="scard blue">
+        <div class="scard-label">Total Signups</div>
+        <div class="scard-val blue" id="valSignups">—</div>
+        <div class="scard-sub">registered users</div>
+      </div>
+      <div class="scard red">
+        <div class="scard-label">Active Subscribers</div>
+        <div class="scard-val" style="color:var(--green)" id="valSubs">—</div>
+        <div class="scard-sub">paying customers</div>
+      </div>
+    </div>
+
+    <!-- CHART + PLANS -->
+    <div class="grid3">
+      <div class="panel">
+        <div class="panel-hd">
+          <div class="panel-title">Edits — Last 7 Days</div>
+          <div class="panel-badge" id="chartTotal">loading</div>
+        </div>
+        <div class="chart-wrap">
+          <canvas id="editsChart"></canvas>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-hd">
+          <div class="panel-title">Plans Breakdown</div>
+        </div>
+        <div class="plan-row" id="planRows" style="margin-top:8px">
+          <div class="skeleton"></div>
+          <div class="skeleton" style="height:24px;margin-top:6px"></div>
+          <div class="skeleton" style="margin-top:6px"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- COST BREAKDOWN -->
+    <div class="grid2">
+      <div class="panel">
+        <div class="panel-hd">
+          <div class="panel-title">Cost Estimate</div>
+          <div class="panel-badge">Gemini Flash</div>
+        </div>
+        <div class="cost-rows" id="costRows">
+          <div class="skeleton"></div>
+          <div class="skeleton"></div>
+          <div class="skeleton"></div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-hd">
+          <div class="panel-title">Revenue Estimate</div>
+          <div class="panel-badge">Gumroad</div>
+        </div>
+        <div class="cost-rows" id="revenueRows">
+          <div class="skeleton"></div>
+          <div class="skeleton"></div>
+          <div class="skeleton"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="last-updated" id="lastUpdated">—</div>
+  </main>
+</div>
+
+<script>
+const ADMIN_KEY = 'Ak01080843003#';
+let chartInstance = null;
+
+function doLogin() {
+  const val = document.getElementById('keyInput').value.trim();
+  if (val === ADMIN_KEY) {
+    document.getElementById('loginScreen').style.display = 'none';
+    document.getElementById('app').style.display = 'block';
+    loadStats();
+  } else {
+    const err = document.getElementById('loginErr');
+    err.textContent = 'Wrong key. Try again.';
+    setTimeout(() => err.textContent = '', 2000);
+  }
+}
+
+async function loadStats() {
+  try {
+    const res = await fetch('/api/admin/stats', {
+      headers: { 'x-admin-key': ADMIN_KEY }
+    });
+    if (!res.ok) throw new Error('Failed');
+    const d = await res.json();
+    renderStats(d);
+  } catch(e) {
+    console.error(e);
+  }
+}
+
+function renderStats(d) {
+  // Stat cards
+  document.getElementById('valEditsToday').textContent = d.edits_today.toLocaleString();
+  document.getElementById('valEditsMonth').textContent = d.edits_month.toLocaleString();
+  document.getElementById('subEditsMonth').textContent = `~$${d.estimated_cost_month_usd} cost`;
+  document.getElementById('valSignups').textContent = d.signups_total.toLocaleString();
+  document.getElementById('valSubs').textContent = d.subscribers_active.toLocaleString();
+
+  // Chart
+  renderChart(d.recent_edits || []);
+
+  // Plans breakdown
+  const total = d.subscribers_active || 1;
+  const freeUsers = Math.max(0, d.signups_total - d.subscribers_active);
+  document.getElementById('planRows').innerHTML = `
+    <div class="plan-item">
+      <div class="plan-meta">
+        <span class="plan-name">FREE</span>
+        <span class="plan-count">${freeUsers.toLocaleString()} users</span>
+      </div>
+      <div class="plan-bar-track"><div class="plan-bar-fill muted" style="width:${d.signups_total ? Math.round(freeUsers/d.signups_total*100) : 0}%"></div></div>
+    </div>
+    <div class="plan-item">
+      <div class="plan-meta">
+        <span class="plan-name">STARTER</span>
+        <span class="plan-count">${(d.starter_count||0).toLocaleString()} subscribers</span>
+      </div>
+      <div class="plan-bar-track"><div class="plan-bar-fill amber" style="width:${total ? Math.round((d.starter_count||0)/total*100) : 0}%"></div></div>
+    </div>
+    <div class="plan-item">
+      <div class="plan-meta">
+        <span class="plan-name">LOOM PRO</span>
+        <span class="plan-count">${(d.pro_count||0).toLocaleString()} subscribers</span>
+      </div>
+      <div class="plan-bar-track"><div class="plan-bar-fill green" style="width:${total ? Math.round((d.pro_count||0)/total*100) : 0}%"></div></div>
+    </div>
+  `;
+
+  // Cost breakdown
+  const costPerEdit = 0.002;
+  const totalCost = (d.edits_month * costPerEdit).toFixed(2);
+  const costToday = (d.edits_today * costPerEdit).toFixed(4);
+  document.getElementById('costRows').innerHTML = `
+    <div class="cost-row">
+      <span class="cost-label">Cost per edit</span>
+      <span class="cost-val">~$0.002</span>
+    </div>
+    <div class="cost-row">
+      <span class="cost-label">Today's cost</span>
+      <span class="cost-val amber">$${costToday}</span>
+    </div>
+    <div class="cost-row">
+      <span class="cost-label">This month total</span>
+      <span class="cost-val green">$${totalCost}</span>
+    </div>
+    <div class="cost-row">
+      <span class="cost-label">Projected month</span>
+      <span class="cost-val">${projectedCost(d.edits_today)}</span>
+    </div>
+  `;
+
+  // Revenue estimate
+  const starterRev = (d.starter_count || 0) * 5;
+  const proRev = (d.pro_count || 0) * 12;
+  const totalRev = starterRev + proRev;
+  document.getElementById('revenueRows').innerHTML = `
+    <div class="cost-row">
+      <span class="cost-label">Starter × ${d.starter_count||0}</span>
+      <span class="cost-val amber">$${starterRev}</span>
+    </div>
+    <div class="cost-row">
+      <span class="cost-label">Pro × ${d.pro_count||0}</span>
+      <span class="cost-val green">$${proRev}</span>
+    </div>
+    <div class="cost-row">
+      <span class="cost-label">Monthly revenue</span>
+      <span class="cost-val green" style="font-size:16px;font-weight:700">$${totalRev}</span>
+    </div>
+    <div class="cost-row">
+      <span class="cost-label">Net profit est.</span>
+      <span class="cost-val green">$${Math.max(0, totalRev - parseFloat(totalCost)).toFixed(2)}</span>
+    </div>
+  `;
+
+  // Last updated
+  document.getElementById('lastUpdated').textContent =
+    'Last updated: ' + new Date().toLocaleTimeString('en-US', {hour:'2-digit',minute:'2-digit',second:'2-digit'});
+}
+
+function projectedCost(editsToday) {
+  const day = new Date().getDate();
+  const daysInMonth = new Date(new Date().getFullYear(), new Date().getMonth()+1, 0).getDate();
+  const proj = (editsToday * daysInMonth * 0.002).toFixed(2);
+  return `~$${proj}`;
+}
+
+function renderChart(recentEdits) {
+  // Group by day
+  const days = {};
+  for (let i = 6; i >= 0; i--) {
+    const d = new Date();
+    d.setDate(d.getDate() - i);
+    const key = d.toISOString().split('T')[0];
+    days[key] = 0;
+  }
+  recentEdits.forEach(e => {
+    const key = e.created_at.split('T')[0];
+    if (days[key] !== undefined) days[key]++;
+  });
+
+  const labels = Object.keys(days).map(k => {
+    const d = new Date(k + 'T12:00:00');
+    return d.toLocaleDateString('en-US', {month:'short', day:'numeric'});
+  });
+  const values = Object.values(days);
+  const total = values.reduce((a,b)=>a+b,0);
+  document.getElementById('chartTotal').textContent = total + ' total';
+
+  if (chartInstance) chartInstance.destroy();
+
+  const ctx = document.getElementById('editsChart').getContext('2d');
+  chartInstance = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels,
+      datasets: [{
+        data: values,
+        backgroundColor: values.map((v, i) => i === values.length-1 ? 'rgba(99,179,113,0.9)' : 'rgba(99,179,113,0.25)'),
+        borderColor: 'rgba(99,179,113,0.6)',
+        borderWidth: 1,
+        borderRadius: 4,
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: { legend: { display: false }, tooltip: {
+        backgroundColor: 'rgba(13,15,18,0.95)',
+        borderColor: 'rgba(99,179,113,0.3)',
+        borderWidth: 1,
+        titleColor: '#7a8294',
+        bodyColor: '#e8ebe4',
+        bodyFont: { family: 'DM Mono', size: 13 },
+        callbacks: { label: ctx => `  ${ctx.raw} edits` }
+      }},
+      scales: {
+        x: { grid: { color: 'rgba(255,255,255,0.04)' }, ticks: { color: '#4a5160', font: { family: 'DM Mono', size: 10 } } },
+        y: { grid: { color: 'rgba(255,255,255,0.04)' }, ticks: { color: '#4a5160', font: { family: 'DM Mono', size: 10 }, stepSize: 1 }, beginAtZero: true }
+      }
+    }
+  });
+}
+
+// Auto-refresh every 60 seconds
+setInterval(() => {
+  if (document.getElementById('app').style.display !== 'none') loadStats();
+}, 60000);
+</script>
+</body>
+</html>
