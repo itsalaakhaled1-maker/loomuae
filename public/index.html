@@ -1185,7 +1185,7 @@ footer{position:relative;z-index:1;border-top:1px solid var(--border);padding:36
 </div>
 
 <script>
-const API='', DAILY=3;
+const API=''; let DAILY=3;
 let lang=localStorage.getItem('ll')||'ar';
 let sid=localStorage.getItem('ls')||'s'+Math.random().toString(36).slice(2)+Date.now().toString(36);
 let tok=localStorage.getItem('lt')||null, usr=JSON.parse(localStorage.getItem('lu')||'null');
@@ -1370,7 +1370,7 @@ async function loadCred(){
     }
     const d=await r.json();
     document.getElementById('cv').textContent=d.type==='user'
-      ?`${d.remaining}/${DAILY}`
+      ?`${d.remaining}/${d.total_credits||DAILY}`
       :(d.canEdit?(lang==='ar'?'١ مجاناً':'1 free'):(lang==='ar'?'سجّل':'Sign up'));
   }catch{}
 }
