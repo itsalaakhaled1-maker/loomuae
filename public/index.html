@@ -762,7 +762,7 @@ footer{position:relative;z-index:1;border-top:1px solid var(--border);padding:36
   <div class="hstats">
     <div class="hstat"><span class="hstat-v">10s</span><span class="hstat-l" data-ar="وقت المعالجة" data-en="Processing time">وقت المعالجة</span></div>
     <div class="hstat"><span class="hstat-v">AR+EN</span><span class="hstat-l" data-ar="دعم ثنائي اللغة" data-en="Bilingual support">دعم ثنائي اللغة</span></div>
-    <div class="hstat"><span class="hstat-v">3/day</span><span class="hstat-l" data-ar="صور مجانية شهرياً" data-en="Free daily credits">صور مجانية شهرياً</span></div>
+    <div class="hstat"><span class="hstat-v">3/month</span><span class="hstat-l" data-ar="صور مجانية شهرياً" data-en="Free monthly credits">صور مجانية شهرياً</span></div>
   </div>
 
   <div class="appwrap">
@@ -1182,7 +1182,7 @@ footer{position:relative;z-index:1;border-top:1px solid var(--border);padding:36
 
     <div class="perks">
       <div class="perks-t">✦ <span data-ar="مزايا الحساب المجاني" data-en="Free account perks">مزايا الحساب المجاني</span></div>
-      <div class="perk">🎨 <span data-ar="3 صور يومياً مجاناً" data-en="3 free edits daily">3 صور يومياً مجاناً</span></div>
+      <div class="perk">🎨 <span data-ar="3 صور شًهرياً مجاناً" data-en="3 free edits daily">3 صور شًهرياً مجاناً</span></div>
       <div class="perk">⚡ <span data-ar="أولوية في المعالجة" data-en="Priority processing">أولوية في المعالجة</span></div>
       <div class="perk">🛠️ <span data-ar="وصول مبكر لأدوات Maven" data-en="Early access to Maven tools">وصول مبكر لأدوات Maven</span></div>
     </div>
@@ -1516,10 +1516,10 @@ async function gen(){
         return;
       }
       if(data.requiresAuth){
-        showMsg('info',lang==='ar'?'🎉 استهلكت الكريديت المجاني — سجّل للحصول على 3 صور يومياً!':'🎉 Free credit used — sign up for 3 free daily edits!');
+        showMsg('info',lang==='ar'?'🎉 استهلكت الكريديت المجاني — سجّل للحصول على 3 صور شهرياً!':'🎉 Free credit used — sign up for 3 free monthly edits!');
         setTimeout(()=>openM(),8000);
       } else if(data.error === 'Daily limit reached') {
-        showMsg('info',lang==='ar'?'✅ استهلكت صورك الـ 3 لليوم — تعالى بكرا للمزيد!':'✅ You used all 3 daily edits — come back tomorrow!');
+        showMsg('info',lang==='ar'?'✅ استهلكت صورك الـ 3 الشهر دا — اشترك للمزيد!':'✅ You used all 3 edits — sign up for more!');
       } else {
         showMsg('err',data.error_ar||data.error||(lang==='ar'?'حدث خطأ':'Something went wrong'));
       }
