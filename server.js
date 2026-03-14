@@ -35,9 +35,9 @@ app.get('/favicon.svg', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'favicon.svg'));
 });
 
-// Rate limiter - protect API
+// Rate limiter - protect only edit endpoint
 const limiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
+  windowMs: 15 * 60 * 1000,
   max: 30,
   message: { error: 'Too many requests, please try again later.' }
 });
@@ -46,7 +46,7 @@ app.use('/api/edit', limiter);
 // Multer - memory storage (no disk)
 const upload = multer({
   storage: multer.memoryStorage(),
-  limits: { fileSize: 10 * 1024 * 1024 }, // 10MB
+  limits: { fileSize: 10 * 1024 * 1024 },
   fileFilter: (req, file, cb) => {
     const allowed = ['image/jpeg', 'image/png', 'image/webp'];
     if (allowed.includes(file.mimetype)) cb(null, true);
@@ -67,8 +67,6 @@ async function getUser(req) {
 // ─── Credits Logic ──────────────────────────────────────────────────────────
 
 async function checkAnonymousCredit(sessionId) {
-  const today = new Date().toISOString().split('T')[0];
-
   const { data, error } = await supabase
     .from('anonymous_usage')
     .select('*')
@@ -101,6 +99,7 @@ async function useAnonymousCredit(sessionId) {
 }
 
 // For logged-in users: check plan and credits
+// ✅ NOW returns total_credits as well
 async function checkUserCredits(userId) {
   const today = new Date().toISOString().split('T')[0];
 
@@ -118,7 +117,7 @@ async function checkUserCredits(userId) {
       plan: 'free',
       monthly_credits: 3
     });
-    return { canEdit: true, remaining: 3, plan: 'free' };
+    return { canEdit: true, remaining: 3, total_credits: 3, plan: 'free' };
   }
 
   // Check if subscription expired
@@ -140,11 +139,16 @@ async function checkUserCredits(userId) {
       used_today: 0,
       last_reset: today
     }).eq('user_id', userId);
-    return { canEdit: true, remaining: limit, plan: data.plan || 'free' };
+    return { canEdit: true, remaining: limit, total_credits: limit, plan: data.plan || 'free' };
   }
 
   const remaining = limit - data.used_today;
-  return { canEdit: remaining > 0, remaining: Math.max(0, remaining), plan: data.plan || 'free' };
+  return {
+    canEdit: remaining > 0,
+    remaining: Math.max(0, remaining),
+    total_credits: limit,           // ✅ الإضافة الجديدة
+    plan: data.plan || 'free'
+  };
 }
 
 async function useUserCredit(userId) {
@@ -161,9 +165,7 @@ app.get('/api/health', (req, res) => {
 app.get('/api/auth/google', async (req, res) => {
   const { data, error } = await supabase.auth.signInWithOAuth({
     provider: 'google',
-    options: {
-      redirectTo: process.env.FRONTEND_URL
-    }
+    options: { redirectTo: process.env.FRONTEND_URL }
   });
   if (error) return res.status(500).json({ error: error.message });
   res.json({ url: data.url });
@@ -280,10 +282,11 @@ app.get('/api/credits', async (req, res) => {
   }
   if (user) {
     const credits = await checkUserCredits(user.id);
-    res.json({ type: 'user', ...credits, daily_limit: credits.remaining + (credits.canEdit ? 0 : 0) });
+    // ✅ بنبعت total_credits عشان الـ frontend يعرض remaining/total
+    res.json({ type: 'user', ...credits });
   } else {
     const credits = await checkAnonymousCredit(sessionId || 'unknown');
-    res.json({ type: 'anonymous', canEdit: credits.canEdit, remaining: credits.canEdit ? 1 : 0, daily_limit: 1 });
+    res.json({ type: 'anonymous', canEdit: credits.canEdit, remaining: credits.canEdit ? 1 : 0, total_credits: 1 });
   }
 });
 
@@ -461,6 +464,7 @@ app.post('/api/edit', upload.single('image'), async (req, res) => {
         image: editedImageBase64,
         mimeType: 'image/png',
         remaining_credits: newCredits.remaining,
+        total_credits: newCredits.total_credits,   // ✅
         plan: newCredits.plan,
         text: textResponse
       });
@@ -472,6 +476,7 @@ app.post('/api/edit', upload.single('image'), async (req, res) => {
         image: editedImageBase64,
         mimeType: 'image/png',
         remaining_credits: 0,
+        total_credits: 1,
         requiresAuthForMore: true,
         text: textResponse
       });
@@ -516,18 +521,15 @@ app.post('/api/gumroad/webhook', async (req, res) => {
     const { email, product_permalink, sale_timestamp } = req.body;
     if (!email) return res.status(400).json({ error: 'No email' });
 
-    // Find user by email
     const { data: userData, error: userError } = await supabase.auth.admin.listUsers();
     if (userError) return res.status(500).json({ error: 'Error fetching users' });
 
     const user = userData.users.find(u => u.email === email);
     if (!user) return res.status(404).json({ error: 'User not found' });
 
-    // Set subscription end date (30 days)
     const endDate = new Date();
     endDate.setDate(endDate.getDate() + 30);
 
-    // Update user credits to Starter plan
     await supabase.from('user_credits').upsert({
       user_id: user.id,
       plan: 'starter',
