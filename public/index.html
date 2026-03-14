@@ -632,6 +632,7 @@ footer{position:relative;z-index:1;border-top:1px solid var(--border);padding:36
   .flinks{justify-content:center}
 }
   </style>
+  <script src="https://gumroad.com/js/gumroad.js"></script>
 </head>
 <body>
 
@@ -877,7 +878,10 @@ footer{position:relative;z-index:1;border-top:1px solid var(--border);padding:36
       <div style="display:flex; align-items:baseline; gap:4px; margin-bottom:6px;">
         <span style="color:#fff; font-size:36px; font-weight:700;">$0</span>
       </div>
-      <p style="color:rgba(255,255,255,0.35); font-size:13px; margin:0 0 28px;">forever</p>
+      <div style="display:flex;align-items:center;gap:6px;margin-bottom:28px;">
+        <span style="color:rgba(255,255,255,0.35);font-size:13px;">forever</span>
+        <span style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:rgba(255,255,255,0.4);font-size:11px;font-weight:700;padding:2px 8px;border-radius:20px;">0 AED</span>
+      </div>
       <hr style="border:none; border-top:1px solid rgba(255,255,255,0.06); margin:0 0 24px;">
       <ul style="list-style:none; padding:0; margin:0 0 28px; display:flex; flex-direction:column; gap:12px;">
         <li style="color:rgba(255,255,255,0.65); font-size:14px; display:flex; align-items:center; gap:8px;">
@@ -890,7 +894,7 @@ footer{position:relative;z-index:1;border-top:1px solid var(--border);padding:36
           <span style="color:#c9a84c;">✦</span> 10s processing
         </li>
       </ul>
-      <a href="/signup" style="
+      <a href="#" onclick="openM();mTab('up')" style="
         display:block;
         text-align:center;
         padding: 11px;
@@ -939,7 +943,10 @@ footer{position:relative;z-index:1;border-top:1px solid var(--border);padding:36
       <div style="display:flex; align-items:baseline; gap:4px; margin-bottom:6px;">
         <span style="color:#fff; font-size:36px; font-weight:700;">$5</span>
       </div>
-      <p style="color:rgba(255,255,255,0.35); font-size:13px; margin:0 0 28px;">per month</p>
+      <div style="display:flex; align-items:center; gap:6px; margin-bottom:28px;">
+        <span style="color:rgba(255,255,255,0.35); font-size:13px;">per month</span>
+        <span style="background:rgba(201,168,76,0.12); border:1px solid rgba(201,168,76,0.3); color:#c9a84c; font-size:11px; font-weight:700; padding:2px 8px; border-radius:20px;">~18 AED</span>
+      </div>
       <hr style="border:none; border-top:1px solid rgba(201,168,76,0.15); margin:0 0 24px;">
       <ul style="list-style:none; padding:0; margin:0 0 28px; display:flex; flex-direction:column; gap:12px;">
         <li style="color:rgba(255,255,255,0.8); font-size:14px; display:flex; align-items:center; gap:8px;">
@@ -955,7 +962,7 @@ footer{position:relative;z-index:1;border-top:1px solid var(--border);padding:36
           <span style="color:#c9a84c;">✦</span> Auto-activated instantly
         </li>
       </ul>
-      <button onclick="openUpgradeModal()" style="
+      <button onclick="openUpgradeModal('starter')" style="
         display: block;
         width: 100%;
         text-align: center;
@@ -974,6 +981,22 @@ footer{position:relative;z-index:1;border-top:1px solid var(--border);padding:36
       onmouseover="this.style.opacity='0.85'"
       onmouseout="this.style.opacity='1'"
       >Subscribe — $5/mo</button>
+    </div>
+
+    <!-- LOOM PRO CARD -->
+    <div style="background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.1);border-radius:16px;padding:32px 28px;width:220px;flex-shrink:0;text-align:left;position:relative;transition:border-color 0.2s;" onmouseover="this.style.borderColor='rgba(201,168,76,0.4)'" onmouseout="this.style.borderColor='rgba(255,255,255,0.1)'">
+      <p style="color:rgba(255,255,255,0.7);font-size:12px;letter-spacing:2px;text-transform:uppercase;margin:0 0 16px;">LOOM PRO</p>
+      <div style="display:flex;align-items:baseline;gap:2px;margin-bottom:6px;"><span style="color:#c9a84c;font-size:22px;font-weight:700;">$</span><span style="color:#fff;font-size:36px;font-weight:700;">12</span></div>
+      <div style="display:flex;align-items:center;gap:6px;margin-bottom:28px;"><span style="color:rgba(255,255,255,0.35);font-size:13px;">per month</span><span style="background:rgba(201,168,76,0.12);border:1px solid rgba(201,168,76,0.3);color:#c9a84c;font-size:11px;font-weight:700;padding:2px 8px;border-radius:20px;">~44 AED</span></div>
+      <hr style="border:none;border-top:1px solid rgba(255,255,255,0.06);margin:0 0 24px;">
+      <ul style="list-style:none;padding:0;margin:0 0 28px;display:flex;flex-direction:column;gap:12px;">
+        <li style="color:rgba(255,255,255,0.8);font-size:14px;display:flex;align-items:center;gap:8px;"><span style="color:#c9a84c;">✦</span> <strong style="color:#fff;">70</strong>&nbsp;photos / month</li>
+        <li style="color:rgba(255,255,255,0.8);font-size:14px;display:flex;align-items:center;gap:8px;"><span style="color:#c9a84c;">✦</span> AR + EN support</li>
+        <li style="color:rgba(255,255,255,0.8);font-size:14px;display:flex;align-items:center;gap:8px;"><span style="color:#c9a84c;">✦</span> Priority processing</li>
+        <li style="color:rgba(255,255,255,0.8);font-size:14px;display:flex;align-items:center;gap:8px;"><span style="color:#c9a84c;">✦</span> Auto-activated instantly</li>
+        <li style="color:rgba(255,255,255,0.8);font-size:14px;display:flex;align-items:center;gap:8px;"><span style="color:#c9a84c;">✦</span> Best value per photo</li>
+      </ul>
+      <button onclick="openUpgradeModal('pro')" style="display:block;width:100%;text-align:center;padding:12px;border-radius:8px;background:transparent;border:1.5px solid rgba(201,168,76,0.6);color:#c9a84c;font-size:13px;font-weight:700;cursor:pointer;letter-spacing:0.5px;transition:all 0.2s;font-family:inherit;" onmouseover="this.style.background='rgba(201,168,76,0.12)'" onmouseout="this.style.background='transparent'">Subscribe — $12/mo</button>
     </div>
 
   </div>
@@ -1734,51 +1757,63 @@ window.addEventListener('load',()=>{
 
 document.addEventListener('keydown',e=>{if(e.key==='Escape')closeM();if((e.ctrlKey||e.metaKey)&&e.key==='Enter')gen()});
   // Upgrade Modal
-function openUpgradeModal() {
+// Upgrade Modal
+const PLANS = {
+  starter: {
+    icon: '⚡',
+    title_ar: 'باقة Starter', title_en: 'Starter Plan',
+    sub_ar: '30 تعديل شهرياً — ~18 درهم فقط', sub_en: '30 edits/month — only ~18 AED',
+    feats_ar: ['🖼️ 30 تعديل صورة كل شهر','✨ جودة عالية بالذكاء الاصطناعي','⚡ معالجة سريعة وفورية','🔒 بياناتك آمنة ومحمية'],
+    feats_en: ['🖼️ 30 image edits every month','✨ High quality AI results','⚡ Fast instant processing','🔒 Your data is safe & private'],
+    btn_ar: 'اشترك دلوقتي — $5/شهر', btn_en: 'Subscribe Now — $5/month',
+    url: 'https://alaakhaled.gumroad.com/l/ixfwd'
+  },
+  pro: {
+    icon: '👑',
+    title_ar: 'باقة Loom Pro', title_en: 'Loom Pro Plan',
+    sub_ar: '70 تعديل شهرياً — ~44 درهم فقط', sub_en: '70 edits/month — only ~44 AED',
+    feats_ar: ['🖼️ 70 تعديل صورة كل شهر','✨ جودة عالية بالذكاء الاصطناعي','⚡ معالجة سريعة وفورية','🔒 بياناتك آمنة ومحمية','💎 أفضل قيمة للصورة'],
+    feats_en: ['🖼️ 70 image edits every month','✨ High quality AI results','⚡ Fast instant processing','🔒 Your data is safe & private','💎 Best value per photo'],
+    btn_ar: 'اشترك دلوقتي — $12/شهر', btn_en: 'Subscribe Now — $12/month',
+    url: 'https://alaakhaled.gumroad.com/l/fiqku'
+  }
+};
+function openUpgradeModal(plan) {
+  const p = PLANS[plan] || PLANS['starter'];
+  const lg = document.documentElement.getAttribute('data-lang') || 'ar';
+  document.getElementById('umIcon').textContent  = p.icon;
+  document.getElementById('umTitle').textContent = lg==='ar' ? p.title_ar : p.title_en;
+  document.getElementById('umSub').textContent   = lg==='ar' ? p.sub_ar   : p.sub_en;
+  document.getElementById('umBtn').textContent   = (lg==='ar' ? p.btn_ar  : p.btn_en) + ' →';
+  document.getElementById('umBtn').href          = p.url + '?wanted=true';
+  document.getElementById('umBtn').setAttribute('data-gumroad-product-link','true');
+  const feats = lg==='ar' ? p.feats_ar : p.feats_en;
+  document.getElementById('umFeats').innerHTML = feats.map(f=>
+    `<div class="wpopup-feat"><div class="wpopup-feat-icon">${f.slice(0,2)}</div><span>${f.slice(3)}</span></div>`
+  ).join('');
   document.getElementById('upgradeModal').classList.add('show');
 }
 function closeUpgradeModal() {
   document.getElementById('upgradeModal').classList.remove('show');
 }
-// Close on backdrop click
 document.getElementById('upgradeModal').addEventListener('click', function(e) {
   if (e.target === this) closeUpgradeModal();
 });
 </script>
-  <!-- ══ UPGRADE MODAL ══════════════════════════════════════════════════════════ -->
+<!-- ══ UPGRADE MODAL ══════════════════════════════════════════════════════════ -->
 <div class="wpopup-ov" id="upgradeModal">
   <div class="wpopup">
     <div class="wpopup-hero">
       <button class="wpopup-close" onclick="closeUpgradeModal()">✕</button>
-      <span class="wpopup-confetti">⚡</span>
-      <div class="wpopup-htitle" data-ar="ترقية إلى Starter" data-en="Upgrade to Starter">ترقية إلى Starter</div>
-      <div class="wpopup-hsub" data-ar="30 تعديل شهرياً بـ $5 فقط" data-en="30 edits/month for just $5">30 تعديل شهرياً بـ $5 فقط</div>
+      <span class="wpopup-confetti" id="umIcon">⚡</span>
+      <div class="wpopup-htitle" id="umTitle">باقة Starter</div>
+      <div class="wpopup-hsub" id="umSub">30 تعديل شهرياً — ~18 درهم فقط</div>
     </div>
     <div class="wpopup-body2">
-      <div class="wpopup-features">
-        <div class="wpopup-feat">
-          <div class="wpopup-feat-icon">🖼️</div>
-          <span data-ar="30 تعديل صورة كل شهر" data-en="30 image edits every month">30 تعديل صورة كل شهر</span>
-        </div>
-        <div class="wpopup-feat">
-          <div class="wpopup-feat-icon">✨</div>
-          <span data-ar="جودة عالية بالذكاء الاصطناعي" data-en="High quality AI results">جودة عالية بالذكاء الاصطناعي</span>
-        </div>
-        <div class="wpopup-feat">
-          <div class="wpopup-feat-icon">⚡</div>
-          <span data-ar="معالجة سريعة وفورية" data-en="Fast instant processing">معالجة سريعة وفورية</span>
-        </div>
-        <div class="wpopup-feat">
-          <div class="wpopup-feat-icon">🔒</div>
-          <span data-ar="بياناتك آمنة ومحمية" data-en="Your data is safe & private">بياناتك آمنة ومحمية</span>
-        </div>
-      </div>
+      <div class="wpopup-features" id="umFeats"></div>
       <div class="wpopup-cta2">
-        <a class="wpopup-main-btn" href="https://loomuae.gumroad.com/l/starter" target="_blank" onclick="closeUpgradeModal()">
-          <span data-ar="اشترك دلوقتي — $5/شهر" data-en="Subscribe Now — $5/month">اشترك دلوقتي — $5/شهر</span>
-          <span>→</span>
-        </a>
-        <button class="wpopup-skip" onclick="closeUpgradeModal()" data-ar="مش دلوقتي" data-en="Not now">مش دلوقتي</button>
+        <a class="wpopup-main-btn" id="umBtn" href="#" data-gumroad-product-link="true" onclick="closeUpgradeModal()">اشترك دلوقتي →</a>
+        <button class="wpopup-skip" onclick="closeUpgradeModal()">مش دلوقتي</button>
       </div>
     </div>
   </div>
