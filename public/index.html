@@ -762,7 +762,7 @@ footer{position:relative;z-index:1;border-top:1px solid var(--border);padding:36
   <div class="hstats">
     <div class="hstat"><span class="hstat-v">10s</span><span class="hstat-l" data-ar="وقت المعالجة" data-en="Processing time">وقت المعالجة</span></div>
     <div class="hstat"><span class="hstat-v">AR+EN</span><span class="hstat-l" data-ar="دعم ثنائي اللغة" data-en="Bilingual support">دعم ثنائي اللغة</span></div>
-    <div class="hstat"><span class="hstat-v">3/month</span><span class="hstat-l" data-ar="صور مجانية شهرياً" data-en="Free monthly credits">صور مجانية شهرياً</span></div>
+    <div class="hstat"><span class="hstat-v">5/day</span><span class="hstat-l" data-ar="صور مجانية يومياً" data-en="Free daily credits">صور مجانية يومياً</span></div>
   </div>
 
   <div class="appwrap">
@@ -858,7 +858,29 @@ footer{position:relative;z-index:1;border-top:1px solid var(--border);padding:36
     flex-wrap: wrap;
     max-width: 820px;
     margin: 0 auto;
-  ">
+  " id="pricingCards">
+  <style>
+    @media (max-width: 768px) {
+      #pricingCards {
+        flex-wrap: nowrap !important;
+        overflow-x: auto !important;
+        justify-content: flex-start !important;
+        max-width: 100% !important;
+        padding: 12px 20px 20px !important;
+        margin: 0 !important;
+        scroll-snap-type: x mandatory;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none;
+      }
+      #pricingCards::-webkit-scrollbar { display: none; }
+      #pricingCards > div {
+        min-width: 78vw !important;
+        width: 78vw !important;
+        flex-shrink: 0 !important;
+        scroll-snap-align: center;
+      }
+    }
+  </style>
 
     <!-- FREE CARD -->
     <div style="
@@ -1018,6 +1040,44 @@ footer{position:relative;z-index:1;border-top:1px solid var(--border);padding:36
     font-size: 12px;
     margin-top: 32px;
   " data-ar="الكريدت بتتجدد كل 30 يوم · إلغاء في أي وقت · دفع آمن عبر Gumroad" data-en="Credits reset every 30 days · Cancel anytime · Secure checkout via Gumroad">الكريدت بتتجدد كل 30 يوم · إلغاء في أي وقت · دفع آمن عبر Gumroad</p>
+
+  <!-- Mobile scroll dots -->
+  <div id="pricingDots" style="display:none;justify-content:center;gap:7px;margin-top:16px;">
+    <span class="pdot active" style="width:8px;height:8px;border-radius:50%;background:#c9a84c;display:inline-block;transition:all .3s;cursor:pointer;" onclick="scrollToCard(0)"></span>
+    <span class="pdot" style="width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,0.2);display:inline-block;transition:all .3s;cursor:pointer;" onclick="scrollToCard(1)"></span>
+    <span class="pdot" style="width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,0.2);display:inline-block;transition:all .3s;cursor:pointer;" onclick="scrollToCard(2)"></span>
+  </div>
+  <script>
+    (function(){
+      function initPricingScroll(){
+        var cont = document.getElementById('pricingCards');
+        var dots = document.getElementById('pricingDots');
+        var dotEls = document.querySelectorAll('.pdot');
+        if(!cont || !dots) return;
+        if(window.innerWidth <= 768){
+          dots.style.display = 'flex';
+          cont.addEventListener('scroll', function(){
+            var idx = Math.round(cont.scrollLeft / (cont.offsetWidth * 0.78 + 18));
+            idx = Math.max(0, Math.min(2, idx));
+            dotEls.forEach(function(d,i){
+              d.style.background = i===idx ? '#c9a84c' : 'rgba(255,255,255,0.2)';
+              d.style.width = i===idx ? '20px' : '8px';
+              d.style.borderRadius = '10px';
+            });
+          });
+        }
+      }
+      window.scrollToCard = function(idx){
+        var cont = document.getElementById('pricingCards');
+        if(!cont) return;
+        var cardW = cont.offsetWidth * 0.78 + 18;
+        cont.scrollTo({left: idx * cardW, behavior:'smooth'});
+      };
+      if(document.readyState==='loading'){
+        document.addEventListener('DOMContentLoaded', initPricingScroll);
+      } else { initPricingScroll(); }
+    })();
+  </script>
 
 </section>
 <!-- ===== END PRICING SECTION ===== -->
@@ -1182,7 +1242,7 @@ footer{position:relative;z-index:1;border-top:1px solid var(--border);padding:36
 
     <div class="perks">
       <div class="perks-t">✦ <span data-ar="مزايا الحساب المجاني" data-en="Free account perks">مزايا الحساب المجاني</span></div>
-      <div class="perk">🎨 <span data-ar="3 صور شًهرياً مجاناً" data-en="3 free edits daily">3 صور شًهرياً مجاناً</span></div>
+      <div class="perk">🎨 <span data-ar="3 صور يومياً مجاناً" data-en="3 free edits daily">3 صور يومياً مجاناً</span></div>
       <div class="perk">⚡ <span data-ar="أولوية في المعالجة" data-en="Priority processing">أولوية في المعالجة</span></div>
       <div class="perk">🛠️ <span data-ar="وصول مبكر لأدوات Maven" data-en="Early access to Maven tools">وصول مبكر لأدوات Maven</span></div>
     </div>
@@ -1516,10 +1576,10 @@ async function gen(){
         return;
       }
       if(data.requiresAuth){
-        showMsg('info',lang==='ar'?'🎉 استهلكت الكريديت المجاني — سجّل للحصول على 3 صور شهرياً!':'🎉 Free credit used — sign up for 3 free monthly edits!');
+        showMsg('info',lang==='ar'?'🎉 استهلكت الكريديت المجاني — سجّل للحصول على 3 صور يومياً!':'🎉 Free credit used — sign up for 3 free daily edits!');
         setTimeout(()=>openM(),8000);
       } else if(data.error === 'Daily limit reached') {
-        showMsg('info',lang==='ar'?'✅ استهلكت صورك الـ 3 الشهر دا — اشترك للمزيد!':'✅ You used all 3 edits — sign up for more!');
+        showMsg('info',lang==='ar'?'✅ استهلكت صورك الـ 3 لليوم — تعالى بكرا للمزيد!':'✅ You used all 3 daily edits — come back tomorrow!');
       } else {
         showMsg('err',data.error_ar||data.error||(lang==='ar'?'حدث خطأ':'Something went wrong'));
       }
