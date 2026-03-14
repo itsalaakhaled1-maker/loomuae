@@ -41,7 +41,7 @@ const limiter = rateLimit({
   max: 30,
   message: { error: 'Too many requests, please try again later.' }
 });
-app.use('/api/', limiter);
+app.use('/api/edit', limiter);
 
 // Multer - memory storage (no disk)
 const upload = multer({
