@@ -672,6 +672,17 @@ app.get('/api/admin/stats', async (req, res) => {
   }
 });
 
+// ─── Explicit static HTML routes ────────────────────────────────────────────
+app.get('/admin.html', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'admin.html'));
+});
+app.get('/privacy.html', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'privacy.html'));
+});
+app.get('/terms.html', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'terms.html'));
+});
+
 // ─── Fallback to Frontend ────────────────────────────────────────────────────
 app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
