@@ -7,57 +7,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link rel="icon" type="image/png" href="/favicon.png?v=3"/>
   <link rel="shortcut icon" type="image/png" href="/favicon.png?v=3"/>
-  <!-- ═══ SEO & Social Sharing ═══ -->
-  <title>Loom — AI Product Studio | تحرير صور المنتجات بالذكاء الاصطناعي</title>
-  <meta name="description" content="حوّل صور منتجاتك لصور احترافية في ثوانٍ. تعديل الخلفية، الإضاءة، والمشاهد بالذكاء الاصطناعي. جرّب مجاناً — Loom UAE." />
-  <meta name="keywords" content="تحرير صور منتجات, ذكاء اصطناعي, تصوير منتجات احترافي, AI photo editing, product photography UAE, loom, loomuae" />
-  <meta name="author" content="Loom UAE" />
-  <meta name="robots" content="index, follow" />
-  <link rel="canonical" href="https://loomuae.xyz/" />
-
-  <!-- Open Graph (WhatsApp, Facebook, LinkedIn) -->
-  <meta property="og:type" content="website" />
-  <meta property="og:url" content="https://loomuae.xyz/" />
-  <meta property="og:title" content="Loom — AI Product Studio | صور منتجاتك في ثوانٍ 🪄" />
-  <meta property="og:description" content="حوّل صور منتجاتك لصور احترافية بالذكاء الاصطناعي. جرّب مجاناً الآن!" />
-  <meta property="og:image" content="https://loomuae.xyz/og-image.png" />
-  <meta property="og:image:width" content="1200" />
-  <meta property="og:image:height" content="630" />
-  <meta property="og:image:alt" content="Loom UAE - AI Product Photo Editor" />
-  <meta property="og:locale" content="ar_AE" />
-  <meta property="og:locale:alternate" content="en_AE" />
-  <meta property="og:site_name" content="Loom UAE" />
-
-  <!-- Twitter Card -->
-  <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="Loom — AI Product Studio 🪄" />
-  <meta name="twitter:description" content="حوّل صور منتجاتك لصور احترافية في ثوانٍ بالذكاء الاصطناعي. جرّب مجاناً!" />
-  <meta name="twitter:image" content="https://loomuae.xyz/og-image.png" />
-
-  <!-- Structured Data (Google Rich Results) -->
-  <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "WebApplication",
-    "name": "Loom UAE",
-    "url": "https://loomuae.xyz",
-    "description": "AI-powered product photo editor — transform your product images in seconds",
-    "applicationCategory": "DesignApplication",
-    "operatingSystem": "Web",
-    "inLanguage": ["ar", "en"],
-    "offers": [
-      {"@type": "Offer", "name": "Free", "price": "0", "priceCurrency": "USD"},
-      {"@type": "Offer", "name": "Starter", "price": "5", "priceCurrency": "USD"},
-      {"@type": "Offer", "name": "Pro", "price": "12", "priceCurrency": "USD"}
-    ],
-    "publisher": {
-      "@type": "Organization",
-      "name": "Loom UAE",
-      "url": "https://loomuae.xyz"
-    }
-  }
-  </script>
-
+  <title>Loom — AI Product Studio</title>
+  <meta name="description" content="Transform your product photos into professional shots in seconds" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;900&family=Josefin+Sans:wght@300;400;600;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,300&display=swap" rel="stylesheet" />
   <style>
@@ -1459,7 +1410,7 @@ async function refreshToken(){
     return true;
   }catch{ return false; }
 }
-setInterval(()=>{ if(tok && refreshTok) refreshToken(); }, 45*60*1000);
+setInterval(()=>{ if(tok && refreshTok) refreshToken(); }, 30*60*1000);
 let file=null, res64=null;
 localStorage.setItem('ls',sid);
 
@@ -1496,7 +1447,12 @@ function setLang(l){
   if(eb) eb.title=l==='ar'?'تحسين البرومت بالذكاء الاصطناعي':'Enhance prompt with AI';
 }
 
-window.addEventListener('load',()=>{setLang(lang);updHdr();loadCred();setupDrop();if(tok)loadHistoryCache();});
+window.addEventListener('load',async ()=>{
+  setLang(lang);
+  // لو عنده توكن وريفريش توكن → نجدده عند فتح الصفحة عشان ميانتهيش
+  if(tok && refreshTok){ await refreshToken(); }
+  updHdr(); loadCred(); setupDrop(); if(tok) loadHistoryCache();
+});
 
 /* ── HEADER ── */
 function updHdr(){
@@ -1516,9 +1472,28 @@ async function loadCred(){
     if(tok) h['Authorization']='Bearer '+tok;
     const r=await fetch(API+'/api/credits',{headers:h});
     if(r.status===401){
-      tok=null; usr=null;
-      localStorage.removeItem('lt'); localStorage.removeItem('lu');
+      // ← محاولة refresh قبل ما نعمل logout
+      if(refreshTok){
+        const refreshed = await refreshToken();
+        if(refreshed){
+          // نجح الـ refresh — نعيد المحاولة
+          const h2={'x-session-id':sid,'Authorization':'Bearer '+tok};
+          const r2=await fetch(API+'/api/credits',{headers:h2});
+          if(r2.ok){
+            const d2=await r2.json();
+            document.getElementById('cv').textContent=d2.type==='user'
+              ?`${d2.remaining}/${d2.total_credits||DAILY}`
+              :(d2.canEdit?(lang==='ar'?'١ مجاناً':'1 free'):(lang==='ar'?'سجّل':'Sign up'));
+            updHdr();
+            return;
+          }
+        }
+      }
+      // فشل الـ refresh — logout
+      tok=null; usr=null; refreshTok=null;
+      localStorage.removeItem('lt'); localStorage.removeItem('lu'); localStorage.removeItem('lrt');
       updHdr();
+      return;
     }
     const d=await r.json();
     document.getElementById('cv').textContent=d.type==='user'
