@@ -429,7 +429,7 @@ app.post('/api/edit', upload.single('image'), async (req, res) => {
     const mimeType = req.file.mimetype;
     const enhancedPrompt = buildProductPrompt(prompt);
 
-    const GEMINI_KEY = getGeminiKey();
+    const GEMINI_KEY = process.env.GEMINI_API_KEY; // paid key only for image editing
     const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.1-flash-image-preview:generateContent?key=${GEMINI_KEY}`;
 
     const geminiRes = await fetch(apiUrl, {
