@@ -193,12 +193,20 @@ h1.htitle-ar{font-family:'Tajawal',sans-serif;font-size:clamp(38px,6.5vw,80px);f
 .reslabel{display:flex;align-items:center;gap:7px;font-size:13px;font-weight:700;color:var(--success)}
 .dlbtn{display:flex;align-items:center;gap:6px;padding:8px 18px;border-radius:var(--r);background:var(--amber-dim);border:1px solid var(--border-hi);color:var(--amber);font-family:inherit;font-size:12.5px;font-weight:700;cursor:pointer;transition:all var(--t)}
 .dlbtn:hover{background:rgba(245,200,66,.13);transform:translateY(-1px)}
-.cmpgrid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-.cmpc{position:relative;border-radius:var(--r);overflow:hidden;background:var(--bg3);border:1px solid var(--border)}
-.cmplabel{position:absolute;top:9px;right:9px;z-index:2;padding:3px 9px;border-radius:100px;background:rgba(8,8,8,.82);font-size:10px;color:var(--muted2);font-family:'DM Sans',sans-serif}
-[data-lang="en"] .cmplabel{right:auto;left:9px}
-.cmpc.res .cmplabel{color:var(--amber)}
-.cmpc img{width:100%;height:230px;object-fit:contain;display:block}
+.cmpgrid{display:none}
+/* ── SLIDER ── */
+.slider-wrap{position:relative;border-radius:var(--r-lg);overflow:hidden;background:var(--bg3);border:1px solid var(--border);user-select:none;touch-action:none;cursor:col-resize}
+.slider-wrap img{width:100%;height:320px;object-fit:contain;display:block}
+.slider-after{position:absolute;inset:0;overflow:hidden}
+.slider-after img{width:100%;height:320px;object-fit:contain;display:block;position:absolute;top:0;left:0}
+.slider-line{position:absolute;top:0;bottom:0;width:2px;background:var(--amber);z-index:10;transform:translateX(-50%)}
+.slider-btn{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:40px;height:40px;border-radius:50%;background:var(--amber);display:flex;align-items:center;justify-content:center;font-size:14px;color:#090600;font-weight:900;box-shadow:0 4px 16px rgba(245,200,66,.4);z-index:11;cursor:col-resize}
+.slider-label{position:absolute;top:10px;z-index:12;padding:3px 10px;border-radius:100px;background:rgba(8,8,8,.82);font-size:10px;font-family:'DM Sans',sans-serif;font-weight:700}
+.slider-label.before{right:10px;color:var(--muted2)}
+.slider-label.after{left:10px;color:var(--amber)}
+[data-lang="ar"] .slider-label.before{right:auto;left:10px}
+[data-lang="ar"] .slider-label.after{left:auto;right:10px}
+@media(max-width:500px){.slider-wrap img,.slider-after img{height:240px}}
 .upbanner{margin-top:14px;padding:16px 18px;background:var(--amber-dim);border:1px solid var(--border-hi);border-radius:var(--r);display:none}
 .upbanner p{font-size:13px;color:#c8a840;margin-bottom:11px}
 .upbtn{width:100%;padding:11px;background:linear-gradient(135deg,var(--amber),var(--amber2));color:#090600;border:none;border-radius:var(--r);font-family:inherit;font-size:14px;font-weight:800;cursor:pointer;transition:all var(--t)}
@@ -1204,9 +1212,19 @@ footer{position:relative;z-index:1;border-top:1px solid var(--border);padding:36
           <div class="reslabel">✅ <span id="resTxt" data-ar="تم التعديل بنجاح" data-en="Edit complete">تم التعديل بنجاح</span></div>
           <button class="dlbtn" onclick="dl()">⬇ <span data-ar="تحميل" data-en="Download">تحميل</span></button>
         </div>
-        <div class="cmpgrid">
-          <div class="cmpc"><span class="cmplabel" data-ar="الأصل" data-en="Original">الأصل</span><img id="oimg" src="" alt=""/></div>
-          <div class="cmpc res"><span class="cmplabel" data-ar="المعدّل ✦" data-en="Edited ✦">المعدّل ✦</span><img id="rimg" src="" alt=""/></div>
+        <div class="slider-wrap" id="sliderWrap">
+          <!-- Before (bottom layer) -->
+          <img id="oimg" src="" alt="before"/>
+          <!-- After (top layer, clipped) -->
+          <div class="slider-after" id="sliderAfter">
+            <img id="rimg" src="" alt="after"/>
+          </div>
+          <!-- Line + handle -->
+          <div class="slider-line" id="sliderLine"></div>
+          <div class="slider-btn" id="sliderBtn">⇔</div>
+          <!-- Labels -->
+          <span class="slider-label before" data-ar="الأصل" data-en="Original">الأصل</span>
+          <span class="slider-label after" data-ar="المعدّل ✦" data-en="Edited ✦">المعدّل ✦</span>
         </div>
         <div class="upbanner" id="upbanner">
           <p id="upTxt" data-ar="🎉 استمتعت بصورتك المجانية! اشترك بـ $5 واحصل على 30 صورة كل شهر" data-en="🎉 You used your free edit! Subscribe for 30 edits/month — only $5">🎉 استمتعت بصورتك المجانية! اشترك بـ $5 واحصل على 30 صورة كل شهر</p>
@@ -2021,6 +2039,56 @@ function selectTpl(el, id) {
     document.getElementById('ptxt').focus();
   }
 }
+
+
+// ── BEFORE/AFTER SLIDER ────────────────────────────────────────────────────
+(function(){
+  let dragging = false;
+  let pos = 50; // percent
+
+  function setPos(p) {
+    pos = Math.max(2, Math.min(98, p));
+    const line = document.getElementById('sliderLine');
+    const after = document.getElementById('sliderAfter');
+    const btn = document.getElementById('sliderBtn');
+    if (!line) return;
+    line.style.left = pos + '%';
+    btn.style.left = pos + '%';
+    after.style.clipPath = `inset(0 0 0 ${pos}%)`;
+  }
+
+  function getPercent(e, wrap) {
+    const rect = wrap.getBoundingClientRect();
+    const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+    return ((clientX - rect.left) / rect.width) * 100;
+  }
+
+  function initSlider() {
+    const wrap = document.getElementById('sliderWrap');
+    if (!wrap) return;
+    setPos(50);
+
+    wrap.addEventListener('mousedown', e => { dragging = true; setPos(getPercent(e, wrap)); });
+    wrap.addEventListener('touchstart', e => { dragging = true; setPos(getPercent(e, wrap)); }, {passive:true});
+    window.addEventListener('mousemove', e => { if (dragging) setPos(getPercent(e, wrap)); });
+    window.addEventListener('touchmove', e => { if (dragging) setPos(getPercent(e.touches ? e : e, wrap)); }, {passive:true});
+    window.addEventListener('mouseup', () => dragging = false);
+    window.addEventListener('touchend', () => dragging = false);
+  }
+
+  // Init when result shows
+  const observer = new MutationObserver(() => {
+    const resc = document.getElementById('resc');
+    if (resc && resc.classList.contains('show')) {
+      setTimeout(() => { setPos(50); }, 100);
+    }
+  });
+  window.addEventListener('load', () => {
+    initSlider();
+    const resc = document.getElementById('resc');
+    if (resc) observer.observe(resc, { attributes: true, attributeFilter: ['class'] });
+  });
+})();
 
 document.addEventListener('keydown',e=>{if(e.key==='Escape')closeM();if((e.ctrlKey||e.metaKey)&&e.key==='Enter')gen()});
   // Upgrade Modal
