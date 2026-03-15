@@ -146,6 +146,22 @@ h1.htitle-ar{font-family:'Tajawal',sans-serif;font-size:clamp(38px,6.5vw,80px);f
 .ptxt::-webkit-scrollbar-thumb{background:rgba(245,200,66,.25);border-radius:10px}
 .ptxt::-webkit-scrollbar-thumb:hover{background:rgba(245,200,66,.45)}
 .chips{display:flex;flex-wrap:wrap;gap:7px;margin-top:11px}
+/* ── IMAGE TEMPLATES ── */
+.tsec{padding:20px 30px;border-top:1px solid var(--border)}
+.tsec-title{font-size:11px;color:var(--muted);letter-spacing:.4px;text-transform:uppercase;font-family:'DM Sans',sans-serif;font-weight:600;margin-bottom:14px}
+.tpl-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+@media(max-width:600px){.tpl-grid{grid-template-columns:repeat(2,1fr)}}
+.tpl-card{position:relative;border-radius:var(--r-lg);overflow:hidden;cursor:pointer;border:2px solid transparent;transition:all var(--t) var(--ease);aspect-ratio:1/1}
+.tpl-card img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .4s ease}
+.tpl-card:hover img{transform:scale(1.06)}
+.tpl-card:hover{border-color:var(--border-hi);box-shadow:0 8px 24px rgba(245,200,66,.15)}
+.tpl-card.active{border-color:var(--amber);box-shadow:0 0 0 3px rgba(245,200,66,.2)}
+.tpl-overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,.75) 0%,transparent 55%);display:flex;align-items:flex-end;padding:10px 12px}
+.tpl-name{font-size:12px;font-weight:700;color:#fff;line-height:1.3}
+.tpl-name span{display:block;font-size:10px;color:rgba(255,255,255,.6);font-weight:400;margin-top:2px}
+.tpl-check{position:absolute;top:8px;right:8px;width:22px;height:22px;border-radius:50%;background:var(--amber);display:none;align-items:center;justify-content:center;font-size:11px;color:#090600;font-weight:900}
+.tpl-card.active .tpl-check{display:flex}
+
 .chip{padding:5px 12px;background:var(--bg3);border:1px solid var(--border);border-radius:100px;font-size:12px;color:var(--muted2);cursor:pointer;transition:all var(--t)}
 .chip:hover{color:var(--amber);border-color:var(--border-hi);background:var(--amber-dim)}
 
@@ -805,6 +821,80 @@ footer{position:relative;z-index:1;border-top:1px solid var(--border);padding:36
         <div class="prevwrap" id="prevwrap">
           <span class="prevx" onclick="clrImg()">✕</span>
           <img id="previmg" src="" alt=""/>
+        </div>
+      </div>
+
+      <!-- ── IMAGE TEMPLATES ── -->
+      <div class="tsec">
+        <div class="tsec-title" data-ar="✦ اختر قالب جاهز" data-en="✦ Choose a Template">✦ اختر قالب جاهز</div>
+        <div class="tpl-grid">
+
+          <div class="tpl-card" onclick="selectTpl(this,'influencer')">
+            <img src="/templates/tpl-1-influencer.jpg" alt="influencer" loading="lazy"/>
+            <div class="tpl-overlay">
+              <div class="tpl-name">
+                انفلونسر عربية
+                <span>منتجك في يد موديل</span>
+              </div>
+            </div>
+            <div class="tpl-check">✓</div>
+          </div>
+
+          <div class="tpl-card" onclick="selectTpl(this,'studio')">
+            <img src="/templates/tpl-2-studio.jpg" alt="studio" loading="lazy"/>
+            <div class="tpl-overlay">
+              <div class="tpl-name">
+                استوديو فاخر
+                <span>قاعدة رخام مع بتلات</span>
+              </div>
+            </div>
+            <div class="tpl-check">✓</div>
+          </div>
+
+          <div class="tpl-card" onclick="selectTpl(this,'nature')">
+            <img src="/templates/tpl-3-nature.jpg" alt="nature" loading="lazy"/>
+            <div class="tpl-overlay">
+              <div class="tpl-name">
+                طبيعة وأعشاب
+                <span>بيئة خضراء طازجة</span>
+              </div>
+            </div>
+            <div class="tpl-check">✓</div>
+          </div>
+
+          <div class="tpl-card" onclick="selectTpl(this,'luxury_stone')">
+            <img src="/templates/tpl-4-luxury-stone.jpg" alt="luxury stone" loading="lazy"/>
+            <div class="tpl-overlay">
+              <div class="tpl-name">
+                حجر فاخر
+                <span>إضاءة درامية على صخرة</span>
+              </div>
+            </div>
+            <div class="tpl-check">✓</div>
+          </div>
+
+          <div class="tpl-card" onclick="selectTpl(this,'dramatic')">
+            <img src="/templates/tpl-5-dramatic.jpg" alt="dramatic" loading="lazy"/>
+            <div class="tpl-overlay">
+              <div class="tpl-name">
+                دراماتيكي داكن
+                <span>خلفية سوداء مع دخان</span>
+              </div>
+            </div>
+            <div class="tpl-check">✓</div>
+          </div>
+
+          <div class="tpl-card" onclick="selectTpl(this,'minimal')">
+            <img src="/templates/tpl-6-minimal.jpg" alt="minimal" loading="lazy"/>
+            <div class="tpl-overlay">
+              <div class="tpl-name">
+                مينيمال نظيف
+                <span>خلفية موحدة ناعمة</span>
+              </div>
+            </div>
+            <div class="tpl-check">✓</div>
+          </div>
+
         </div>
       </div>
 
@@ -1880,6 +1970,57 @@ window.addEventListener('load',()=>{
     }
   }
 });
+
+
+// ── IMAGE TEMPLATES ────────────────────────────────────────────────────────
+const TPL_PROMPTS = {
+  influencer: {
+    ar: 'ضع المنتج في يد فتاة محجبة عربية تبتسم وتمسك المنتج، خلفية بيج فاتحة، إضاءة ناعمة احترافية، تصوير lifestyle تجاري عالي الجودة، المنتج ظاهر بوضوح',
+    en: 'Place the product in the hand of a smiling hijabi Arab woman, beige background, soft professional lighting, high quality lifestyle commercial photography, product clearly visible'
+  },
+  studio: {
+    ar: 'ضع المنتج على قاعدة رخام أبيض مع بتلات ورد وردية حوله، خلفية وردية فاتحة مع أشعة ضوء ناعمة، إضاءة استوديو احترافية، تصوير تجاري فاخر',
+    en: 'Place the product on a white marble podium with rose petals around it, soft pink background with light rays, professional studio lighting, luxury commercial product photography'
+  },
+  nature: {
+    ar: 'ضع المنتج وسط نباتات خضراء طازجة وأوراق طبيعية، إضاءة طبيعية من النافذة، جو طازج وصحي، تصوير lifestyle طبيعي',
+    en: 'Place the product surrounded by fresh green plants and natural leaves, natural window lighting, fresh healthy atmosphere, natural lifestyle photography'
+  },
+  luxury_stone: {
+    ar: 'ضع المنتج على صخرة رمادية طبيعية مع إضاءة ذهبية دافئة من الجانب، خلفية ضبابية رمادية، تصوير فاخر احترافي، جو راقي',
+    en: 'Place the product on a natural grey stone with warm golden side lighting, misty grey background, luxury professional photography, premium atmosphere'
+  },
+  dramatic: {
+    ar: 'ضع المنتج على خلفية سوداء داكنة مع دخان أبيض رقيق يتصاعد حوله، إضاءة ذهبية دافئة من الأسفل، تأثير درامي فاخر، تصوير فني',
+    en: 'Place the product on a dark black background with delicate white smoke rising around it, warm golden light from below, dramatic luxury effect, artistic photography'
+  },
+  minimal: {
+    ar: 'ضع المنتج على خلفية رمادية فاتحة متدرجة ناعمة مع إضاءة ناعمة موزعة بالتساوي، لا زخارف، تصوير مينيمال نظيف احترافي',
+    en: 'Place the product on a soft light grey gradient background with evenly distributed soft lighting, no decorations, clean minimal professional photography'
+  }
+};
+
+let activeTpl = null;
+
+function selectTpl(el, id) {
+  // Toggle off if already active
+  if (activeTpl === id) {
+    el.classList.remove('active');
+    activeTpl = null;
+    return;
+  }
+  document.querySelectorAll('.tpl-card').forEach(c => c.classList.remove('active'));
+  el.classList.add('active');
+  activeTpl = id;
+
+  const lg = document.documentElement.getAttribute('data-lang') || 'ar';
+  const prompt = TPL_PROMPTS[id]?.[lg];
+  if (prompt) {
+    document.getElementById('ptxt').value = prompt;
+    document.getElementById('ptxt').scrollIntoView({ behavior:'smooth', block:'center' });
+    document.getElementById('ptxt').focus();
+  }
+}
 
 document.addEventListener('keydown',e=>{if(e.key==='Escape')closeM();if((e.ctrlKey||e.metaKey)&&e.key==='Enter')gen()});
   // Upgrade Modal
