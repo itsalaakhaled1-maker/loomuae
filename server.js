@@ -19,6 +19,23 @@ const supabase = createClient(
   process.env.SUPABASE_SERVICE_KEY
 );
 
+// ─── Multi-Key Rotation ─────────────────────────────────────────────────────
+const GEMINI_KEYS = [
+  process.env.GEMINI_KEY_1 || process.env.GEMINI_API_KEY,
+  process.env.GEMINI_KEY_2,
+  process.env.GEMINI_KEY_3,
+  process.env.GEMINI_KEY_4,
+  process.env.GEMINI_KEY_5,
+].filter(Boolean);
+
+let _keyIndex = 0;
+function getGeminiKey() {
+  const key = GEMINI_KEYS[_keyIndex % GEMINI_KEYS.length];
+  _keyIndex++;
+  return key;
+}
+console.log(`✅ Loaded ${GEMINI_KEYS.length} Gemini key(s)`);
+
 // ─── Middleware ─────────────────────────────────────────────────────────────
 app.use(cors({
   origin: process.env.FRONTEND_URL || '*',
@@ -327,7 +344,7 @@ app.post('/api/enhance', async (req, res) => {
   if (!prompt) return res.status(400).json({ error: 'Prompt required' });
 
   const { user } = await getUser(req);
-  const GEMINI_KEY = process.env.GEMINI_API_KEY;
+  const GEMINI_KEY = getGeminiKey();
   const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${GEMINI_KEY}`;
 
   try {
@@ -412,8 +429,8 @@ app.post('/api/edit', upload.single('image'), async (req, res) => {
     const mimeType = req.file.mimetype;
     const enhancedPrompt = buildProductPrompt(prompt);
 
-    const GEMINI_KEY = process.env.GEMINI_API_KEY;
-    const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.1-flash-image-preview:generateContent?key=${GEMINI_KEY}`;
+    const GEMINI_KEY = getGeminiKey();
+    const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-preview-image-generation:generateContent?key=${GEMINI_KEY}`;
 
     const geminiRes = await fetch(apiUrl, {
       method: 'POST',
