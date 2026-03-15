@@ -326,7 +326,7 @@ app.get('/api/history', async (req, res) => {
     .select('id, prompt, edited_img, original_img, created_at')
     .eq('user_id', user.id)
     .order('created_at', { ascending: false })
-    .limit(20);
+    .limit(10);
 
   if (error) return res.status(500).json({ error: error.message });
   res.json({ history: data || [] });
@@ -486,7 +486,7 @@ app.post('/api/edit', upload.single('image'), async (req, res) => {
         await supabase.from('edit_history').insert({
           user_id: user.id,
           prompt: prompt.trim(),
-          original_img: imageBase64,
+          original_img: null, // لا نحفظ الصورة الأصلية لتوفير المساحة
           edited_img: editedImageBase64,
         });
         const { data: oldRows } = await supabase
@@ -494,7 +494,7 @@ app.post('/api/edit', upload.single('image'), async (req, res) => {
           .select('id')
           .eq('user_id', user.id)
           .order('created_at', { ascending: false })
-          .range(20, 999);
+          .range(10, 999);
         if (oldRows?.length) {
           await supabase.from('edit_history').delete().in('id', oldRows.map(r => r.id));
         }
