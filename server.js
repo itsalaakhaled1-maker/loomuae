@@ -344,17 +344,21 @@ app.post('/api/enhance', async (req, res) => {
   if (!prompt) return res.status(400).json({ error: 'Prompt required' });
 
   const { user } = await getUser(req);
-  const GEMINI_KEY = getGeminiKey();
-  const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${GEMINI_KEY}`;
+  const GROQ_KEY = process.env.GROQ_API_KEY;
 
   try {
-    const geminiRes = await fetch(apiUrl, {
+    const groqRes = await fetch('https://api.groq.com/openai/v1/chat/completions', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${GROQ_KEY}`
+      },
       body: JSON.stringify({
-        contents: [{
+        model: 'llama-3.1-8b-instant',
+        max_tokens: 200,
+        messages: [{
           role: 'user',
-          parts: [{ text: `You are an expert AI image editing prompt engineer specializing in product photography.
+          content: `You are an expert AI image editing prompt engineer specializing in product photography.
 Take this simple prompt and rewrite it into a detailed, professional prompt for AI image editing.
 Rules:
 - Keep the same core intent
@@ -364,14 +368,13 @@ Rules:
 - Respond ONLY with the improved prompt, no explanations, no quotation marks
 - If the input is in Arabic, respond in Arabic. If English, respond in English.
 
-Prompt to enhance: "${prompt}"` }]
-        }],
-        generationConfig: { maxOutputTokens: 200 }
+Prompt to enhance: "${prompt}"`
+        }]
       })
     });
 
-    const data = await geminiRes.json();
-    const enhanced = data?.candidates?.[0]?.content?.parts?.[0]?.text?.trim();
+    const data = await groqRes.json();
+    const enhanced = data?.choices?.[0]?.message?.content?.trim();
     if (!enhanced) return res.status(500).json({ error: 'Enhancement failed' });
 
     // ✅ Log enhance event
