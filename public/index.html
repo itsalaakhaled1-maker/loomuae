@@ -1780,6 +1780,7 @@ async function gen(){
   finally{setLoad(false)}
 }
 let loadTimer = null;
+function hideLoad(){setLoad(false)}
 function setLoad(s){
   const b=document.getElementById('genbtn');
   b.disabled=s;
