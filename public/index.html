@@ -1604,8 +1604,10 @@ function setLang(l){
 }
 
 window.addEventListener('load',async ()=>{
+  // Safety: hide loading overlay
+  const lv = document.getElementById('loverlay');
+  if(lv) lv.classList.remove('show');
   setLang(lang);
-  // لو عنده توكن وريفريش توكن → نجدده عند فتح الصفحة عشان ميانتهيش
   if(tok && refreshTok){ await refreshToken(); }
   updHdr(); loadCred(); setupDrop(); if(tok) loadHistoryCache();
 });
