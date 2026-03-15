@@ -60,7 +60,7 @@ async function logEvent({ event_type, user_id = null, session_id = null, plan = 
       session_id,
       plan,
       success,
-      model: 'gemini-2.0-flash-exp',
+      model: 'gemini-flash',
       tokens_est: event_type === 'image_edit' ? 1200 : event_type === 'enhance' ? 300 : 0
     });
   } catch (e) {
@@ -328,7 +328,7 @@ app.post('/api/enhance', async (req, res) => {
 
   const { user } = await getUser(req);
   const GEMINI_KEY = process.env.GEMINI_API_KEY;
-  const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-exp:generateContent?key=${GEMINI_KEY}`;
+  const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${GEMINI_KEY}`;
 
   try {
     const geminiRes = await fetch(apiUrl, {
@@ -413,7 +413,7 @@ app.post('/api/edit', upload.single('image'), async (req, res) => {
     const enhancedPrompt = buildProductPrompt(prompt);
 
     const GEMINI_KEY = process.env.GEMINI_API_KEY;
-    const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-exp:generateContent?key=${GEMINI_KEY}`;
+    const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-preview-image-generation:generateContent?key=${GEMINI_KEY}`;
 
     const geminiRes = await fetch(apiUrl, {
       method: 'POST',
