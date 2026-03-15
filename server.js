@@ -345,7 +345,7 @@ app.post('/api/enhance', async (req, res) => {
 
   const { user } = await getUser(req);
   const GEMINI_KEY = getGeminiKey();
-  const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${GEMINI_KEY}`;
+  const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${GEMINI_KEY}`;
 
   try {
     const geminiRes = await fetch(apiUrl, {
@@ -430,7 +430,7 @@ app.post('/api/edit', upload.single('image'), async (req, res) => {
     const enhancedPrompt = buildProductPrompt(prompt);
 
     const GEMINI_KEY = getGeminiKey();
-    const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-exp:generateContent?key=${GEMINI_KEY}`;
+    const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-preview-image-generation:generateContent?key=${GEMINI_KEY}`;
 
     const geminiRes = await fetch(apiUrl, {
       method: 'POST',
