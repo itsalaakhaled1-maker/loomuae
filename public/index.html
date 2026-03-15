@@ -2190,8 +2190,9 @@ function openUpgradeModal(plan) {
 function closeUpgradeModal() {
   document.getElementById('upgradeModal').classList.remove('show');
 }
-document.getElementById('upgradeModal').addEventListener('click', function(e) {
-  if (e.target === this) closeUpgradeModal();
+document.addEventListener('DOMContentLoaded', function() {
+  const um = document.getElementById('upgradeModal');
+  if (um) um.addEventListener('click', function(e) { if (e.target === this) closeUpgradeModal(); });
 });
 </script>
 <!-- ══ UPGRADE MODAL ══════════════════════════════════════════════════════════ -->
