@@ -269,14 +269,21 @@ function doLogin() {
 
 async function loadStats() {
   try {
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 15000);
+    
     const res = await fetch('/api/admin/stats', {
-      headers: { 'x-admin-key': ADMIN_KEY }
+      headers: { 'x-admin-key': ADMIN_KEY },
+      signal: controller.signal
     });
+    
+    clearTimeout(timeout);
     if (!res.ok) throw new Error('Failed');
     const d = await res.json();
     renderStats(d);
   } catch(e) {
-    console.error(e);
+    console.error('Stats load error:', e);
+    document.getElementById('valEditsToday').textContent = 'Error';
   }
 }
 
