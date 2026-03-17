@@ -153,13 +153,15 @@ async function checkUserCredits(userId) {
   }
 
   const limit = data.monthly_credits || 3;
+  const currentPlan = data.plan || 'free';
 
-  if (data.last_reset !== today) {
+  // Free = 3 credits/month (no daily reset). Paid plans get daily reset.
+  if (currentPlan !== 'free' && data.last_reset !== today) {
     await supabase.from('user_credits').update({
       used_today: 0,
       last_reset: today
     }).eq('user_id', userId);
-    return { canEdit: true, remaining: limit, total_credits: limit, plan: data.plan || 'free' };
+    return { canEdit: true, remaining: limit, total_credits: limit, plan: currentPlan };
   }
 
   const remaining = limit - data.used_today;
@@ -575,14 +577,17 @@ app.post('/api/gumroad/webhook', async (req, res) => {
 
     // ✅ Determine plan based on product_permalink
     let plan = 'starter';
-    let monthly_credits = 30;
+    let monthly_credits = 15;
 
-    if (product_permalink === 'fiqku') {
+    if (product_permalink === 'gszgh') {
+      plan = 'business';
+      monthly_credits = 100;
+    } else if (product_permalink === 'fiqku') {
       plan = 'pro';
-      monthly_credits = 70;
+      monthly_credits = 40;
     } else if (product_permalink === 'ixfwd') {
       plan = 'starter';
-      monthly_credits = 30;
+      monthly_credits = 15;
     }
 
     const endDate = new Date();
