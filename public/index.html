@@ -32,7 +32,7 @@
   <meta name="twitter:image" content="https://loomuae.xyz/og-image.png" />
   <!-- Structured Data -->
   <script type="application/ld+json">
-  {"@context":"https://schema.org","@type":"WebApplication","name":"Loom UAE","url":"https://loomuae.xyz","description":"AI-powered product photo editor","applicationCategory":"DesignApplication","operatingSystem":"Web","inLanguage":["ar","en"],"offers":[{"@type":"Offer","name":"Free","price":"0","priceCurrency":"USD"},{"@type":"Offer","name":"Starter","price":"5","priceCurrency":"USD"},{"@type":"Offer","name":"Pro","price":"12","priceCurrency":"USD"}]}
+  {"@context":"https://schema.org","@type":"WebApplication","name":"Loom UAE","url":"https://loomuae.xyz","description":"AI-powered product photo editor","applicationCategory":"DesignApplication","operatingSystem":"Web","inLanguage":["ar","en"],"offers":[{"@type":"Offer","name":"Free","price":"0","priceCurrency":"USD"},{"@type":"Offer","name":"Starter","price":"9","priceCurrency":"USD"},{"@type":"Offer","name":"Pro","price":"19","priceCurrency":"USD"},{"@type":"Offer","name":"Business","price":"39","priceCurrency":"USD"}]}
   </script>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;900&family=Josefin+Sans:wght@300;400;600;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,300&display=swap" rel="stylesheet" />
@@ -2158,21 +2158,36 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape')closeM();if((e.ctrlK
 const PLANS = {
   starter: {
     icon: '⚡',
+    badge: '✅ Best Value',
+    margin: '56.7%',
     title_ar: 'باقة Starter', title_en: 'Starter Plan',
-    sub_ar: '30 تعديل شهرياً — ~18 درهم فقط', sub_en: '30 edits/month — only ~18 AED',
-    feats_ar: ['🖼️ 30 تعديل صورة كل شهر','✨ جودة عالية بالذكاء الاصطناعي','⚡ معالجة سريعة وفورية','🔒 بياناتك آمنة ومحمية'],
-    feats_en: ['🖼️ 30 image edits every month','✨ High quality AI results','⚡ Fast instant processing','🔒 Your data is safe & private'],
-    btn_ar: 'اشترك دلوقتي — $5/شهر', btn_en: 'Subscribe Now — $5/month',
+    sub_ar: '15 تعديل شهرياً — 9 دولار فقط', sub_en: '15 edits/month — only $9',
+    feats_ar: ['🖼️ 15 تعديل صورة كل شهر','✨ جودة عالية بالذكاء الاصطناعي','⚡ معالجة سريعة وفورية','🔒 بياناتك آمنة ومحمية'],
+    feats_en: ['🖼️ 15 image edits every month','✨ High quality AI results','⚡ Fast instant processing','🔒 Your data is safe & private'],
+    btn_ar: 'اشترك دلوقتي — $9/شهر', btn_en: 'Subscribe Now — $9/month',
     url: 'https://loomuae.gumroad.com/l/ixfwd'
   },
   pro: {
     icon: '👑',
+    badge: '🔥 Most Popular',
+    margin: '45.3%',
     title_ar: 'باقة Loom Pro', title_en: 'Loom Pro Plan',
-    sub_ar: '70 تعديل شهرياً — ~44 درهم فقط', sub_en: '70 edits/month — only ~44 AED',
-    feats_ar: ['🖼️ 70 تعديل صورة كل شهر','✨ جودة عالية بالذكاء الاصطناعي','⚡ معالجة سريعة وفورية','🔒 بياناتك آمنة ومحمية','💎 أفضل قيمة للصورة'],
-    feats_en: ['🖼️ 70 image edits every month','✨ High quality AI results','⚡ Fast instant processing','🔒 Your data is safe & private','💎 Best value per photo'],
-    btn_ar: 'اشترك دلوقتي — $12/شهر', btn_en: 'Subscribe Now — $12/month',
+    sub_ar: '40 تعديل شهرياً — 19 دولار فقط', sub_en: '40 edits/month — only $19',
+    feats_ar: ['🖼️ 40 تعديل صورة كل شهر','✨ جودة عالية بالذكاء الاصطناعي','⚡ معالجة سريعة وفورية','🔒 بياناتك آمنة ومحمية','💎 أفضل قيمة للصورة'],
+    feats_en: ['🖼️ 40 image edits every month','✨ High quality AI results','⚡ Fast instant processing','🔒 Your data is safe & private','💎 Best value per photo'],
+    btn_ar: 'اشترك دلوقتي — $19/شهر', btn_en: 'Subscribe Now — $19/month',
     url: 'https://loomuae.gumroad.com/l/fiqku'
+  },
+  business: {
+    icon: '💎',
+    badge: '🏢 For Agencies',
+    margin: '33.3%',
+    title_ar: 'باقة Business', title_en: 'Business Plan',
+    sub_ar: '100 تعديل شهرياً — 39 دولار فقط', sub_en: '100 edits/month — only $39',
+    feats_ar: ['🖼️ 100 تعديل صورة كل شهر','✨ جودة عالية بالذكاء الاصطناعي','⚡ معالجة فائقة السرعة','🔒 بياناتك آمنة ومحمية','💼 دعم الفريق والشركات','🚀 أولوية المعالجة'],
+    feats_en: ['🖼️ 100 image edits every month','✨ High quality AI results','⚡ Ultra-fast processing','🔒 Your data is safe & private','💼 Team & enterprise support','🚀 Priority processing'],
+    btn_ar: 'اشترك دلوقتي — $39/شهر', btn_en: 'Subscribe Now — $39/month',
+    url: 'https://loomuae.gumroad.com/l/gszgh'
   }
 };
 function openUpgradeModal(plan) {
