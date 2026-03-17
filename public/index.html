@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl" data-lang="ar">
+<html lang="ar" dir="rtl" data-lang="ar" class="light-mode">
 <head>
   <link rel="icon" type="image/svg+xml" href="/favicon.svg">
 <link rel="icon" type="image/png" href="/favicon.png">
@@ -1044,7 +1044,28 @@ footer{position:relative;z-index:1;border-top:1px solid var(--border);padding:36
     font-weight: 700;
     margin: 0 0 10px;
     line-height: 1.2;
+    text-shadow: 0 2px 8px rgba(0,0,0,0.2);
   " data-ar="أسعار بسيطة وشفافة لدعم نمونا 🥺" data-en="Simple pricing — support us 🥺">أسعار بسيطة وشفافة لدعم نمونا 🥺</h2>
+
+  <!-- Light mode override for pricing title -->
+  <style>
+    html.light-mode h2[data-ar*="أسعار بسيطة"] {
+      color: #1a1a1a !important;
+      text-shadow: none !important;
+    }
+    
+    /* Pricing Cards - Light Mode */
+    html.light-mode #pricingCards > div {
+      background: #ffffff !important;
+      border: 2px solid #e8e8ec !important;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.08) !important;
+    }
+    
+    /* Pricing Cards - Dark Mode (add shadow) */
+    #pricingCards > div {
+      box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+    }
+  </style>
 
   <p style="
     color: rgba(255,255,255,0.45);
@@ -2361,7 +2382,7 @@ function updateLanguageText(){
 window.addEventListener('load', function() {
   const html = document.documentElement;
   const icon = document.getElementById('themeIcon');
-  const savedTheme = localStorage.getItem('theme') || 'dark';
+  const savedTheme = localStorage.getItem('theme') || 'light';
   
   if (savedTheme === 'light') {
     html.classList.add('light-mode');
