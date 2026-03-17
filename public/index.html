@@ -1999,6 +1999,23 @@ let refreshTok=localStorage.getItem('lrt')||null;
 })();
 // ══ END INTRO ══════════════════════════════════════════════════════════════════
 
+// ══ OPTIMIZATION: FETCH WITH TIMEOUT ════════════════════════════════════════════
+async function fetchWithTimeout(url, options = {}, timeout = 50000) {
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), timeout);
+  try {
+    const response = await fetch(url, { ...options, signal: controller.signal });
+    clearTimeout(timeoutId);
+    return response;
+  } catch (error) {
+    clearTimeout(timeoutId);
+    if (error.name === 'AbortError') {
+      throw new Error(lang==='ar'?'انقطع الاتصال - حاول مجدداً':'Request timeout - please retry');
+    }
+    throw error;
+  }
+}
+
 async function refreshToken(){
   if(!refreshTok) return false;
   try{
@@ -2083,7 +2100,7 @@ async function loadCred(){
   try{
     const h={'x-session-id':sid};
     if(tok) h['Authorization']='Bearer '+tok;
-    const r=await fetch(API+'/api/credits',{headers:h});
+    const r=await fetchWithTimeout(API+'/api/credits',{headers:h},10000);
     if(r.status===401){
       // ← محاولة refresh قبل ما نعمل logout
       if(refreshTok){
@@ -2091,7 +2108,7 @@ async function loadCred(){
         if(refreshed){
           // نجح الـ refresh — نعيد المحاولة
           const h2={'x-session-id':sid,'Authorization':'Bearer '+tok};
-          const r2=await fetch(API+'/api/credits',{headers:h2});
+          const r2=await fetchWithTimeout(API+'/api/credits',{headers:h2},10000);
           if(r2.ok){
             const d2=await r2.json();
             document.getElementById('cv').textContent=d2.type==='user'
@@ -2187,14 +2204,14 @@ async function gen(){
     fd.append('image',file);fd.append('prompt',p);fd.append('sessionId',sid);
     const h={'x-session-id':sid};
     if(tok) h['Authorization']='Bearer '+tok;
-    const resp=await fetch(API+'/api/edit',{method:'POST',headers:h,body:fd});
+    const resp=await fetchWithTimeout(API+'/api/edit',{method:'POST',headers:h,body:fd},50000);
     const data=await resp.json();
     if(!resp.ok){
       if(resp.status===401){
         const refreshed = await refreshToken();
         if(refreshed){
           h['Authorization'] = 'Bearer '+tok;
-          const retry = await fetch(API+'/api/edit',{method:'POST',headers:h,body:fd});
+          const retry = await fetchWithTimeout(API+'/api/edit',{method:'POST',headers:h,body:fd},50000);
           const retryData = await retry.json();
           if(retry.ok){
             hideLoad();
@@ -2233,7 +2250,16 @@ async function gen(){
     if(data.requiresAuthForMore && !tok){ setTimeout(()=>{ if(!tok) openUpgradeModal(); }, 8000); }
     showWPopup();
     if(tok){ loadHistoryCache(); }
-  }catch{showMsg('err',lang==='ar'?'تعذر الاتصال بالخادم':'Could not reach server')}
+  }catch(err){
+    const errMsg = err.message || (lang==='ar'?'تعذر الاتصال بالخادم':'Could not reach server');
+    if(errMsg.includes('timeout')) {
+      showMsg('err', lang==='ar'?'معالجة طويلة - حاول صيغة أبسط':'Processing timeout - try simpler prompt');
+    } else if(errMsg.includes('Too many')) {
+      showMsg('err', lang==='ar'?'تعديلات سريعة - انتظر قليلاً':'Editing too fast - wait');
+    } else {
+      showMsg('err', errMsg);
+    }
+  }
   finally{setLoad(false)}
 }
 let loadTimer = null;
@@ -2363,7 +2389,7 @@ function mMsg(t,tx){const e=document.getElementById('mmsgM');e.textContent=tx;e.
 async function signInGoogle(){
   try{
     mMsg('','');
-    const res=await fetch('/api/auth/google');
+    const res=await fetchWithTimeout('/api/auth/google',{},10000);
     const data=await res.json();
     if(data.url) window.location.href=data.url;
     else mMsg('err',lang==='ar'?'تعذر تسجيل الدخول بجوجل':'Google sign-in failed');
@@ -2380,7 +2406,7 @@ async function doAuth(){
   try{
     const ep=curTab==='in'?'/api/auth/signin':'/api/auth/signup';
     const body=curTab==='up'?{email:em,password:pw,name}:{email:em,password:pw};
-    const res=await fetch(API+ep,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
+    const res=await fetchWithTimeout(API+ep,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)},20000);
     const data=await res.json();
     if(!res.ok){mMsg('err',data.error);return}
     if(curTab==='up'){mMsg('ok',lang==='ar'?'✅ تم إنشاء الحساب! سجّل الدخول الآن':'✅ Account created! Sign in now');mTab('in');return}
@@ -2450,7 +2476,7 @@ let historyCache = [];
 async function loadHistoryCache(){
   if(!tok) return;
   try{
-    const r = await fetch(API+'/api/history',{headers:{'Authorization':'Bearer '+tok,'x-session-id':sid}});
+    const r = await fetchWithTimeout(API+'/api/history',{headers:{'Authorization':'Bearer '+tok,'x-session-id':sid}},15000);
     if(r.ok){ const d = await r.json(); historyCache = d.history||[]; }
   }catch{}
 }
