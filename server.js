@@ -651,10 +651,10 @@ app.get('/api/admin/stats', async (req, res) => {
     const { count: subscribers } = await supabase
       .from('user_credits')
       .select('*', { count: 'exact', head: true })
-      .in('plan', ['starter', 'pro'])
+      .in('plan', ['starter', 'pro', 'business'])
       .gt('subscription_end_date', new Date().toISOString());
 
-    // Starter vs Pro breakdown
+    // Starter vs Pro breakdown with margins
     const { count: starterCount } = await supabase
       .from('user_credits')
       .select('*', { count: 'exact', head: true })
@@ -666,6 +666,20 @@ app.get('/api/admin/stats', async (req, res) => {
       .select('*', { count: 'exact', head: true })
       .eq('plan', 'pro')
       .gt('subscription_end_date', new Date().toISOString());
+
+    const { count: businessCount } = await supabase
+      .from('user_credits')
+      .select('*', { count: 'exact', head: true })
+      .eq('plan', 'business')
+      .gt('subscription_end_date', new Date().toISOString());
+
+    // Cost per image for profitability tracking
+    const PLAN_COSTS = {
+      free: { images: 3, apiCost: 0.78 },
+      starter: { images: 15, apiCost: 3.90 },
+      pro: { images: 40, apiCost: 10.40 },
+      business: { images: 100, apiCost: 26.00 }
+    };
 
     // Estimated cost (each edit ~$0.002)
     const estimatedCostMonth = ((editsMonth || 0) * 0.002).toFixed(2);
@@ -688,8 +702,15 @@ app.get('/api/admin/stats', async (req, res) => {
       subscribers_active: subscribers || 0,
       starter_count: starterCount || 0,
       pro_count: proCount || 0,
+      business_count: businessCount || 0,
       estimated_cost_month_usd: estimatedCostMonth,
-      recent_edits: recentEdits || []
+      recent_edits: recentEdits || [],
+      plan_costs: PLAN_COSTS,
+      plan_metrics: {
+        starter: { price: 9, apiCost: 3.90, profit: 5.10, margin: 56.7 },
+        pro: { price: 19, apiCost: 10.40, profit: 8.60, margin: 45.3 },
+        business: { price: 39, apiCost: 26.00, profit: 13.00, margin: 33.3 }
+      }
     });
   } catch (err) {
     console.error('Admin stats error:', err);
