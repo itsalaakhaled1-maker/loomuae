@@ -219,6 +219,33 @@ main{padding:28px;max-width:1200px;margin:0 auto}
       </div>
     </div>
 
+    <!-- PROFIT MARGINS -->
+    <div class="grid2">
+      <div class="panel">
+        <div class="panel-hd">
+          <div class="panel-title">Profit per Plan</div>
+          <div class="panel-badge" style="background:var(--green-dim);color:var(--green)">Monthly</div>
+        </div>
+        <div class="cost-rows" id="profitRows">
+          <div class="skeleton"></div>
+          <div class="skeleton"></div>
+          <div class="skeleton"></div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-hd">
+          <div class="panel-title">Plan Margins</div>
+          <div class="panel-badge">% Profit</div>
+        </div>
+        <div class="cost-rows" id="marginRows">
+          <div class="skeleton"></div>
+          <div class="skeleton"></div>
+          <div class="skeleton"></div>
+        </div>
+      </div>
+    </div>
+
     <div class="last-updated" id="lastUpdated">—</div>
   </main>
 </div>
@@ -289,6 +316,13 @@ function renderStats(d) {
       </div>
       <div class="plan-bar-track"><div class="plan-bar-fill green" style="width:${total ? Math.round((d.pro_count||0)/total*100) : 0}%"></div></div>
     </div>
+    <div class="plan-item">
+      <div class="plan-meta">
+        <span class="plan-name">BUSINESS</span>
+        <span class="plan-count">${(d.business_count||0).toLocaleString()} subscribers</span>
+      </div>
+      <div class="plan-bar-track"><div class="plan-bar-fill green" style="width:${total ? Math.round((d.business_count||0)/total*100) : 0}%;background:var(--blue)"></div></div>
+    </div>
   `;
 
   // Cost breakdown
@@ -315,9 +349,10 @@ function renderStats(d) {
   `;
 
   // Revenue estimate
-  const starterRev = (d.starter_count || 0) * 5;
-  const proRev = (d.pro_count || 0) * 12;
-  const totalRev = starterRev + proRev;
+  const starterRev = (d.starter_count || 0) * 9;
+  const proRev = (d.pro_count || 0) * 19;
+  const businessRev = (d.business_count || 0) * 39;
+  const totalRev = starterRev + proRev + businessRev;
   document.getElementById('revenueRows').innerHTML = `
     <div class="cost-row">
       <span class="cost-label">Starter × ${d.starter_count||0}</span>
@@ -328,12 +363,59 @@ function renderStats(d) {
       <span class="cost-val green">$${proRev}</span>
     </div>
     <div class="cost-row">
+      <span class="cost-label">Business × ${d.business_count||0}</span>
+      <span class="cost-val" style="color:var(--blue)">$${businessRev}</span>
+    </div>
+    <div class="cost-row">
       <span class="cost-label">Monthly revenue</span>
       <span class="cost-val green" style="font-size:16px;font-weight:700">$${totalRev}</span>
     </div>
     <div class="cost-row">
       <span class="cost-label">Net profit est.</span>
       <span class="cost-val green">$${Math.max(0, totalRev - parseFloat(totalCost)).toFixed(2)}</span>
+    </div>
+  `;
+
+  // Profitability metrics display
+  const metrics = d.plan_metrics || {};
+  const profitRows = `
+    <div class="cost-row">
+      <span class="cost-label">Starter Profit/Month</span>
+      <span class="cost-val amber">$${(metrics.starter?.profit || 5.10) * (d.starter_count || 0)}</span>
+    </div>
+    <div class="cost-row">
+      <span class="cost-label">Pro Profit/Month</span>
+      <span class="cost-val green">$${(metrics.pro?.profit || 8.60) * (d.pro_count || 0)}</span>
+    </div>
+    <div class="cost-row">
+      <span class="cost-label">Business Profit/Month</span>
+      <span class="cost-val" style="color:var(--blue)">$${(metrics.business?.profit || 13.00) * (d.business_count || 0)}</span>
+    </div>
+    <div class="cost-row">
+      <span class="cost-label">Best Margin</span>
+      <span class="cost-val amber" style="font-size:16px;font-weight:700">${metrics.starter?.margin || 56.7}%</span>
+    </div>
+  `;
+  
+  // Append to a new element or update existing profitability section
+  const profitSection = document.getElementById('profitRows');
+  if (profitSection) {
+    profitSection.innerHTML = profitRows;
+  }
+
+  // Margin display
+  document.getElementById('marginRows').innerHTML = `
+    <div class="cost-row">
+      <span class="cost-label">Starter Margin</span>
+      <span class="cost-val amber">${metrics.starter?.margin || 56.7}%</span>
+    </div>
+    <div class="cost-row">
+      <span class="cost-label">Pro Margin</span>
+      <span class="cost-val green">${metrics.pro?.margin || 45.3}%</span>
+    </div>
+    <div class="cost-row">
+      <span class="cost-label">Business Margin</span>
+      <span class="cost-val" style="color:var(--blue)">${metrics.business?.margin || 33.3}%</span>
     </div>
   `;
 
