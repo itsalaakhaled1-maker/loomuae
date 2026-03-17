@@ -209,12 +209,60 @@ html.light-mode div {
 
 .genbtn{display:flex;align-items:center;gap:8px;padding:13px 34px;background:linear-gradient(135deg,var(--amber),var(--amber2));color:#ffffff;border:none;border-radius:var(--r);font-family:inherit;font-size:15px;font-weight:800;cursor:pointer;transition:all var(--t) var(--ease);position:relative;overflow:hidden;flex-shrink:0}
 
-/* Light mode genbtn - with navbar style */
+/* Light mode genbtn - white text */
 html.light-mode .genbtn {
-  background: rgba(255,255,255,0.85) !important;
-  backdrop-filter: blur(20px) saturate(1.3) !important;
-  border: 1px solid rgba(0,0,0,0.08) !important;
+  background: linear-gradient(135deg,var(--amber),var(--amber2)) !important;
+  backdrop-filter: none !important;
+  border: none !important;
+  color: #ffffff !important;
+}
+
+html.light-mode .genbtn span {
+  color: #ffffff !important;
+}
+
+/* Light mode nbtn-amber - white text */
+html.light-mode .nbtn-amber {
+  color: #ffffff !important;
+}
+
+html.light-mode .nbtn-amber span {
+  color: #ffffff !important;
+}
+
+/* Light mode banner-tag - white text */
+html.light-mode .banner-tag {
+  color: #ffffff !important;
+}
+
+/* CRITICAL: Modal buttons - always white text */
+html.light-mode .mbtn {
+  color: #ffffff !important;
+  background: linear-gradient(135deg, #0052a3, #003d7a) !important;
+}
+
+html.light-mode .mbtn span {
+  color: #ffffff !important;
+}
+
+html.light-mode .mbtn,
+html.light-mode .mbtn *,
+html.light-mode .mbtn span,
+html.light-mode .mbtn div,
+html.light-mode .mbtn p,
+html.light-mode #mbtxt {
+  color: #ffffff !important;
+}
+
+html.light-mode .mtab.on {
   color: var(--amber) !important;
+}
+
+/* Force white text on all elements in modal buttons */
+html.light-mode .mbtn span,
+html.light-mode .mbtn div,
+html.light-mode .mbtn p {
+  color: #ffffff !important;
 }
 .genbtn::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(255,255,255,.18),transparent);opacity:0;transition:opacity var(--t)}
 .genbtn:hover::before{opacity:1}
