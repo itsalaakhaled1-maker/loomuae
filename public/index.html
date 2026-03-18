@@ -2714,6 +2714,204 @@ document.addEventListener('DOMContentLoaded', function() {
 </body>
 
 <script>
+
+// ════════════════════════════════════════════════════════════════════════════════
+// NEW FEATURE #1: PROMPT ANALYZER
+// ════════════════════════════════════════════════════════════════════════════════
+
+let refImg = null;
+
+function openAnalyzer() {
+  showMsg('info', lang==='ar'?'📸 أرفع صورة مرجعية لتحليل الأسلوب':'📸 Upload a reference image');
+  
+  const input = document.createElement('input');
+  input.type = 'file';
+  input.accept = 'image/*';
+  input.onchange = async (e) => {
+    if (!e.target.files[0]) return;
+    refImg = e.target.files[0];
+    await analyzeReference();
+  };
+  input.click();
+}
+
+async function analyzeReference() {
+  if (!refImg) return;
+  
+  setLoad(true);
+  clrMsg();
+
+  try {
+    const fd = new FormData();
+    fd.append('reference_image', refImg);
+    fd.append('sessionId', sid);
+
+    const h = { 'x-session-id': sid };
+    if (tok) h['Authorization'] = 'Bearer ' + tok;
+
+    const resp = await fetchWithTimeout(API + '/api/analyze-reference', {
+      method: 'POST',
+      headers: h,
+      body: fd
+    }, 60000);
+
+    const data = await resp.json();
+
+    if (!resp.ok) {
+      if (resp.status === 403) {
+        showMsg('info', lang==='ar'?'🎉 استهلكت الكريديت المجاني — سجّل للحصول على أسلوب!':'🎉 Free credit used — sign up for more!');
+        setTimeout(() => openM(), 2000);
+      } else {
+        showMsg('err', data.error || 'Analysis failed');
+      }
+      return;
+    }
+
+    // Show result
+    const prompt = data.prompt;
+    const resultHtml = `
+      <div class="result-box">
+        <h3>${lang==='ar'?'✅ تم استخراج الأسلوب!':'✅ Style Extracted!'}</h3>
+        <textarea readonly style="width:100%;height:200px;padding:10px;margin:10px 0;border:1px solid var(--border);border-radius:8px;font-size:12px;">${prompt}</textarea>
+        <div style="display:flex;gap:10px;">
+          <button class="btn primary" onclick="copyPromptText('${prompt.replace(/'/g, "\\'")}')">📋 ${lang==='ar'?'نسخ الأسلوب':'Copy'}</button>
+          <button class="btn" onclick="useCopiedPrompt('${prompt.replace(/'/g, "\\'")}')">${lang==='ar'?'استخدم الأسلوب':'Use Prompt'}</button>
+        </div>
+      </div>
+    `;
+    
+    document.getElementById('resc').innerHTML = resultHtml;
+    document.getElementById('resc').classList.add('show');
+    document.getElementById('resc').scrollIntoView({ behavior: 'smooth' });
+    
+    showMsg('ok', `${lang==='ar'?'✅ تم الاستخراج! كريديت متبقي: ':'✅ Extracted! Credits left: '}${data.remaining_credits}`);
+    updCredUI(data.remaining_credits);
+
+  } catch (err) {
+    showMsg('err', err.message || (lang==='ar'?'خطأ في التحليل':'Analysis error'));
+  } finally {
+    hideLoad();
+  }
+}
+
+function copyPromptText(text) {
+  navigator.clipboard.writeText(text);
+  showMsg('ok', lang==='ar'?'📋 نسخ بنجاح!':'📋 Copied!');
+}
+
+function useCopiedPrompt(prompt) {
+  document.getElementById('ptxt').value = prompt;
+  showMsg('ok', lang==='ar'?'✅ الأسلوب في الحقل. جاهز للاستخدام!':'✅ Ready to use!');
+  setTimeout(() => {
+    document.getElementById('ptxt').focus();
+    document.getElementById('ptxt').scrollIntoView({ behavior: 'smooth' });
+  }, 500);
+}
+
+// ════════════════════════════════════════════════════════════════════════════════
+// NEW FEATURE #2: PRODUCT SWAP
+// ════════════════════════════════════════════════════════════════════════════════
+
+let userSwapImg = null;
+let refSwapImg = null;
+
+function openSwap() {
+  const input = document.createElement('input');
+  input.type = 'file';
+  input.accept = 'image/*';
+  input.onchange = async (e) => {
+    if (!e.target.files[0]) return;
+    userSwapImg = e.target.files[0];
+    showMsg('info', lang==='ar'?'الآن أرفع الصورة المرجعية':'Now upload reference image');
+    
+    setTimeout(() => openRefSwapInput(), 500);
+  };
+  input.click();
+}
+
+function openRefSwapInput() {
+  const input = document.createElement('input');
+  input.type = 'file';
+  input.accept = 'image/*';
+  input.onchange = async (e) => {
+    if (!e.target.files[0]) return;
+    refSwapImg = e.target.files[0];
+    
+    const swapPrompt = document.getElementById('ptxt')?.value || prompt(lang==='ar'?'أدخل أسلوب التصوير:':'Enter photography style:');
+    if (!swapPrompt.trim()) {
+      showMsg('err', lang==='ar'?'أدخل الأسلوب أولاً':'Enter style first');
+      return;
+    }
+    
+    await performSwap(swapPrompt);
+  };
+  input.click();
+}
+
+async function performSwap(swapPrompt) {
+  if (!userSwapImg || !refSwapImg) {
+    showMsg('err', 'Missing images');
+    return;
+  }
+
+  setLoad(true);
+  clrMsg();
+
+  try {
+    const fd = new FormData();
+    fd.append('user_product', userSwapImg);
+    fd.append('reference_image', refSwapImg);
+    fd.append('swap_prompt', swapPrompt);
+    fd.append('sessionId', sid);
+
+    const h = { 'x-session-id': sid };
+    if (tok) h['Authorization'] = 'Bearer ' + tok;
+
+    const resp = await fetchWithTimeout(API + '/api/swap-product', {
+      method: 'POST',
+      headers: h,
+      body: fd
+    }, 120000);
+
+    const data = await resp.json();
+
+    if (!resp.ok) {
+      if (resp.status === 403) {
+        showMsg('info', lang==='ar'?'🎉 استهلكت الكريديت — سجّل للمزيد!':'🎉 No credits — sign up!');
+        setTimeout(() => openM(), 2000);
+      } else {
+        showMsg('err', data.error || 'Swap failed');
+      }
+      return;
+    }
+
+    // Show result
+    const resultHtml = `
+      <div class="result-box">
+        <h3>${lang==='ar'?'✅ تم التحليل!':'✅ Swap Complete!'}</h3>
+        <p>${lang==='ar'?'الخطوات الموصى بها:':'Recommended Steps:'}</p>
+        <textarea readonly style="width:100%;height:250px;padding:10px;margin:10px 0;border:1px solid var(--border);border-radius:8px;font-size:12px;">${data.instructions}</textarea>
+        <p style="font-size:12px;color:var(--muted);margin-top:10px;">
+          ${lang==='ar'?'💡 استخدم هذه التعليمات مع DALL-E أو Midjourney لإنشاء الصورة النهائية':'💡 Use these instructions with image generation APIs'}
+        </p>
+        <button class="btn primary" onclick="copyPromptText(\`${data.instructions.replace(/`/g, '\\`')}\`)">📋 ${lang==='ar'?'نسخ التعليمات':'Copy Instructions'}</button>
+      </div>
+    `;
+    
+    document.getElementById('resc').innerHTML = resultHtml;
+    document.getElementById('resc').classList.add('show');
+    document.getElementById('resc').scrollIntoView({ behavior: 'smooth' });
+    
+    showMsg('ok', `✅ ${lang==='ar'?'تم! الكريديت المتبقي: ':'Done! Credits: '}${data.remaining_credits}`);
+    updCredUI(data.remaining_credits);
+
+  } catch (err) {
+    showMsg('err', err.message || (lang==='ar'?'خطأ في البدل':'Swap error'));
+  } finally {
+    hideLoad();
+  }
+}
+
 /* ══ THEME TOGGLE ══════════════════════════════════════════════════════════ */
 function toggleTheme() {
   const html = document.documentElement;
