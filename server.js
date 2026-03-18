@@ -811,6 +811,279 @@ app.get('/api/admin/stats', async (req, res) => {
   }
 });
 
+// ═══════════════════════════════════════════════════════════════════════════════
+// NEW FEATURE #1: PROMPT EXTRACTION/ANALYSIS
+// ═══════════════════════════════════════════════════════════════════════════════
+
+app.post('/api/analyze-reference', editLimiter, upload.single('reference_image'), async (req, res) => {
+  try {
+    // Validate input
+    if (!req.file) {
+      return res.status(400).json({ error: 'No image provided' });
+    }
+
+    // Get user and credits
+    const { user } = await getUser(req);
+    const sessionId = req.headers['x-session-id'] || null;
+    
+    let canAnalyze = false;
+    if (user) {
+      const credits = await checkUserCredits(user.id);
+      canAnalyze = credits.canEdit;
+    } else if (sessionId) {
+      canAnalyze = await checkAnonymousCredit(sessionId);
+    }
+
+    if (!canAnalyze) {
+      return res.status(403).json({ 
+        error: 'No credits available',
+        requiresAuth: true 
+      });
+    }
+
+    // Get Gemini API
+    const genAI = new GoogleGenerativeAI(getGeminiKey());
+    const model = genAI.getGenerativeModel({ model: 'gemini-2.0-flash' });
+
+    // Prepare image
+    const base64Image = req.file.buffer.toString('base64');
+    const mimeType = req.file.mimetype;
+
+    // Call Gemini to analyze
+    const analysisPrompt = `You are a professional product photographer analyst.
+
+Analyze this reference product image and extract ONLY the photography style details.
+
+CRITICAL: Focus ONLY on the environment, lighting, background, and style.
+Do NOT mention or describe the product itself.
+
+Extract and describe in detail:
+1. Background (color, texture, pattern, brightness level)
+2. Lighting setup (direction, softness, intensity, shadow characteristics)
+3. Camera angle and perspective
+4. Color palette and dominant tones
+5. Texture and surface appearance
+6. Overall mood and aesthetic
+7. Any special effects or post-processing style
+
+Format your response as a detailed, actionable photography prompt that a different product photographer could use to photograph a DIFFERENT product in the EXACT same style.
+
+The prompt should be ready to use directly in an image generation API or as instructions for a photographer.
+
+Start with: "PHOTOGRAPHY STYLE PROMPT:"`;
+
+    const response = await model.generateContent([
+      {
+        inlineData: {
+          data: base64Image,
+          mimeType: mimeType
+        }
+      },
+      { text: analysisPrompt }
+    ]);
+
+    const extractedPrompt = response.response.text();
+
+    // Deduct credit
+    if (user) {
+      await useUserCredit(user.id);
+    } else if (sessionId) {
+      await useAnonymousCredit(sessionId);
+    }
+
+    // Log event
+    await logEvent({
+      event_type: 'prompt_analysis',
+      user_id: user?.id || null,
+      session_id: sessionId,
+      success: true
+    });
+
+    // Get remaining credits
+    let remainingCredits = 'anonymous';
+    if (user) {
+      const updated = await checkUserCredits(user.id);
+      remainingCredits = updated.remaining;
+    }
+
+    res.json({
+      success: true,
+      prompt: extractedPrompt,
+      credit_used: 1,
+      remaining_credits: remainingCredits
+    });
+
+  } catch (err) {
+    console.error('Analyze error:', err);
+    
+    const { user } = await getUser(req);
+    const sessionId = req.headers['x-session-id'] || null;
+    
+    await logEvent({
+      event_type: 'prompt_analysis',
+      user_id: user?.id || null,
+      session_id: sessionId,
+      success: false
+    });
+
+    res.status(500).json({ 
+      error: 'Failed to analyze image',
+      details: err.message 
+    });
+  }
+});
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// NEW FEATURE #2: PRODUCT SWAP/REPLACEMENT
+// ═══════════════════════════════════════════════════════════════════════════════
+
+app.post('/api/swap-product', editLimiter, upload.fields([
+  { name: 'user_product', maxCount: 1 },
+  { name: 'reference_image', maxCount: 1 }
+]), async (req, res) => {
+  try {
+    // Validate input
+    if (!req.files['user_product'] || !req.files['reference_image']) {
+      return res.status(400).json({ 
+        error: 'Both images required',
+        required: ['user_product', 'reference_image']
+      });
+    }
+
+    const swapPrompt = req.body.swap_prompt || '';
+    if (!swapPrompt.trim()) {
+      return res.status(400).json({ error: 'Swap prompt required' });
+    }
+
+    // Get user and credits
+    const { user } = await getUser(req);
+    const sessionId = req.headers['x-session-id'] || null;
+    
+    let canSwap = false;
+    if (user) {
+      const credits = await checkUserCredits(user.id);
+      canSwap = credits.canEdit;
+    } else if (sessionId) {
+      canSwap = await checkAnonymousCredit(sessionId);
+    }
+
+    if (!canSwap) {
+      return res.status(403).json({ 
+        error: 'No credits available',
+        requiresAuth: true 
+      });
+    }
+
+    // Get Gemini API
+    const genAI = new GoogleGenerativeAI(getGeminiKey());
+    const model = genAI.getGenerativeModel({ model: 'gemini-2.0-flash' });
+
+    // Prepare images
+    const userProductBase64 = req.files['user_product'][0].buffer.toString('base64');
+    const referenceImageBase64 = req.files['reference_image'][0].buffer.toString('base64');
+
+    // Call Gemini to analyze swap
+    const swapAnalysisPrompt = `You are an expert in product composition and styling.
+
+You will receive two images:
+1. The user's product (that needs to be placed)
+2. A reference image (with environment to replicate)
+
+Your task: Provide detailed instructions for replacing the reference product with the user's product while keeping EVERYTHING ELSE identical.
+
+CRITICAL RULES:
+1. ONLY analyze - do not generate images
+2. The background must remain EXACTLY as is
+3. The lighting must remain EXACTLY as is
+4. The shadows and reflections must stay in the same positions
+5. The camera angle must be identical
+6. The composition and framing must be preserved
+7. Only the product itself changes
+
+Reference Style Instructions: ${swapPrompt}
+
+Provide detailed instructions that include:
+- Exact placement location
+- Size adjustments needed
+- Lighting adjustments (if minimal)
+- Shadow considerations
+- Reflection handling
+- Color harmony adjustments
+- Final composition notes
+
+Format as: "PRODUCT SWAP INSTRUCTIONS:"`;
+
+    const response = await model.generateContent([
+      { text: 'User Product to Insert:' },
+      {
+        inlineData: {
+          data: userProductBase64,
+          mimeType: req.files['user_product'][0].mimetype
+        }
+      },
+      { text: 'Reference Image (environment to keep):' },
+      {
+        inlineData: {
+          data: referenceImageBase64,
+          mimeType: req.files['reference_image'][0].mimetype
+        }
+      },
+      { text: swapAnalysisPrompt }
+    ]);
+
+    const swapInstructions = response.response.text();
+
+    // Deduct credit
+    if (user) {
+      await useUserCredit(user.id);
+    } else if (sessionId) {
+      await useAnonymousCredit(sessionId);
+    }
+
+    // Log event
+    await logEvent({
+      event_type: 'product_swap',
+      user_id: user?.id || null,
+      session_id: sessionId,
+      success: true
+    });
+
+    // Get remaining credits
+    let remainingCredits = 'anonymous';
+    if (user) {
+      const updated = await checkUserCredits(user.id);
+      remainingCredits = updated.remaining;
+    }
+
+    res.json({
+      success: true,
+      message: 'Product swap analysis completed',
+      instructions: swapInstructions,
+      next_steps: 'Use these instructions with image generation API (DALL-E, Stable Diffusion, Midjourney) to generate the final swapped image',
+      credit_used: 1,
+      remaining_credits: remainingCredits
+    });
+
+  } catch (err) {
+    console.error('Swap error:', err);
+    
+    const { user } = await getUser(req);
+    const sessionId = req.headers['x-session-id'] || null;
+    
+    await logEvent({
+      event_type: 'product_swap',
+      user_id: user?.id || null,
+      session_id: sessionId,
+      success: false
+    });
+
+    res.status(500).json({ 
+      error: 'Failed to swap products',
+      details: err.message 
+    });
+  }
+});
+
 // ─── Explicit static HTML routes ────────────────────────────────────────────
 app.get('/admin.html', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'admin.html'));
