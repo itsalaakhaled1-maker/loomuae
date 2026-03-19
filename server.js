@@ -155,6 +155,8 @@ app.use((req, res, next) => {
   };
   next();
 });
+
+async function logEvent({ event_type, user_id = null, session_id = null, plan = null, success = true } = {}) {
   try {
     await supabase.from('api_stats').insert({
       event_type,
