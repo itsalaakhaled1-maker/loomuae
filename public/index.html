@@ -1502,6 +1502,238 @@ html.light-mode .flink:hover {
 
       </div><!-- END panel-edit -->
 
+
+
+
+      <!-- ══ PANEL 2: EXTRACT STYLE 📸 ══ -->
+      <div class="tool-panel" id="panel-bgremove">
+
+        <div class="sec">
+          <div class="ubox-wrap">
+            <div class="ubox" id="bgrDrop"
+                 ondragover="event.preventDefault();this.classList.add('drag-over')"
+                 ondragleave="this.classList.remove('drag-over')"
+                 ondrop="bgrOnDrop(event)">
+              <input type="file" id="bgrFile" accept="image/jpeg,image/png,image/webp"
+                     onchange="bgrOnPick(this.files[0])"/>
+              <span class="ubox-icon">✂️</span>
+              <div class="ubox-title" data-ar="ارفع صورة منتجك" data-en="Upload Your Product Image">ارفع صورة منتجك</div>
+              <div class="ubox-sub" data-ar="ضغطة واحدة — يزيل الخلفية ويضع خلفية بيضاء نقية جاهزة لأمازون ونون" data-en="One tap — removes background & adds pure white background ready for Amazon & Noon">ضغطة واحدة — يزيل الخلفية ويضع خلفية بيضاء نقية جاهزة لأمازون ونون</div>
+            </div>
+            <div class="ubox-prev" id="bgrPrev">
+              <span class="ubox-prev-clr" onclick="bgrClear()">✕</span>
+              <img id="bgrPrevImg" src="" alt=""/>
+            </div>
+          </div>
+        </div>
+
+        <div class="psec">
+          <div class="plabel" data-ar="مناسبة لـ" data-en="Perfect for">مناسبة لـ</div>
+          <div class="chips" style="margin-top:10px">
+            <span class="chip" style="cursor:default">أمازون UAE</span>
+            <span class="chip" style="cursor:default">نون</span>
+            <span class="chip" style="cursor:default">سوق.كوم</span>
+            <span class="chip" style="cursor:default">Meta Ads</span>
+            <span class="chip" style="cursor:default">Google Shopping</span>
+            <span class="chip" style="cursor:default">صور المتجر</span>
+          </div>
+        </div>
+
+        <div class="msgwrap"><div class="msg" id="bgrMsg"></div></div>
+
+        <div class="arow">
+          <div class="ainfo" data-ar="لا يوجد prompt — ضغطة واحدة فقط" data-en="No prompt needed — one tap only">لا يوجد prompt — ضغطة واحدة فقط</div>
+          <button class="genbtn" id="bgrBtn" onclick="bgrRun()">
+            <div class="spin"></div><span class="bstar">✂️</span>
+            <span data-ar="إزالة الخلفية" data-en="Remove Background">إزالة الخلفية</span>
+          </button>
+        </div>
+
+        <div class="resc" id="bgrResc">
+          <div class="reshd">
+            <div class="reslabel">✅ <span data-ar="تمت الإزالة بنجاح" data-en="Background Removed">تمت الإزالة بنجاح</span></div>
+            <button class="dlbtn" onclick="bgrDl()">⬇ <span data-ar="تحميل" data-en="Download">تحميل</span></button>
+          </div>
+          <div class="slider-wrap" id="bgrSlider">
+            <img id="bgrOimg" src="" alt="before"/>
+            <div class="slider-after" id="bgrAfterDiv" style="width:50%">
+              <img id="bgrRimg" src="" alt="after"/>
+            </div>
+            <div class="slider-line" id="bgrSliderLine" style="left:50%"></div>
+            <div class="slider-btn" id="bgrSliderBtn" style="left:50%">⇔</div>
+            <span class="slider-label before" data-ar="الأصل" data-en="Original">الأصل</span>
+            <span class="slider-label after" data-ar="بيضاء ✦" data-en="White ✦">بيضاء ✦</span>
+          </div>
+          <div class="share-row">
+            <button class="share-btn share-btn-wa" onclick="shareWA()">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+              <span data-ar="شارك واتساب" data-en="WhatsApp">شارك واتساب</span>
+            </button>
+            <button class="share-btn share-btn-copy" onclick="copyLink(this)">🔗 <span data-ar="نسخ الرابط" data-en="Copy Link">نسخ الرابط</span></button>
+          </div>
+        </div>
+
+      </div><!-- END panel-bgremove -->
+
+
+      <!-- ══ PANEL 3: SWAP PRODUCT 🔄 ══ -->
+      <div class="tool-panel" id="panel-swap">
+        <div class="sec">
+          <div class="dual-grid">
+            <div>
+              <div class="dual-ubox" id="swDrop1"
+                   ondragover="event.preventDefault();this.classList.add('drag-over')"
+                   ondragleave="this.classList.remove('drag-over')"
+                   ondrop="swOnDrop(event,1)">
+                <input type="file" id="swFile1" accept="image/jpeg,image/png,image/webp"
+                       onchange="swOnPick(this.files[0],1)"/>
+                <span class="dual-badge" data-ar="منتجك" data-en="Your Product">منتجك</span>
+                <span class="dual-ubox-icon">📦</span>
+                <div class="dual-ubox-title" data-ar="ارفع صورة منتجك" data-en="Upload Your Product">ارفع صورة منتجك</div>
+                <div class="dual-ubox-sub" data-ar="المنتج الذي تريد نقله للبيئة الجديدة" data-en="The product you want placed in the new scene">المنتج الذي تريد نقله</div>
+              </div>
+              <div class="dual-prev" id="swPrev1"><span class="dual-prev-clr" onclick="swClear(1)">✕</span><img id="swPrevImg1" src="" alt=""/></div>
+            </div>
+            <div>
+              <div class="dual-ubox" id="swDrop2"
+                   ondragover="event.preventDefault();this.classList.add('drag-over')"
+                   ondragleave="this.classList.remove('drag-over')"
+                   ondrop="swOnDrop(event,2)">
+                <input type="file" id="swFile2" accept="image/jpeg,image/png,image/webp"
+                       onchange="swOnPick(this.files[0],2)"/>
+                <span class="dual-badge" data-ar="المشهد المرجعي" data-en="Reference Scene">المشهد المرجعي</span>
+                <span class="dual-ubox-icon">🖼️</span>
+                <div class="dual-ubox-title" data-ar="ارفع الصورة المرجعية" data-en="Upload Reference Image">ارفع الصورة المرجعية</div>
+                <div class="dual-ubox-sub" data-ar="البيئة والمشهد الذي تريد منتجك فيه" data-en="The environment & scene you want your product in">المشهد الذي تريد منتجك فيه</div>
+              </div>
+              <div class="dual-prev" id="swPrev2"><span class="dual-prev-clr" onclick="swClear(2)">✕</span><img id="swPrevImg2" src="" alt=""/></div>
+            </div>
+          </div>
+        </div>
+        <div class="psec">
+          <div class="plabel-row">
+            <div class="plabel" data-ar="وصف إضافي (اختياري)" data-en="Additional description (optional)">وصف إضافي (اختياري)</div>
+          </div>
+          <textarea class="ptxt" id="swPromptTxt" placeholder="مثال: منتجي على نفس القاعدة الرخامية بنفس الإضاءة الذهبية..."></textarea>
+        </div>
+        <div class="msgwrap"><div class="msg" id="swMsg"></div></div>
+        <div class="arow">
+          <div class="ainfo" data-ar="يولّد صورة فعلية بمنتجك داخل مشهد الصورة المرجعية" data-en="Generates a real image with your product inside the reference scene">يولّد صورة فعلية بمنتجك داخل المشهد</div>
+          <button class="genbtn" id="swBtn" onclick="swRun()">
+            <div class="spin"></div><span class="bstar">🔄</span>
+            <span data-ar="تبديل المنتج" data-en="Swap Product">تبديل المنتج</span>
+          </button>
+        </div>
+        <div class="resc" id="swResc">
+          <div class="reshd">
+            <div class="reslabel">✅ <span data-ar="تم التبديل بنجاح" data-en="Swap Complete">تم التبديل بنجاح</span></div>
+            <button class="dlbtn" onclick="swDl()">⬇ <span data-ar="تحميل" data-en="Download">تحميل</span></button>
+          </div>
+          <div class="slider-wrap" id="swSlider">
+            <img id="swOimg" src="" alt="before"/>
+            <div class="slider-after" id="swAfterDiv" style="width:50%">
+              <img id="swRimg" src="" alt="after"/>
+            </div>
+            <div class="slider-line" id="swSliderLine" style="left:50%"></div>
+            <div class="slider-btn" id="swSliderBtn" style="left:50%">⇔</div>
+            <span class="slider-label before" data-ar="الأصل" data-en="Original">الأصل</span>
+            <span class="slider-label after" data-ar="المبدّل ✦" data-en="Swapped ✦">المبدّل ✦</span>
+          </div>
+          <div class="share-row">
+            <button class="share-btn share-btn-wa" onclick="shareWA()">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+              <span data-ar="شارك واتساب" data-en="WhatsApp">شارك واتساب</span>
+            </button>
+            <button class="share-btn share-btn-copy" onclick="copyLink(this)">🔗 <span data-ar="نسخ الرابط" data-en="Copy Link">نسخ الرابط</span></button>
+          </div>
+        </div>
+      </div><!-- END panel-swap -->
+
+
+      <!-- ══ PANEL 4: GENERATE PROMPT 🎯 ══ -->
+      <div class="tool-panel" id="panel-infographic">
+
+        <div class="sec">
+          <div class="ubox-wrap">
+            <div class="ubox" id="infDrop"
+                 ondragover="event.preventDefault();this.classList.add('drag-over')"
+                 ondragleave="this.classList.remove('drag-over')"
+                 ondrop="infOnDrop(event)">
+              <input type="file" id="infFile" accept="image/jpeg,image/png,image/webp"
+                     onchange="infOnPick(this.files[0])"/>
+              <span class="ubox-icon">📊</span>
+              <div class="ubox-title" data-ar="ارفع صورة منتجك" data-en="Upload Your Product Image">ارفع صورة منتجك</div>
+              <div class="ubox-sub" data-ar="يصمم إنفوجرافيك احترافي بالعربي مع callouts وبادجات — جاهز لأمازون A+ ونون" data-en="Designs a professional Arabic infographic with callouts & badges — ready for Amazon A+ & Noon">يصمم إنفوجرافيك احترافي بالعربي مع callouts وبادجات — جاهز لأمازون A+ ونون</div>
+            </div>
+            <div class="ubox-prev" id="infPrev">
+              <span class="ubox-prev-clr" onclick="infClear()">✕</span>
+              <img id="infPrevImg" src="" alt=""/>
+            </div>
+          </div>
+        </div>
+
+        <div class="psec">
+          <div class="plabel-row">
+            <div class="plabel" data-ar="مميزات المنتج — كل ميزة في سطر" data-en="Product features — one per line">مميزات المنتج — كل ميزة في سطر</div>
+          </div>
+          <textarea class="ptxt" id="infFeaturesTxt" style="min-height:140px"
+            placeholder="مثال:&#10;فولاذ 304 خالٍ من BPA&#10;حافظ حرارة 12 ساعة&#10;سعة 750 مل&#10;ضمان سنتين&#10;خفيف الوزن 320 غرام"></textarea>
+          <div class="chips" id="inf-chips-ar" style="margin-top:10px">
+            <span class="chip" onclick="infChip(this)">غطاء مضاد للتسرب</span>
+            <span class="chip" onclick="infChip(this)">مواد طبية معتمدة</span>
+            <span class="chip" onclick="infChip(this)">خفيف الوزن</span>
+            <span class="chip" onclick="infChip(this)">ضمان سنتين</span>
+            <span class="chip" onclick="infChip(this)">شحن مجاني</span>
+          </div>
+          <div class="chips" id="inf-chips-en" style="display:none;margin-top:10px">
+            <span class="chip" onclick="infChip(this)">Leak-proof lid</span>
+            <span class="chip" onclick="infChip(this)">Medical grade material</span>
+            <span class="chip" onclick="infChip(this)">Lightweight design</span>
+            <span class="chip" onclick="infChip(this)">2-year warranty</span>
+            <span class="chip" onclick="infChip(this)">Free shipping</span>
+          </div>
+        </div>
+
+        <div class="msgwrap"><div class="msg" id="infMsg"></div></div>
+
+        <div class="arow">
+          <div class="ainfo" data-ar="يصمم إنفوجرافيك كامل جاهز للرفع مباشرة" data-en="Designs complete infographic ready to upload">يصمم إنفوجرافيك كامل جاهز للرفع</div>
+          <button class="genbtn" id="infBtn" onclick="infRun()">
+            <div class="spin"></div><span class="bstar">📊</span>
+            <span data-ar="توليد الإنفوجرافيك" data-en="Generate Infographic">توليد الإنفوجرافيك</span>
+          </button>
+        </div>
+
+        <div class="resc" id="infResc">
+          <div class="reshd">
+            <div class="reslabel">✅ <span data-ar="الإنفوجرافيك جاهز" data-en="Infographic Ready">الإنفوجرافيك جاهز</span></div>
+            <button class="dlbtn" onclick="infDl()">⬇ <span data-ar="تحميل" data-en="Download">تحميل</span></button>
+          </div>
+          <div class="slider-wrap" id="infSlider">
+            <img id="infOimg" src="" alt="before"/>
+            <div class="slider-after" id="infAfterDiv" style="width:50%">
+              <img id="infRimg" src="" alt="after"/>
+            </div>
+            <div class="slider-line" id="infSliderLine" style="left:50%"></div>
+            <div class="slider-btn" id="infSliderBtn" style="left:50%">⇔</div>
+            <span class="slider-label before" data-ar="الأصل" data-en="Original">الأصل</span>
+            <span class="slider-label after" data-ar="إنفوجرافيك ✦" data-en="Infographic ✦">إنفوجرافيك ✦</span>
+          </div>
+          <div class="share-row">
+            <button class="share-btn share-btn-wa" onclick="shareWA()">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+              <span data-ar="شارك واتساب" data-en="WhatsApp">شارك واتساب</span>
+            </button>
+            <button class="share-btn share-btn-copy" onclick="copyLink(this)">🔗 <span data-ar="نسخ الرابط" data-en="Copy Link">نسخ الرابط</span></button>
+          </div>
+        </div>
+
+      </div><!-- END panel-infographic -->
+
+    </div><!-- END appcard -->
+  </div><!-- END appwrap -->
+</section>
+
       <!-- ===== PRICING SECTION — paste this right after the Edit Image button ===== -->
 <div id="pricing" style="
   padding: 80px 20px;
@@ -1808,236 +2040,6 @@ html.light-mode .flink:hover {
   </script>
 
 </div><!-- ===== END PRICING SECTION ===== -->
-
-
-      <!-- ══ PANEL 2: EXTRACT STYLE 📸 ══ -->
-      <div class="tool-panel" id="panel-bgremove">
-
-        <div class="sec">
-          <div class="ubox-wrap">
-            <div class="ubox" id="bgrDrop"
-                 ondragover="event.preventDefault();this.classList.add('drag-over')"
-                 ondragleave="this.classList.remove('drag-over')"
-                 ondrop="bgrOnDrop(event)">
-              <input type="file" id="bgrFile" accept="image/jpeg,image/png,image/webp"
-                     onchange="bgrOnPick(this.files[0])"/>
-              <span class="ubox-icon">✂️</span>
-              <div class="ubox-title" data-ar="ارفع صورة منتجك" data-en="Upload Your Product Image">ارفع صورة منتجك</div>
-              <div class="ubox-sub" data-ar="ضغطة واحدة — يزيل الخلفية ويضع خلفية بيضاء نقية جاهزة لأمازون ونون" data-en="One tap — removes background & adds pure white background ready for Amazon & Noon">ضغطة واحدة — يزيل الخلفية ويضع خلفية بيضاء نقية جاهزة لأمازون ونون</div>
-            </div>
-            <div class="ubox-prev" id="bgrPrev">
-              <span class="ubox-prev-clr" onclick="bgrClear()">✕</span>
-              <img id="bgrPrevImg" src="" alt=""/>
-            </div>
-          </div>
-        </div>
-
-        <div class="psec">
-          <div class="plabel" data-ar="مناسبة لـ" data-en="Perfect for">مناسبة لـ</div>
-          <div class="chips" style="margin-top:10px">
-            <span class="chip" style="cursor:default">أمازون UAE</span>
-            <span class="chip" style="cursor:default">نون</span>
-            <span class="chip" style="cursor:default">سوق.كوم</span>
-            <span class="chip" style="cursor:default">Meta Ads</span>
-            <span class="chip" style="cursor:default">Google Shopping</span>
-            <span class="chip" style="cursor:default">صور المتجر</span>
-          </div>
-        </div>
-
-        <div class="msgwrap"><div class="msg" id="bgrMsg"></div></div>
-
-        <div class="arow">
-          <div class="ainfo" data-ar="لا يوجد prompt — ضغطة واحدة فقط" data-en="No prompt needed — one tap only">لا يوجد prompt — ضغطة واحدة فقط</div>
-          <button class="genbtn" id="bgrBtn" onclick="bgrRun()">
-            <div class="spin"></div><span class="bstar">✂️</span>
-            <span data-ar="إزالة الخلفية" data-en="Remove Background">إزالة الخلفية</span>
-          </button>
-        </div>
-
-        <div class="resc" id="bgrResc">
-          <div class="reshd">
-            <div class="reslabel">✅ <span data-ar="تمت الإزالة بنجاح" data-en="Background Removed">تمت الإزالة بنجاح</span></div>
-            <button class="dlbtn" onclick="bgrDl()">⬇ <span data-ar="تحميل" data-en="Download">تحميل</span></button>
-          </div>
-          <div class="slider-wrap" id="bgrSlider">
-            <img id="bgrOimg" src="" alt="before"/>
-            <div class="slider-after" id="bgrAfterDiv" style="width:50%">
-              <img id="bgrRimg" src="" alt="after"/>
-            </div>
-            <div class="slider-line" id="bgrSliderLine" style="left:50%"></div>
-            <div class="slider-btn" id="bgrSliderBtn" style="left:50%">⇔</div>
-            <span class="slider-label before" data-ar="الأصل" data-en="Original">الأصل</span>
-            <span class="slider-label after" data-ar="بيضاء ✦" data-en="White ✦">بيضاء ✦</span>
-          </div>
-          <div class="share-row">
-            <button class="share-btn share-btn-wa" onclick="shareWA()">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
-              <span data-ar="شارك واتساب" data-en="WhatsApp">شارك واتساب</span>
-            </button>
-            <button class="share-btn share-btn-copy" onclick="copyLink(this)">🔗 <span data-ar="نسخ الرابط" data-en="Copy Link">نسخ الرابط</span></button>
-          </div>
-        </div>
-
-      </div><!-- END panel-bgremove -->
-
-
-      <!-- ══ PANEL 3: SWAP PRODUCT 🔄 ══ -->
-      <div class="tool-panel" id="panel-swap">
-        <div class="sec">
-          <div class="dual-grid">
-            <div>
-              <div class="dual-ubox" id="swDrop1"
-                   ondragover="event.preventDefault();this.classList.add('drag-over')"
-                   ondragleave="this.classList.remove('drag-over')"
-                   ondrop="swOnDrop(event,1)">
-                <input type="file" id="swFile1" accept="image/jpeg,image/png,image/webp"
-                       onchange="swOnPick(this.files[0],1)"/>
-                <span class="dual-badge" data-ar="منتجك" data-en="Your Product">منتجك</span>
-                <span class="dual-ubox-icon">📦</span>
-                <div class="dual-ubox-title" data-ar="ارفع صورة منتجك" data-en="Upload Your Product">ارفع صورة منتجك</div>
-                <div class="dual-ubox-sub" data-ar="المنتج الذي تريد نقله للبيئة الجديدة" data-en="The product you want placed in the new scene">المنتج الذي تريد نقله</div>
-              </div>
-              <div class="dual-prev" id="swPrev1"><span class="dual-prev-clr" onclick="swClear(1)">✕</span><img id="swPrevImg1" src="" alt=""/></div>
-            </div>
-            <div>
-              <div class="dual-ubox" id="swDrop2"
-                   ondragover="event.preventDefault();this.classList.add('drag-over')"
-                   ondragleave="this.classList.remove('drag-over')"
-                   ondrop="swOnDrop(event,2)">
-                <input type="file" id="swFile2" accept="image/jpeg,image/png,image/webp"
-                       onchange="swOnPick(this.files[0],2)"/>
-                <span class="dual-badge" data-ar="المشهد المرجعي" data-en="Reference Scene">المشهد المرجعي</span>
-                <span class="dual-ubox-icon">🖼️</span>
-                <div class="dual-ubox-title" data-ar="ارفع الصورة المرجعية" data-en="Upload Reference Image">ارفع الصورة المرجعية</div>
-                <div class="dual-ubox-sub" data-ar="البيئة والمشهد الذي تريد منتجك فيه" data-en="The environment & scene you want your product in">المشهد الذي تريد منتجك فيه</div>
-              </div>
-              <div class="dual-prev" id="swPrev2"><span class="dual-prev-clr" onclick="swClear(2)">✕</span><img id="swPrevImg2" src="" alt=""/></div>
-            </div>
-          </div>
-        </div>
-        <div class="psec">
-          <div class="plabel-row">
-            <div class="plabel" data-ar="وصف إضافي (اختياري)" data-en="Additional description (optional)">وصف إضافي (اختياري)</div>
-          </div>
-          <textarea class="ptxt" id="swPromptTxt" placeholder="مثال: منتجي على نفس القاعدة الرخامية بنفس الإضاءة الذهبية..."></textarea>
-        </div>
-        <div class="msgwrap"><div class="msg" id="swMsg"></div></div>
-        <div class="arow">
-          <div class="ainfo" data-ar="يولّد صورة فعلية بمنتجك داخل مشهد الصورة المرجعية" data-en="Generates a real image with your product inside the reference scene">يولّد صورة فعلية بمنتجك داخل المشهد</div>
-          <button class="genbtn" id="swBtn" onclick="swRun()">
-            <div class="spin"></div><span class="bstar">🔄</span>
-            <span data-ar="تبديل المنتج" data-en="Swap Product">تبديل المنتج</span>
-          </button>
-        </div>
-        <div class="resc" id="swResc">
-          <div class="reshd">
-            <div class="reslabel">✅ <span data-ar="تم التبديل بنجاح" data-en="Swap Complete">تم التبديل بنجاح</span></div>
-            <button class="dlbtn" onclick="swDl()">⬇ <span data-ar="تحميل" data-en="Download">تحميل</span></button>
-          </div>
-          <div class="slider-wrap" id="swSlider">
-            <img id="swOimg" src="" alt="before"/>
-            <div class="slider-after" id="swAfterDiv" style="width:50%">
-              <img id="swRimg" src="" alt="after"/>
-            </div>
-            <div class="slider-line" id="swSliderLine" style="left:50%"></div>
-            <div class="slider-btn" id="swSliderBtn" style="left:50%">⇔</div>
-            <span class="slider-label before" data-ar="الأصل" data-en="Original">الأصل</span>
-            <span class="slider-label after" data-ar="المبدّل ✦" data-en="Swapped ✦">المبدّل ✦</span>
-          </div>
-          <div class="share-row">
-            <button class="share-btn share-btn-wa" onclick="shareWA()">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
-              <span data-ar="شارك واتساب" data-en="WhatsApp">شارك واتساب</span>
-            </button>
-            <button class="share-btn share-btn-copy" onclick="copyLink(this)">🔗 <span data-ar="نسخ الرابط" data-en="Copy Link">نسخ الرابط</span></button>
-          </div>
-        </div>
-      </div><!-- END panel-swap -->
-
-
-      <!-- ══ PANEL 4: GENERATE PROMPT 🎯 ══ -->
-      <div class="tool-panel" id="panel-infographic">
-
-        <div class="sec">
-          <div class="ubox-wrap">
-            <div class="ubox" id="infDrop"
-                 ondragover="event.preventDefault();this.classList.add('drag-over')"
-                 ondragleave="this.classList.remove('drag-over')"
-                 ondrop="infOnDrop(event)">
-              <input type="file" id="infFile" accept="image/jpeg,image/png,image/webp"
-                     onchange="infOnPick(this.files[0])"/>
-              <span class="ubox-icon">📊</span>
-              <div class="ubox-title" data-ar="ارفع صورة منتجك" data-en="Upload Your Product Image">ارفع صورة منتجك</div>
-              <div class="ubox-sub" data-ar="يصمم إنفوجرافيك احترافي بالعربي مع callouts وبادجات — جاهز لأمازون A+ ونون" data-en="Designs a professional Arabic infographic with callouts & badges — ready for Amazon A+ & Noon">يصمم إنفوجرافيك احترافي بالعربي مع callouts وبادجات — جاهز لأمازون A+ ونون</div>
-            </div>
-            <div class="ubox-prev" id="infPrev">
-              <span class="ubox-prev-clr" onclick="infClear()">✕</span>
-              <img id="infPrevImg" src="" alt=""/>
-            </div>
-          </div>
-        </div>
-
-        <div class="psec">
-          <div class="plabel-row">
-            <div class="plabel" data-ar="مميزات المنتج — كل ميزة في سطر" data-en="Product features — one per line">مميزات المنتج — كل ميزة في سطر</div>
-          </div>
-          <textarea class="ptxt" id="infFeaturesTxt" style="min-height:140px"
-            placeholder="مثال:&#10;فولاذ 304 خالٍ من BPA&#10;حافظ حرارة 12 ساعة&#10;سعة 750 مل&#10;ضمان سنتين&#10;خفيف الوزن 320 غرام"></textarea>
-          <div class="chips" id="inf-chips-ar" style="margin-top:10px">
-            <span class="chip" onclick="infChip(this)">غطاء مضاد للتسرب</span>
-            <span class="chip" onclick="infChip(this)">مواد طبية معتمدة</span>
-            <span class="chip" onclick="infChip(this)">خفيف الوزن</span>
-            <span class="chip" onclick="infChip(this)">ضمان سنتين</span>
-            <span class="chip" onclick="infChip(this)">شحن مجاني</span>
-          </div>
-          <div class="chips" id="inf-chips-en" style="display:none;margin-top:10px">
-            <span class="chip" onclick="infChip(this)">Leak-proof lid</span>
-            <span class="chip" onclick="infChip(this)">Medical grade material</span>
-            <span class="chip" onclick="infChip(this)">Lightweight design</span>
-            <span class="chip" onclick="infChip(this)">2-year warranty</span>
-            <span class="chip" onclick="infChip(this)">Free shipping</span>
-          </div>
-        </div>
-
-        <div class="msgwrap"><div class="msg" id="infMsg"></div></div>
-
-        <div class="arow">
-          <div class="ainfo" data-ar="يصمم إنفوجرافيك كامل جاهز للرفع مباشرة" data-en="Designs complete infographic ready to upload">يصمم إنفوجرافيك كامل جاهز للرفع</div>
-          <button class="genbtn" id="infBtn" onclick="infRun()">
-            <div class="spin"></div><span class="bstar">📊</span>
-            <span data-ar="توليد الإنفوجرافيك" data-en="Generate Infographic">توليد الإنفوجرافيك</span>
-          </button>
-        </div>
-
-        <div class="resc" id="infResc">
-          <div class="reshd">
-            <div class="reslabel">✅ <span data-ar="الإنفوجرافيك جاهز" data-en="Infographic Ready">الإنفوجرافيك جاهز</span></div>
-            <button class="dlbtn" onclick="infDl()">⬇ <span data-ar="تحميل" data-en="Download">تحميل</span></button>
-          </div>
-          <div class="slider-wrap" id="infSlider">
-            <img id="infOimg" src="" alt="before"/>
-            <div class="slider-after" id="infAfterDiv" style="width:50%">
-              <img id="infRimg" src="" alt="after"/>
-            </div>
-            <div class="slider-line" id="infSliderLine" style="left:50%"></div>
-            <div class="slider-btn" id="infSliderBtn" style="left:50%">⇔</div>
-            <span class="slider-label before" data-ar="الأصل" data-en="Original">الأصل</span>
-            <span class="slider-label after" data-ar="إنفوجرافيك ✦" data-en="Infographic ✦">إنفوجرافيك ✦</span>
-          </div>
-          <div class="share-row">
-            <button class="share-btn share-btn-wa" onclick="shareWA()">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
-              <span data-ar="شارك واتساب" data-en="WhatsApp">شارك واتساب</span>
-            </button>
-            <button class="share-btn share-btn-copy" onclick="copyLink(this)">🔗 <span data-ar="نسخ الرابط" data-en="Copy Link">نسخ الرابط</span></button>
-          </div>
-        </div>
-
-      </div><!-- END panel-infographic -->
-
-    </div><!-- END appcard -->
-  </div><!-- END appwrap -->
-</section>
 
 <section class="tools">
   <div class="shd">
@@ -3018,28 +3020,7 @@ document.addEventListener('DOMContentLoaded', function() {
   const um = document.getElementById('upgradeModal');
   if (um) um.addEventListener('click', function(e) { if (e.target === this) closeUpgradeModal(); });
 });
-</script>
-<!-- ══ UPGRADE MODAL ══════════════════════════════════════════════════════════ -->
-<div class="wpopup-ov" id="upgradeModal">
-  <div class="wpopup">
-    <div class="wpopup-hero">
-      <button class="wpopup-close" onclick="closeUpgradeModal()">✕</button>
-      <span class="wpopup-confetti" id="umIcon">⚡</span>
-      <div class="wpopup-htitle" id="umTitle">باقة Starter</div>
-      <div class="wpopup-hsub" id="umSub">30 تعديل شهرياً — ~18 درهم فقط</div>
-    </div>
-    <div class="wpopup-body2">
-      <div class="wpopup-features" id="umFeats"></div>
-      <div class="wpopup-cta2">
-        <a class="wpopup-main-btn" id="umBtn" href="#" data-gumroad-product-link="true" onclick="closeUpgradeModal()">اشترك دلوقتي →</a>
-        <button class="wpopup-skip" onclick="closeUpgradeModal()">مش دلوقتي</button>
-      </div>
-    </div>
-  </div>
-</div>
-</body>
 
-<script>
 
 // ════════════════════════════════════════════════════════════════════════════════
 // NEW FEATURE #1: PROMPT ANALYZER
@@ -3444,8 +3425,7 @@ function infClear()   { _infFile=null; _tbClearPrev('infDrop','infPrev','infPrev
 function infChip(el)  {
   const t=document.getElementById('infFeaturesTxt'); if(!t)return;
   const v=t.value.trim();
-  t.value = v ? v+'
-'+el.textContent.trim() : el.textContent.trim();
+  t.value = v ? v+'\n'+el.textContent.trim() : el.textContent.trim();
 }
 
 async function infRun() {
@@ -3530,6 +3510,25 @@ function _tbHandleCredErr(status,msgElId,data){
   }
 }
 
-</script>
 
+</script>
+<!-- ══ UPGRADE MODAL ══════════════════════════════════════════════════════════ -->
+<div class="wpopup-ov" id="upgradeModal">
+  <div class="wpopup">
+    <div class="wpopup-hero">
+      <button class="wpopup-close" onclick="closeUpgradeModal()">✕</button>
+      <span class="wpopup-confetti" id="umIcon">⚡</span>
+      <div class="wpopup-htitle" id="umTitle">باقة Starter</div>
+      <div class="wpopup-hsub" id="umSub">30 تعديل شهرياً — ~18 درهم فقط</div>
+    </div>
+    <div class="wpopup-body2">
+      <div class="wpopup-features" id="umFeats"></div>
+      <div class="wpopup-cta2">
+        <a class="wpopup-main-btn" id="umBtn" href="#" data-gumroad-product-link="true" onclick="closeUpgradeModal()">اشترك دلوقتي →</a>
+        <button class="wpopup-skip" onclick="closeUpgradeModal()">مش دلوقتي</button>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
 </html>
