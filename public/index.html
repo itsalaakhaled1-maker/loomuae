@@ -364,64 +364,7 @@ html.light-mode .dual-ubox:hover,html.light-mode .dual-ubox.drag-over{border-col
 .cpybtn.secondary{background:var(--bg3);border-color:var(--border);color:var(--muted2)}
 .cpybtn.secondary:hover{border-color:var(--border-hi);color:var(--amber)}
 .prmbox-body{background:var(--bg3);border:1px solid var(--border);border-radius:var(--r-lg);padding:16px 18px;font-size:13.5px;color:var(--muted2);line-height:1.85;white-space:pre-wrap;word-break:break-word;max-height:280px;overflow-y:auto;scrollbar-width:thin;scrollbar-color:rgba(245,200,66,.25) transparent}
-/* ════════════════════════════════
-   TOOL TABS — CSS
-   ════════════════════════════════ */
-.toolnav{width:100%;max-width:860px;margin-bottom:10px;animation:fadeUp .5s .1s ease both}
-.toolnav-track{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;background:var(--bg2);border:1px solid var(--border);border-radius:var(--r-xl);padding:7px}
-html.light-mode .toolnav-track{background:#fff;border-color:rgba(0,0,0,.08)}
-.ttab{display:flex;flex-direction:column;align-items:center;gap:5px;padding:12px 8px 10px;border-radius:var(--r-lg);border:1.5px solid transparent;cursor:pointer;background:transparent;font-family:inherit;transition:all var(--t) var(--ease);position:relative;outline:none}
-.ttab:hover{background:var(--bg3);border-color:var(--border)}
-.ttab.on{background:var(--amber-dim);border-color:var(--border-hi);box-shadow:0 0 0 3px rgba(245,200,66,.07)}
-html.light-mode .ttab.on{box-shadow:0 0 0 3px rgba(0,82,163,.06)}
-.ttab-icon{font-size:22px;line-height:1;transition:transform .3s cubic-bezier(.34,1.56,.64,1)}
-.ttab:hover .ttab-icon,.ttab.on .ttab-icon{transform:scale(1.18)}
-.ttab-label{font-size:10px;font-weight:700;letter-spacing:.3px;color:var(--muted);font-family:'DM Sans',sans-serif;text-align:center;line-height:1.35;transition:color var(--t);white-space:nowrap}
-.ttab.on .ttab-label{color:var(--amber)}
-.ttab-new{position:absolute;top:5px;font-size:7px;font-weight:900;letter-spacing:.6px;background:linear-gradient(135deg,var(--amber),var(--amber2));color:#fff;padding:2px 7px;border-radius:100px;font-family:'DM Sans',sans-serif}
-[dir="rtl"] .ttab-new{right:6px}[dir="ltr"] .ttab-new{left:6px}
-@media(max-width:520px){.toolnav-track{grid-template-columns:repeat(2,1fr);gap:6px}.ttab{padding:11px 7px 9px}.ttab-icon{font-size:19px}.ttab-label{font-size:9px}}
-.tool-panel{display:none}
-.tool-panel.tp-active{display:block;animation:fadeUp .32s ease}
-.ubox-wrap{position:relative}
-.ubox{position:relative;border:1.5px dashed rgba(255,255,255,.1);border-radius:var(--r-lg);padding:36px 20px 28px;text-align:center;cursor:pointer;background:var(--bg3);transition:all var(--t);overflow:hidden}
-.ubox:hover,.ubox.drag-over{border-color:var(--amber);background:var(--amber-dim)}
-.ubox input[type="file"]{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%}
-.ubox-icon{font-size:32px;margin-bottom:12px;display:block}
-.ubox-title{font-size:15px;font-weight:700;margin-bottom:5px}
-.ubox-sub{font-size:12px;color:var(--muted);line-height:1.6}
-.ubox-prev{display:none;position:relative;border-radius:var(--r-lg);overflow:hidden;background:var(--bg3);border:1px solid var(--border)}
-.ubox-prev.show{display:block}
-.ubox-prev img{width:100%;max-height:260px;object-fit:contain;display:block}
-.ubox-prev-clr{position:absolute;top:9px;left:9px;width:28px;height:28px;border-radius:50%;background:rgba(8,8,8,.88);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--muted);font-size:12px;transition:all var(--t)}
-[dir="ltr"] .ubox-prev-clr{left:auto;right:9px}
-.ubox-prev-clr:hover{color:var(--error);border-color:var(--error)}
-html.light-mode .ubox{border-color:rgba(0,0,0,.12)}
-.dual-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-@media(max-width:480px){.dual-grid{grid-template-columns:1fr}}
-.dual-ubox{position:relative;border:1.5px dashed rgba(255,255,255,.1);border-radius:var(--r-lg);padding:22px 14px 18px;text-align:center;cursor:pointer;background:var(--bg3);transition:all var(--t);overflow:hidden}
-.dual-ubox:hover,.dual-ubox.drag-over{border-color:var(--amber);background:var(--amber-dim)}
-.dual-ubox input[type="file"]{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%}
-.dual-badge{display:inline-block;margin-bottom:9px;font-size:9px;font-weight:900;letter-spacing:.7px;padding:2px 10px;border-radius:100px;background:var(--amber-dim);border:1px solid var(--border-hi);color:var(--amber);font-family:'DM Sans',sans-serif}
-.dual-ubox-icon{font-size:26px;margin-bottom:8px;display:block}
-.dual-ubox-title{font-size:13px;font-weight:700;margin-bottom:4px}
-.dual-ubox-sub{font-size:11px;color:var(--muted);line-height:1.5}
-.dual-prev{display:none;position:relative;border-radius:var(--r);overflow:hidden;background:var(--bg3);border:1px solid var(--border);margin-top:8px}
-.dual-prev.show{display:block}
-.dual-prev img{width:100%;max-height:130px;object-fit:contain;display:block}
-.dual-prev-clr{position:absolute;top:6px;right:6px;width:24px;height:24px;border-radius:50%;background:rgba(8,8,8,.88);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--muted);font-size:10px;transition:all var(--t)}
-.dual-prev-clr:hover{color:var(--error);border-color:var(--error)}
-html.light-mode .dual-ubox{border-color:rgba(0,0,0,.12)}
-.prmbox{display:none;border-top:1px solid var(--border);animation:fadeUp .35s ease;padding:22px 30px}
-.prmbox.show{display:block}
-.prmbox-hd{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
-.prmbox-lbl{display:flex;align-items:center;gap:7px;font-size:13px;font-weight:700;color:var(--success)}
-.prmbox-actions{display:flex;gap:8px}
-.cpybtn{display:inline-flex;align-items:center;gap:5px;padding:7px 14px;border-radius:var(--r);background:var(--amber-dim);border:1px solid var(--border-hi);color:var(--amber);font-family:inherit;font-size:12px;font-weight:700;cursor:pointer;transition:all var(--t);white-space:nowrap}
-.cpybtn:hover{background:rgba(245,200,66,.14);transform:translateY(-1px)}
-.cpybtn.secondary{background:var(--bg3);border-color:var(--border);color:var(--muted2)}
-.cpybtn.secondary:hover{border-color:var(--border-hi);color:var(--amber)}
-.prmbox-body{background:var(--bg3);border:1px solid var(--border);border-radius:var(--r-lg);padding:16px 18px;font-size:13.5px;color:var(--muted2);line-height:1.85;white-space:pre-wrap;word-break:break-word;max-height:280px;overflow-y:auto;scrollbar-width:thin;scrollbar-color:rgba(245,200,66,.25) transparent}
+
 
 
 .cmpgrid{display:none}
@@ -1517,8 +1460,50 @@ html.light-mode .flink:hover {
           <span id="genTxt" data-ar="تعديل الصورة" data-en="Edit Image">تعديل الصورة</span>
         </button>
       </div>
+
+
+      <div class="resc" id="resc">
+        <div class="reshd">
+          <div class="reslabel">✅ <span id="resTxt" data-ar="تم التعديل بنجاح" data-en="Edit complete">تم التعديل بنجاح</span></div>
+          <button class="dlbtn" onclick="dl()">⬇ <span data-ar="تحميل" data-en="Download">تحميل</span></button>
+        </div>
+        <div class="share-row">
+          <button class="share-btn share-btn-wa" onclick="shareWA()">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+            <span data-ar="شارك واتساب" data-en="WhatsApp">شارك واتساب</span>
+          </button>
+          <button class="share-btn share-btn-ig" onclick="shareIG()">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg>
+            <span data-ar="شارك انستجرام" data-en="Instagram">انستجرام</span>
+          </button>
+          <button class="share-btn share-btn-copy" onclick="copyLink(this)">
+            🔗 <span data-ar="نسخ الرابط" data-en="Copy Link">نسخ الرابط</span>
+          </button>
+        </div>
+        <div class="slider-wrap" id="sliderWrap">
+          <!-- Before (bottom layer) -->
+          <img id="oimg" src="" alt="before"/>
+          <!-- After (top layer, clipped) -->
+          <div class="slider-after" id="sliderAfter">
+            <img id="rimg" src="" alt="after"/>
+          </div>
+          <!-- Line + handle -->
+          <div class="slider-line" id="sliderLine"></div>
+          <div class="slider-btn" id="sliderBtn">⇔</div>
+          <!-- Labels -->
+          <span class="slider-label before" data-ar="الأصل" data-en="Original">الأصل</span>
+          <span class="slider-label after" data-ar="المعدّل ✦" data-en="Edited ✦">المعدّل ✦</span>
+        </div>
+        <div class="upbanner" id="upbanner">
+          <p id="upTxt" data-ar="🎉 استمتعت بصورتك المجانية! اشترك بـ $5 واحصل على 30 صورة كل شهر" data-en="🎉 You used your free edit! Subscribe for 30 edits/month — only $5">🎉 استمتعت بصورتك المجانية! اشترك بـ $5 واحصل على 30 صورة كل شهر</p>
+          <button class="upbtn" onclick="openUpgradeModal()"><span data-ar="ترقّى الآن ✦" data-en="Upgrade Now ✦">ترقّى الآن ✦</span></button>
+        </div>
+      </div>
+
+      </div><!-- END panel-edit -->
+
       <!-- ===== PRICING SECTION — paste this right after the Edit Image button ===== -->
-<section id="pricing" style="
+<div id="pricing" style="
   padding: 80px 20px;
   text-align: center;
   background: transparent;
@@ -1822,48 +1807,7 @@ html.light-mode .flink:hover {
     })();
   </script>
 
-</section>
-<!-- ===== END PRICING SECTION ===== -->
-
-      <div class="resc" id="resc">
-        <div class="reshd">
-          <div class="reslabel">✅ <span id="resTxt" data-ar="تم التعديل بنجاح" data-en="Edit complete">تم التعديل بنجاح</span></div>
-          <button class="dlbtn" onclick="dl()">⬇ <span data-ar="تحميل" data-en="Download">تحميل</span></button>
-        </div>
-        <div class="share-row">
-          <button class="share-btn share-btn-wa" onclick="shareWA()">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
-            <span data-ar="شارك واتساب" data-en="WhatsApp">شارك واتساب</span>
-          </button>
-          <button class="share-btn share-btn-ig" onclick="shareIG()">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg>
-            <span data-ar="شارك انستجرام" data-en="Instagram">انستجرام</span>
-          </button>
-          <button class="share-btn share-btn-copy" onclick="copyLink(this)">
-            🔗 <span data-ar="نسخ الرابط" data-en="Copy Link">نسخ الرابط</span>
-          </button>
-        </div>
-        <div class="slider-wrap" id="sliderWrap">
-          <!-- Before (bottom layer) -->
-          <img id="oimg" src="" alt="before"/>
-          <!-- After (top layer, clipped) -->
-          <div class="slider-after" id="sliderAfter">
-            <img id="rimg" src="" alt="after"/>
-          </div>
-          <!-- Line + handle -->
-          <div class="slider-line" id="sliderLine"></div>
-          <div class="slider-btn" id="sliderBtn">⇔</div>
-          <!-- Labels -->
-          <span class="slider-label before" data-ar="الأصل" data-en="Original">الأصل</span>
-          <span class="slider-label after" data-ar="المعدّل ✦" data-en="Edited ✦">المعدّل ✦</span>
-        </div>
-        <div class="upbanner" id="upbanner">
-          <p id="upTxt" data-ar="🎉 استمتعت بصورتك المجانية! اشترك بـ $5 واحصل على 30 صورة كل شهر" data-en="🎉 You used your free edit! Subscribe for 30 edits/month — only $5">🎉 استمتعت بصورتك المجانية! اشترك بـ $5 واحصل على 30 صورة كل شهر</p>
-          <button class="upbtn" onclick="openUpgradeModal()"><span data-ar="ترقّى الآن ✦" data-en="Upgrade Now ✦">ترقّى الآن ✦</span></button>
-        </div>
-      </div>
-
-      </div><!-- END panel-edit -->
+</div><!-- ===== END PRICING SECTION ===== -->
 
 
       <!-- ══ PANEL 2: EXTRACT STYLE 📸 ══ -->
