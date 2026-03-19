@@ -1087,7 +1087,135 @@ Format as: "PRODUCT SWAP INSTRUCTIONS:"`;
 // ─── Explicit static HTML routes ────────────────────────────────────────────
 app.get('/admin.html', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'admin.html'));
+})
+
+// ════════════════════════════════════════════════════════════════════════════
+// GENERATE PROMPT - إنشاء برومت احترافي
+// ════════════════════════════════════════════════════════════════════════════
+app.post('/api/generate-prompt', editLimiter, upload.single('reference_image'), async (req, res) => {
+  try {
+    // تحقق من المدخلات
+    if (!req.file) {
+      return res.status(400).json({ error: 'No image provided', error_ar: 'لم يتم اختيار صورة' });
+    }
+
+    const userDescription = req.body.user_description || '';
+    if (!userDescription.trim()) {
+      return res.status(400).json({ error: 'Description required', error_ar: 'الوصف مطلوب' });
+    }
+
+    // احصل على المستخدم والكريديت
+    const { user } = await getUser(req);
+    const sessionId = req.headers['x-session-id'] || null;
+    
+    let canGenerate = false;
+    if (user) {
+      const credits = await checkUserCredits(user.id);
+      canGenerate = credits.canEdit;
+    } else if (sessionId) {
+      canGenerate = await checkAnonymousCredit(sessionId);
+    }
+
+    if (!canGenerate) {
+      return res.status(403).json({ 
+        error: 'No credits available',
+        error_ar: 'لا توجد كريديتات متاحة',
+        requiresAuth: true 
+      });
+    }
+
+    // احصل على الـ image كـ base64
+    const base64Image = req.file.buffer.toString('base64');
+    const mimeType = req.file.mimetype;
+
+    // اختر مفتاح Gemini API
+    const apiKey = getGeminiKey();
+    const genAI = new GoogleGenerativeAI(apiKey);
+    const model = genAI.getGenerativeModel({ model: 'gemini-2.0-flash' });
+
+    // إنشاء برومت لـ Gemini
+    const generationPrompt = `You are an expert AI image prompt engineer.
+
+Reference Image Analysis:
+- Extract the photography style, lighting, composition, and mood from the reference image
+- Note the color palette, textures, and visual elements
+
+User Request:
+"${userDescription}"
+
+Your Task:
+Create a professional, detailed image generation prompt that:
+1. Incorporates the style of the reference image
+2. Fulfills the user's specific requirements
+3. Is suitable for AI image generation (Midjourney, DALL-E, Stable Diffusion)
+4. Includes technical photography details (lighting, camera angle, composition)
+5. Is 150-300 words in English
+
+Format your response as a single continuous prompt, starting with "PROFESSIONAL IMAGE PROMPT:"`;
+
+    // استدعي Gemini API
+    const response = await model.generateContent([
+      {
+        inlineData: {
+          data: base64Image,
+          mimeType: mimeType
+        }
+      },
+      { text: generationPrompt }
+    ]);
+
+    const generatedPrompt = response.response.text();
+
+    // اخصم كريديت
+    if (user) {
+      await useUserCredit(user.id);
+    } else if (sessionId) {
+      await useAnonymousCredit(sessionId);
+    }
+
+    // سجل الحدث
+    await logEvent({
+      event_type: 'prompt_generation',
+      user_id: user?.id || null,
+      session_id: sessionId,
+      success: true
+    });
+
+    // احصل على الكريديتات المتبقية
+    let remainingCredits = 'anonymous';
+    if (user) {
+      const updated = await checkUserCredits(user.id);
+      remainingCredits = updated.remaining;
+    }
+
+    res.json({
+      success: true,
+      prompt: generatedPrompt,
+      credit_used: 1,
+      remaining_credits: remainingCredits
+    });
+
+  } catch (err) {
+    console.error('Generate prompt error:', err);
+    
+    const { user } = await getUser(req);
+    const sessionId = req.headers['x-session-id'] || null;
+    
+    await logEvent({
+      event_type: 'prompt_generation',
+      user_id: user?.id || null,
+      session_id: sessionId,
+      success: false
+    });
+
+    res.status(500).json({ 
+      error: 'Failed to generate prompt',
+      error_ar: 'فشل في إنشاء البرومت',
+      details: err.message 
+    });
+  }
 });
+;
 app.get('/privacy.html', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'privacy.html'));
 });
