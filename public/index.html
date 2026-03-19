@@ -297,6 +297,133 @@ html.light-mode .mbtn p {
 .share-btn-copy{background:var(--bg3);border:1px solid var(--border);color:var(--muted2)}
 .share-btn-copy:hover{border-color:var(--border-hi);color:var(--amber)}
 
+/* ── TOOL NAV BAR ─────────────────────────────────────────────────── */
+.toolnav{width:100%;max-width:860px;margin-bottom:10px;animation:fadeUp .5s .1s ease both}
+.toolnav-track{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;background:var(--bg2);border:1px solid var(--border);border-radius:var(--r-xl);padding:7px}
+html.light-mode .toolnav-track{background:#fff;border-color:rgba(0,0,0,.08)}
+.ttab{display:flex;flex-direction:column;align-items:center;gap:5px;padding:12px 8px 10px;border-radius:var(--r-lg);border:1.5px solid transparent;cursor:pointer;background:transparent;font-family:inherit;transition:all var(--t) var(--ease);position:relative;outline:none}
+.ttab:hover{background:var(--bg3);border-color:var(--border)}
+.ttab.on{background:var(--amber-dim);border-color:var(--border-hi);box-shadow:0 0 0 3px rgba(245,200,66,.07)}
+html.light-mode .ttab.on{box-shadow:0 0 0 3px rgba(0,82,163,.06)}
+.ttab-icon{font-size:22px;line-height:1;transition:transform .3s cubic-bezier(.34,1.56,.64,1)}
+.ttab:hover .ttab-icon,.ttab.on .ttab-icon{transform:scale(1.18)}
+.ttab-label{font-size:10px;font-weight:700;letter-spacing:.3px;color:var(--muted);font-family:'DM Sans',sans-serif;text-align:center;line-height:1.35;transition:color var(--t);white-space:nowrap}
+.ttab.on .ttab-label{color:var(--amber)}
+.ttab-new{position:absolute;top:5px;font-size:7px;font-weight:900;letter-spacing:.6px;background:linear-gradient(135deg,var(--amber),var(--amber2));color:#fff;padding:2px 7px;border-radius:100px;font-family:'DM Sans',sans-serif}
+[dir="rtl"] .ttab-new{right:6px}
+[dir="ltr"] .ttab-new{left:6px}
+@media(max-width:520px){.toolnav-track{grid-template-columns:repeat(2,1fr);gap:6px}.ttab{padding:11px 7px 9px}.ttab-icon{font-size:19px}.ttab-label{font-size:9px}}
+
+/* ── TOOL PANELS ──────────────────────────────────────────────────── */
+.tool-panel{display:none}
+.tool-panel.tp-active{display:block;animation:fadeUp .32s ease}
+
+/* ── SINGLE UPLOAD BOX (أداة 2 و4) ───────────────────────────────── */
+.ubox-wrap{position:relative}
+.ubox{position:relative;border:1.5px dashed rgba(255,255,255,.1);border-radius:var(--r-lg);padding:36px 20px 28px;text-align:center;cursor:pointer;background:var(--bg3);transition:all var(--t) var(--ease);overflow:hidden}
+.ubox:hover,.ubox.drag-over{border-color:var(--amber);background:var(--amber-dim)}
+.ubox input[type="file"]{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%}
+.ubox-icon{font-size:32px;margin-bottom:12px;display:block}
+.ubox-title{font-size:15px;font-weight:700;margin-bottom:5px}
+.ubox-sub{font-size:12px;color:var(--muted);line-height:1.6}
+.ubox-prev{display:none;position:relative;border-radius:var(--r-lg);overflow:hidden;background:var(--bg3);border:1px solid var(--border)}
+.ubox-prev.show{display:block}
+.ubox-prev img{width:100%;max-height:260px;object-fit:contain;display:block}
+.ubox-prev-clr{position:absolute;top:9px;left:9px;width:28px;height:28px;border-radius:50%;background:rgba(8,8,8,.88);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--muted);font-size:12px;transition:all var(--t)}
+[dir="ltr"] .ubox-prev-clr{left:auto;right:9px}
+.ubox-prev-clr:hover{color:var(--error);border-color:var(--error)}
+html.light-mode .ubox{border-color:rgba(0,0,0,.12)}
+html.light-mode .ubox:hover,html.light-mode .ubox.drag-over{border-color:var(--amber);background:var(--amber-dim)}
+
+/* ── DUAL UPLOAD (أداة 3 SWAP) ──────────────────────────────────── */
+.dual-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media(max-width:480px){.dual-grid{grid-template-columns:1fr}}
+.dual-ubox{position:relative;border:1.5px dashed rgba(255,255,255,.1);border-radius:var(--r-lg);padding:22px 14px 18px;text-align:center;cursor:pointer;background:var(--bg3);transition:all var(--t) var(--ease);overflow:hidden}
+.dual-ubox:hover,.dual-ubox.drag-over{border-color:var(--amber);background:var(--amber-dim)}
+.dual-ubox input[type="file"]{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%}
+.dual-badge{display:inline-block;margin-bottom:9px;font-size:9px;font-weight:900;letter-spacing:.7px;padding:2px 10px;border-radius:100px;background:var(--amber-dim);border:1px solid var(--border-hi);color:var(--amber);font-family:'DM Sans',sans-serif}
+.dual-ubox-icon{font-size:26px;margin-bottom:8px;display:block}
+.dual-ubox-title{font-size:13px;font-weight:700;margin-bottom:4px}
+.dual-ubox-sub{font-size:11px;color:var(--muted);line-height:1.5}
+.dual-prev{display:none;position:relative;border-radius:var(--r);overflow:hidden;background:var(--bg3);border:1px solid var(--border);margin-top:8px}
+.dual-prev.show{display:block}
+.dual-prev img{width:100%;max-height:130px;object-fit:contain;display:block}
+.dual-prev-clr{position:absolute;top:6px;right:6px;width:24px;height:24px;border-radius:50%;background:rgba(8,8,8,.88);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--muted);font-size:10px;transition:all var(--t)}
+.dual-prev-clr:hover{color:var(--error);border-color:var(--error)}
+html.light-mode .dual-ubox{border-color:rgba(0,0,0,.12)}
+html.light-mode .dual-ubox:hover,html.light-mode .dual-ubox.drag-over{border-color:var(--amber);background:var(--amber-dim)}
+
+/* ── PROMPT RESULT BOX (أداة 2 و4) ──────────────────────────────── */
+.prmbox{display:none;border-top:1px solid var(--border);animation:fadeUp .35s ease;padding:22px 30px}
+.prmbox.show{display:block}
+.prmbox-hd{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+.prmbox-lbl{display:flex;align-items:center;gap:7px;font-size:13px;font-weight:700;color:var(--success)}
+.prmbox-actions{display:flex;gap:8px}
+.cpybtn{display:inline-flex;align-items:center;gap:5px;padding:7px 14px;border-radius:var(--r);background:var(--amber-dim);border:1px solid var(--border-hi);color:var(--amber);font-family:inherit;font-size:12px;font-weight:700;cursor:pointer;transition:all var(--t);white-space:nowrap}
+.cpybtn:hover{background:rgba(245,200,66,.14);transform:translateY(-1px)}
+.cpybtn.secondary{background:var(--bg3);border-color:var(--border);color:var(--muted2)}
+.cpybtn.secondary:hover{border-color:var(--border-hi);color:var(--amber)}
+.prmbox-body{background:var(--bg3);border:1px solid var(--border);border-radius:var(--r-lg);padding:16px 18px;font-size:13.5px;color:var(--muted2);line-height:1.85;white-space:pre-wrap;word-break:break-word;max-height:280px;overflow-y:auto;scrollbar-width:thin;scrollbar-color:rgba(245,200,66,.25) transparent}
+/* ════════════════════════════════
+   TOOL TABS — CSS
+   ════════════════════════════════ */
+.toolnav{width:100%;max-width:860px;margin-bottom:10px;animation:fadeUp .5s .1s ease both}
+.toolnav-track{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;background:var(--bg2);border:1px solid var(--border);border-radius:var(--r-xl);padding:7px}
+html.light-mode .toolnav-track{background:#fff;border-color:rgba(0,0,0,.08)}
+.ttab{display:flex;flex-direction:column;align-items:center;gap:5px;padding:12px 8px 10px;border-radius:var(--r-lg);border:1.5px solid transparent;cursor:pointer;background:transparent;font-family:inherit;transition:all var(--t) var(--ease);position:relative;outline:none}
+.ttab:hover{background:var(--bg3);border-color:var(--border)}
+.ttab.on{background:var(--amber-dim);border-color:var(--border-hi);box-shadow:0 0 0 3px rgba(245,200,66,.07)}
+html.light-mode .ttab.on{box-shadow:0 0 0 3px rgba(0,82,163,.06)}
+.ttab-icon{font-size:22px;line-height:1;transition:transform .3s cubic-bezier(.34,1.56,.64,1)}
+.ttab:hover .ttab-icon,.ttab.on .ttab-icon{transform:scale(1.18)}
+.ttab-label{font-size:10px;font-weight:700;letter-spacing:.3px;color:var(--muted);font-family:'DM Sans',sans-serif;text-align:center;line-height:1.35;transition:color var(--t);white-space:nowrap}
+.ttab.on .ttab-label{color:var(--amber)}
+.ttab-new{position:absolute;top:5px;font-size:7px;font-weight:900;letter-spacing:.6px;background:linear-gradient(135deg,var(--amber),var(--amber2));color:#fff;padding:2px 7px;border-radius:100px;font-family:'DM Sans',sans-serif}
+[dir="rtl"] .ttab-new{right:6px}[dir="ltr"] .ttab-new{left:6px}
+@media(max-width:520px){.toolnav-track{grid-template-columns:repeat(2,1fr);gap:6px}.ttab{padding:11px 7px 9px}.ttab-icon{font-size:19px}.ttab-label{font-size:9px}}
+.tool-panel{display:none}
+.tool-panel.tp-active{display:block;animation:fadeUp .32s ease}
+.ubox-wrap{position:relative}
+.ubox{position:relative;border:1.5px dashed rgba(255,255,255,.1);border-radius:var(--r-lg);padding:36px 20px 28px;text-align:center;cursor:pointer;background:var(--bg3);transition:all var(--t);overflow:hidden}
+.ubox:hover,.ubox.drag-over{border-color:var(--amber);background:var(--amber-dim)}
+.ubox input[type="file"]{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%}
+.ubox-icon{font-size:32px;margin-bottom:12px;display:block}
+.ubox-title{font-size:15px;font-weight:700;margin-bottom:5px}
+.ubox-sub{font-size:12px;color:var(--muted);line-height:1.6}
+.ubox-prev{display:none;position:relative;border-radius:var(--r-lg);overflow:hidden;background:var(--bg3);border:1px solid var(--border)}
+.ubox-prev.show{display:block}
+.ubox-prev img{width:100%;max-height:260px;object-fit:contain;display:block}
+.ubox-prev-clr{position:absolute;top:9px;left:9px;width:28px;height:28px;border-radius:50%;background:rgba(8,8,8,.88);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--muted);font-size:12px;transition:all var(--t)}
+[dir="ltr"] .ubox-prev-clr{left:auto;right:9px}
+.ubox-prev-clr:hover{color:var(--error);border-color:var(--error)}
+html.light-mode .ubox{border-color:rgba(0,0,0,.12)}
+.dual-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media(max-width:480px){.dual-grid{grid-template-columns:1fr}}
+.dual-ubox{position:relative;border:1.5px dashed rgba(255,255,255,.1);border-radius:var(--r-lg);padding:22px 14px 18px;text-align:center;cursor:pointer;background:var(--bg3);transition:all var(--t);overflow:hidden}
+.dual-ubox:hover,.dual-ubox.drag-over{border-color:var(--amber);background:var(--amber-dim)}
+.dual-ubox input[type="file"]{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%}
+.dual-badge{display:inline-block;margin-bottom:9px;font-size:9px;font-weight:900;letter-spacing:.7px;padding:2px 10px;border-radius:100px;background:var(--amber-dim);border:1px solid var(--border-hi);color:var(--amber);font-family:'DM Sans',sans-serif}
+.dual-ubox-icon{font-size:26px;margin-bottom:8px;display:block}
+.dual-ubox-title{font-size:13px;font-weight:700;margin-bottom:4px}
+.dual-ubox-sub{font-size:11px;color:var(--muted);line-height:1.5}
+.dual-prev{display:none;position:relative;border-radius:var(--r);overflow:hidden;background:var(--bg3);border:1px solid var(--border);margin-top:8px}
+.dual-prev.show{display:block}
+.dual-prev img{width:100%;max-height:130px;object-fit:contain;display:block}
+.dual-prev-clr{position:absolute;top:6px;right:6px;width:24px;height:24px;border-radius:50%;background:rgba(8,8,8,.88);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--muted);font-size:10px;transition:all var(--t)}
+.dual-prev-clr:hover{color:var(--error);border-color:var(--error)}
+html.light-mode .dual-ubox{border-color:rgba(0,0,0,.12)}
+.prmbox{display:none;border-top:1px solid var(--border);animation:fadeUp .35s ease;padding:22px 30px}
+.prmbox.show{display:block}
+.prmbox-hd{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+.prmbox-lbl{display:flex;align-items:center;gap:7px;font-size:13px;font-weight:700;color:var(--success)}
+.prmbox-actions{display:flex;gap:8px}
+.cpybtn{display:inline-flex;align-items:center;gap:5px;padding:7px 14px;border-radius:var(--r);background:var(--amber-dim);border:1px solid var(--border-hi);color:var(--amber);font-family:inherit;font-size:12px;font-weight:700;cursor:pointer;transition:all var(--t);white-space:nowrap}
+.cpybtn:hover{background:rgba(245,200,66,.14);transform:translateY(-1px)}
+.cpybtn.secondary{background:var(--bg3);border-color:var(--border);color:var(--muted2)}
+.cpybtn.secondary:hover{border-color:var(--border-hi);color:var(--amber)}
+.prmbox-body{background:var(--bg3);border:1px solid var(--border);border-radius:var(--r-lg);padding:16px 18px;font-size:13.5px;color:var(--muted2);line-height:1.85;white-space:pre-wrap;word-break:break-word;max-height:280px;overflow-y:auto;scrollbar-width:thin;scrollbar-color:rgba(245,200,66,.25) transparent}
+
+
 .cmpgrid{display:none}
 /* ── SLIDER ── */
 .slider-wrap{position:relative;border-radius:var(--r-lg);overflow:hidden;background:var(--bg3);border:1px solid var(--border);user-select:none;touch-action:none;cursor:col-resize}
@@ -1100,48 +1227,7 @@ html.light-mode .flink:hover {
   footer{flex-direction:column;text-align:center}
   .flinks{justify-content:center}
 }
-  
-/* ════════════════════════════════════════════════════════════════════════════
-   TOOLS - الأدوات الـ 4
-   ════════════════════════════════════════════════════════════════════════════ */
-
-.tools-wrapper{position:fixed;inset:62px 0 0;z-index:100;display:none;background:var(--bg)}
-.tools-wrapper.active{display:flex;flex-direction:column}
-.tool-page{display:none;flex:1;overflow-y:auto;animation:slideUp .3s var(--ease)}
-.tool-page.active{display:block}
-.tool-container{max-width:900px;margin:0 auto;padding:40px 20px;width:100%}
-.tool-header{display:flex;align-items:center;gap:16px;margin-bottom:32px;padding-bottom:20px;border-bottom:1px solid var(--border)}
-.tool-back{background:none;border:none;width:40px;height:40px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--muted2);font-size:20px;transition:all var(--t)}
-.tool-back:hover{color:var(--amber)}
-.tool-header h2{font-size:28px;font-weight:700;color:var(--white);margin:0}
-.tool-subtitle{font-size:13px;color:var(--muted2);margin-top:4px}
-.upload-zone{border:2px dashed var(--border-hi);border-radius:var(--r-lg);padding:40px;text-align:center;cursor:pointer;transition:all var(--t);background:rgba(245,200,66,0.02);margin-bottom:20px}
-.upload-zone:hover{border-color:var(--amber);background:rgba(245,200,66,0.05)}
-.upload-zone.dragover{border-color:var(--amber);background:rgba(245,200,66,0.1)}
-.upload-icon{font-size:40px;display:block;margin-bottom:16px}
-.upload-text{display:block;font-size:16px;font-weight:600;color:var(--white);margin-bottom:6px}
-.upload-hint{display:block;font-size:12px;color:var(--muted)}
-.image-preview{position:relative;margin:16px 0;border-radius:var(--r-lg);overflow:hidden;background:var(--bg3);border:1px solid var(--border)}
-.image-preview img{width:100%;height:auto;display:block;max-height:400px;object-fit:contain}
-.image-remove{position:absolute;top:10px;right:10px;width:36px;height:36px;background:rgba(255,80,80,0.9);border:none;border-radius:50%;color:white;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all var(--t)}
-.image-remove:hover{background:#ff6060;transform:scale(1.1)}
-.form-group{margin-bottom:24px}
-.form-group label{display:block;margin-bottom:8px;font-size:14px;font-weight:600;color:var(--white)}
-.form-textarea{width:100%;padding:12px 16px;background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);color:var(--white);font-family:inherit;font-size:14px;min-height:100px;resize:vertical;transition:all var(--t)}
-.form-textarea:focus{outline:none;border-color:var(--amber);background:rgba(245,200,66,0.02);box-shadow:0 0 0 3px rgba(245,200,66,0.1)}
-.char-count{font-size:11px;color:var(--muted);margin-top:6px;text-align:right}
-.result-section{margin-top:40px;padding-top:40px;border-top:1px solid var(--border);display:none;animation:fadeIn 0.3s}
-.result-section.show{display:block}
-.result-image{margin-bottom:24px;border-radius:var(--r-lg);overflow:hidden;background:var(--bg3);border:1px solid var(--border)}
-.result-image img{width:100%;height:auto;display:block}
-.result-text{background:var(--bg3);border:1px solid var(--border);border-radius:var(--r-lg);padding:20px;margin-bottom:20px;max-height:300px;overflow-y:auto;white-space:pre-wrap;word-break:break-word;font-size:13px;line-height:1.6;color:var(--white);font-family:'DM Sans',monospace}
-.result-actions{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin-top:20px}
-.btn-secondary{padding:10px 16px;background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);color:var(--white);font-family:inherit;font-size:13px;font-weight:700;cursor:pointer;transition:all var(--t)}
-.btn-secondary:hover{border-color:var(--amber);color:var(--amber);background:rgba(245,200,66,0.05)}
-@keyframes slideUp{from{transform:translateY(20px);opacity:0}to{transform:translateY(0);opacity:1}}
-@keyframes fadeIn{from{opacity:0}to{opacity:1}}
-
-</style>
+  </style>
   <script src="https://gumroad.com/js/gumroad.js"></script>
 </head>
 <body>
@@ -1272,46 +1358,40 @@ html.light-mode .flink:hover {
   <p class="hsub" id="hsubAr">ارفع صورة منتجك، صف التعديل المطلوب، واحصل على نتيجة احترافية في ثوانٍ</p>
   <p class="hsub" id="hsubEn" style="display:none">Upload your product photo, describe the edit you want, and get a studio-quality result in seconds.</p>
 
-  <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:20px;margin:40px 0;padding:20px;background:linear-gradient(135deg,rgba(245,200,66,0.05),rgba(245,200,66,0.02));border-radius:28px;border:1px solid rgba(245,200,66,0.1)">
-  <!-- TOOL 1: EDIT IMAGE -->
-  <button onclick="openTool('edit')" style="padding:32px;border:1.5px solid rgba(245,200,66,0.2);border-radius:20px;background:linear-gradient(135deg,rgba(245,200,66,0.08),rgba(245,200,66,0.03));cursor:pointer;transition:all 0.35s cubic-bezier(0.4,0,0.2,1);display:flex;flex-direction:column;align-items:center;gap:16px;text-align:center;color:var(--white);font-family:inherit;font-weight:600;box-shadow:0 8px 24px rgba(0,0,0,0.15),inset 0 1px 0 rgba(245,200,66,0.1);position:relative;overflow:hidden" onmouseover="this.style.border='1.5px solid rgba(245,200,66,0.4)';this.style.background='linear-gradient(135deg,rgba(245,200,66,0.15),rgba(245,200,66,0.08))';this.style.boxShadow='0 16px 48px rgba(245,200,66,0.25),inset 0 1px 0 rgba(245,200,66,0.2)';this.style.transform='translateY(-4px)'" onmouseout="this.style.border='1.5px solid rgba(245,200,66,0.2)';this.style.background='linear-gradient(135deg,rgba(245,200,66,0.08),rgba(245,200,66,0.03))';this.style.boxShadow='0 8px 24px rgba(0,0,0,0.15),inset 0 1px 0 rgba(245,200,66,0.1)';this.style.transform='translateY(0)'">
-    <span style="font-size:40px;filter:drop-shadow(0 2px 4px rgba(0,0,0,0.2))">✏️</span>
-    <div>
-      <span style="font-weight:700;font-size:16px;display:block;margin-bottom:6px">تعديل الصورة</span>
-      <span style="font-size:12px;color:rgba(255,255,255,0.6);font-weight:500">صورة + وصف</span>
-    </div>
-  </button>
+  <div class="hstats">
+    <div class="hstat"><span class="hstat-v">10s</span><span class="hstat-l" data-ar="وقت المعالجة" data-en="Processing time">وقت المعالجة</span></div>
+    <div class="hstat"><span class="hstat-v">AR+EN</span><span class="hstat-l" data-ar="دعم ثنائي اللغة" data-en="Bilingual support">دعم ثنائي اللغة</span></div>
 
-  <!-- TOOL 2: EXTRACT STYLE -->
-  <button onclick="openTool('extract')" style="padding:32px;border:1.5px solid rgba(245,200,66,0.2);border-radius:20px;background:linear-gradient(135deg,rgba(245,200,66,0.08),rgba(245,200,66,0.03));cursor:pointer;transition:all 0.35s cubic-bezier(0.4,0,0.2,1);display:flex;flex-direction:column;align-items:center;gap:16px;text-align:center;color:var(--white);font-family:inherit;font-weight:600;box-shadow:0 8px 24px rgba(0,0,0,0.15),inset 0 1px 0 rgba(245,200,66,0.1);position:relative;overflow:hidden" onmouseover="this.style.border='1.5px solid rgba(245,200,66,0.4)';this.style.background='linear-gradient(135deg,rgba(245,200,66,0.15),rgba(245,200,66,0.08))';this.style.boxShadow='0 16px 48px rgba(245,200,66,0.25),inset 0 1px 0 rgba(245,200,66,0.2)';this.style.transform='translateY(-4px)'" onmouseout="this.style.border='1.5px solid rgba(245,200,66,0.2)';this.style.background='linear-gradient(135deg,rgba(245,200,66,0.08),rgba(245,200,66,0.03))';this.style.boxShadow='0 8px 24px rgba(0,0,0,0.15),inset 0 1px 0 rgba(245,200,66,0.1)';this.style.transform='translateY(0)'">
-    <span style="font-size:40px;filter:drop-shadow(0 2px 4px rgba(0,0,0,0.2))">📸</span>
-    <div>
-      <span style="font-weight:700;font-size:16px;display:block;margin-bottom:6px">استخراج الأسلوب</span>
-      <span style="font-size:12px;color:rgba(255,255,255,0.6);font-weight:500">صورة → برومت</span>
-    </div>
-  </button>
+  </div>
 
-  <!-- TOOL 3: SWAP PRODUCT -->
-  <button onclick="openTool('swap')" style="padding:32px;border:1.5px solid rgba(245,200,66,0.2);border-radius:20px;background:linear-gradient(135deg,rgba(245,200,66,0.08),rgba(245,200,66,0.03));cursor:pointer;transition:all 0.35s cubic-bezier(0.4,0,0.2,1);display:flex;flex-direction:column;align-items:center;gap:16px;text-align:center;color:var(--white);font-family:inherit;font-weight:600;box-shadow:0 8px 24px rgba(0,0,0,0.15),inset 0 1px 0 rgba(245,200,66,0.1);position:relative;overflow:hidden" onmouseover="this.style.border='1.5px solid rgba(245,200,66,0.4)';this.style.background='linear-gradient(135deg,rgba(245,200,66,0.15),rgba(245,200,66,0.08))';this.style.boxShadow='0 16px 48px rgba(245,200,66,0.25),inset 0 1px 0 rgba(245,200,66,0.2)';this.style.transform='translateY(-4px)'" onmouseout="this.style.border='1.5px solid rgba(245,200,66,0.2)';this.style.background='linear-gradient(135deg,rgba(245,200,66,0.08),rgba(245,200,66,0.03))';this.style.boxShadow='0 8px 24px rgba(0,0,0,0.15),inset 0 1px 0 rgba(245,200,66,0.1)';this.style.transform='translateY(0)'">
-    <span style="font-size:40px;filter:drop-shadow(0 2px 4px rgba(0,0,0,0.2))">🔄</span>
-    <div>
-      <span style="font-weight:700;font-size:16px;display:block;margin-bottom:6px">استبدال المنتج</span>
-      <span style="font-size:12px;color:rgba(255,255,255,0.6);font-weight:500">صورتان → صورة</span>
+  <!-- ════ TOOL TAB NAV ════ -->
+  <div class="toolnav">
+    <div class="toolnav-track">
+      <button class="ttab on" id="ttab-edit" onclick="switchTool('edit')">
+        <span class="ttab-icon">✏️</span>
+        <span class="ttab-label" data-ar="تعديل الصورة" data-en="Edit Image">تعديل الصورة</span>
+      </button>
+      <button class="ttab" id="ttab-bgremove" onclick="switchTool('bgremove')">
+        <span class="ttab-icon">✂️</span>
+        <span class="ttab-label" data-ar="إزالة الخلفية" data-en="Remove BG">إزالة الخلفية</span>
+      </button>
+      <button class="ttab" id="ttab-swap" onclick="switchTool('swap')">
+        <span class="ttab-icon">🔄</span>
+        <span class="ttab-label" data-ar="استبدال المنتج" data-en="Swap Product">استبدال المنتج</span>
+      </button>
+      <button class="ttab" id="ttab-infographic" onclick="switchTool('infographic')">
+        <span class="ttab-new">NEW</span>
+        <span class="ttab-icon">📊</span>
+        <span class="ttab-label" data-ar="إنفوجرافيك" data-en="Infographic">إنفوجرافيك</span>
+      </button>
     </div>
-  </button>
-
-  <!-- TOOL 4: GENERATE PROMPT -->
-  <button onclick="openTool('generate')" style="padding:32px;border:1.5px solid rgba(245,200,66,0.2);border-radius:20px;background:linear-gradient(135deg,rgba(245,200,66,0.08),rgba(245,200,66,0.03));cursor:pointer;transition:all 0.35s cubic-bezier(0.4,0,0.2,1);display:flex;flex-direction:column;align-items:center;gap:16px;text-align:center;color:var(--white);font-family:inherit;font-weight:600;box-shadow:0 8px 24px rgba(0,0,0,0.15),inset 0 1px 0 rgba(245,200,66,0.1);position:relative;overflow:hidden" onmouseover="this.style.border='1.5px solid rgba(245,200,66,0.4)';this.style.background='linear-gradient(135deg,rgba(245,200,66,0.15),rgba(245,200,66,0.08))';this.style.boxShadow='0 16px 48px rgba(245,200,66,0.25),inset 0 1px 0 rgba(245,200,66,0.2)';this.style.transform='translateY(-4px)'" onmouseout="this.style.border='1.5px solid rgba(245,200,66,0.2)';this.style.background='linear-gradient(135deg,rgba(245,200,66,0.08),rgba(245,200,66,0.03))';this.style.boxShadow='0 8px 24px rgba(0,0,0,0.15),inset 0 1px 0 rgba(245,200,66,0.1)';this.style.transform='translateY(0)'">
-    <span style="font-size:40px;filter:drop-shadow(0 2px 4px rgba(0,0,0,0.2))">🎯</span>
-    <div>
-      <span style="font-weight:700;font-size:16px;display:block;margin-bottom:6px">إنشاء برومت</span>
-      <span style="font-size:12px;color:rgba(255,255,255,0.6);font-weight:500">صورة + وصف</span>
-    </div>
-  </button>
-</div>
+  </div>
 
   <div class="appwrap">
     <div class="appcard">
+
+      <!-- ══ PANEL 1: EDIT IMAGE ✏️ ══ -->
+      <div class="tool-panel tp-active" id="panel-edit">
 
       <div class="sec">
         <div class="udrop" id="udrop">
@@ -1482,48 +1562,7 @@ html.light-mode .flink:hover {
     #pricingCards > div {
       box-shadow: 0 4px 20px rgba(0,0,0,0.3);
     }
-  
-/* ════════════════════════════════════════════════════════════════════════════
-   TOOLS - الأدوات الـ 4
-   ════════════════════════════════════════════════════════════════════════════ */
-
-.tools-wrapper{position:fixed;inset:62px 0 0;z-index:100;display:none;background:var(--bg)}
-.tools-wrapper.active{display:flex;flex-direction:column}
-.tool-page{display:none;flex:1;overflow-y:auto;animation:slideUp .3s var(--ease)}
-.tool-page.active{display:block}
-.tool-container{max-width:900px;margin:0 auto;padding:40px 20px;width:100%}
-.tool-header{display:flex;align-items:center;gap:16px;margin-bottom:32px;padding-bottom:20px;border-bottom:1px solid var(--border)}
-.tool-back{background:none;border:none;width:40px;height:40px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--muted2);font-size:20px;transition:all var(--t)}
-.tool-back:hover{color:var(--amber)}
-.tool-header h2{font-size:28px;font-weight:700;color:var(--white);margin:0}
-.tool-subtitle{font-size:13px;color:var(--muted2);margin-top:4px}
-.upload-zone{border:2px dashed var(--border-hi);border-radius:var(--r-lg);padding:40px;text-align:center;cursor:pointer;transition:all var(--t);background:rgba(245,200,66,0.02);margin-bottom:20px}
-.upload-zone:hover{border-color:var(--amber);background:rgba(245,200,66,0.05)}
-.upload-zone.dragover{border-color:var(--amber);background:rgba(245,200,66,0.1)}
-.upload-icon{font-size:40px;display:block;margin-bottom:16px}
-.upload-text{display:block;font-size:16px;font-weight:600;color:var(--white);margin-bottom:6px}
-.upload-hint{display:block;font-size:12px;color:var(--muted)}
-.image-preview{position:relative;margin:16px 0;border-radius:var(--r-lg);overflow:hidden;background:var(--bg3);border:1px solid var(--border)}
-.image-preview img{width:100%;height:auto;display:block;max-height:400px;object-fit:contain}
-.image-remove{position:absolute;top:10px;right:10px;width:36px;height:36px;background:rgba(255,80,80,0.9);border:none;border-radius:50%;color:white;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all var(--t)}
-.image-remove:hover{background:#ff6060;transform:scale(1.1)}
-.form-group{margin-bottom:24px}
-.form-group label{display:block;margin-bottom:8px;font-size:14px;font-weight:600;color:var(--white)}
-.form-textarea{width:100%;padding:12px 16px;background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);color:var(--white);font-family:inherit;font-size:14px;min-height:100px;resize:vertical;transition:all var(--t)}
-.form-textarea:focus{outline:none;border-color:var(--amber);background:rgba(245,200,66,0.02);box-shadow:0 0 0 3px rgba(245,200,66,0.1)}
-.char-count{font-size:11px;color:var(--muted);margin-top:6px;text-align:right}
-.result-section{margin-top:40px;padding-top:40px;border-top:1px solid var(--border);display:none;animation:fadeIn 0.3s}
-.result-section.show{display:block}
-.result-image{margin-bottom:24px;border-radius:var(--r-lg);overflow:hidden;background:var(--bg3);border:1px solid var(--border)}
-.result-image img{width:100%;height:auto;display:block}
-.result-text{background:var(--bg3);border:1px solid var(--border);border-radius:var(--r-lg);padding:20px;margin-bottom:20px;max-height:300px;overflow-y:auto;white-space:pre-wrap;word-break:break-word;font-size:13px;line-height:1.6;color:var(--white);font-family:'DM Sans',monospace}
-.result-actions{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin-top:20px}
-.btn-secondary{padding:10px 16px;background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);color:var(--white);font-family:inherit;font-size:13px;font-weight:700;cursor:pointer;transition:all var(--t)}
-.btn-secondary:hover{border-color:var(--amber);color:var(--amber);background:rgba(245,200,66,0.05)}
-@keyframes slideUp{from{transform:translateY(20px);opacity:0}to{transform:translateY(0);opacity:1}}
-@keyframes fadeIn{from{opacity:0}to{opacity:1}}
-
-</style>
+  </style>
 
   <p style="
     color: rgba(255,255,255,0.45);
@@ -1561,48 +1600,7 @@ html.light-mode .flink:hover {
         scroll-snap-align: center;
       }
     }
-  
-/* ════════════════════════════════════════════════════════════════════════════
-   TOOLS - الأدوات الـ 4
-   ════════════════════════════════════════════════════════════════════════════ */
-
-.tools-wrapper{position:fixed;inset:62px 0 0;z-index:100;display:none;background:var(--bg)}
-.tools-wrapper.active{display:flex;flex-direction:column}
-.tool-page{display:none;flex:1;overflow-y:auto;animation:slideUp .3s var(--ease)}
-.tool-page.active{display:block}
-.tool-container{max-width:900px;margin:0 auto;padding:40px 20px;width:100%}
-.tool-header{display:flex;align-items:center;gap:16px;margin-bottom:32px;padding-bottom:20px;border-bottom:1px solid var(--border)}
-.tool-back{background:none;border:none;width:40px;height:40px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--muted2);font-size:20px;transition:all var(--t)}
-.tool-back:hover{color:var(--amber)}
-.tool-header h2{font-size:28px;font-weight:700;color:var(--white);margin:0}
-.tool-subtitle{font-size:13px;color:var(--muted2);margin-top:4px}
-.upload-zone{border:2px dashed var(--border-hi);border-radius:var(--r-lg);padding:40px;text-align:center;cursor:pointer;transition:all var(--t);background:rgba(245,200,66,0.02);margin-bottom:20px}
-.upload-zone:hover{border-color:var(--amber);background:rgba(245,200,66,0.05)}
-.upload-zone.dragover{border-color:var(--amber);background:rgba(245,200,66,0.1)}
-.upload-icon{font-size:40px;display:block;margin-bottom:16px}
-.upload-text{display:block;font-size:16px;font-weight:600;color:var(--white);margin-bottom:6px}
-.upload-hint{display:block;font-size:12px;color:var(--muted)}
-.image-preview{position:relative;margin:16px 0;border-radius:var(--r-lg);overflow:hidden;background:var(--bg3);border:1px solid var(--border)}
-.image-preview img{width:100%;height:auto;display:block;max-height:400px;object-fit:contain}
-.image-remove{position:absolute;top:10px;right:10px;width:36px;height:36px;background:rgba(255,80,80,0.9);border:none;border-radius:50%;color:white;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all var(--t)}
-.image-remove:hover{background:#ff6060;transform:scale(1.1)}
-.form-group{margin-bottom:24px}
-.form-group label{display:block;margin-bottom:8px;font-size:14px;font-weight:600;color:var(--white)}
-.form-textarea{width:100%;padding:12px 16px;background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);color:var(--white);font-family:inherit;font-size:14px;min-height:100px;resize:vertical;transition:all var(--t)}
-.form-textarea:focus{outline:none;border-color:var(--amber);background:rgba(245,200,66,0.02);box-shadow:0 0 0 3px rgba(245,200,66,0.1)}
-.char-count{font-size:11px;color:var(--muted);margin-top:6px;text-align:right}
-.result-section{margin-top:40px;padding-top:40px;border-top:1px solid var(--border);display:none;animation:fadeIn 0.3s}
-.result-section.show{display:block}
-.result-image{margin-bottom:24px;border-radius:var(--r-lg);overflow:hidden;background:var(--bg3);border:1px solid var(--border)}
-.result-image img{width:100%;height:auto;display:block}
-.result-text{background:var(--bg3);border:1px solid var(--border);border-radius:var(--r-lg);padding:20px;margin-bottom:20px;max-height:300px;overflow-y:auto;white-space:pre-wrap;word-break:break-word;font-size:13px;line-height:1.6;color:var(--white);font-family:'DM Sans',monospace}
-.result-actions{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin-top:20px}
-.btn-secondary{padding:10px 16px;background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);color:var(--white);font-family:inherit;font-size:13px;font-weight:700;cursor:pointer;transition:all var(--t)}
-.btn-secondary:hover{border-color:var(--amber);color:var(--amber);background:rgba(245,200,66,0.05)}
-@keyframes slideUp{from{transform:translateY(20px);opacity:0}to{transform:translateY(0);opacity:1}}
-@keyframes fadeIn{from{opacity:0}to{opacity:1}}
-
-</style>
+  </style>
 
     <!-- FREE CARD -->
     <div style="
@@ -1864,8 +1862,237 @@ html.light-mode .flink:hover {
           <button class="upbtn" onclick="openUpgradeModal()"><span data-ar="ترقّى الآن ✦" data-en="Upgrade Now ✦">ترقّى الآن ✦</span></button>
         </div>
       </div>
-    </div>
-  </div>
+
+      </div><!-- END panel-edit -->
+
+
+      <!-- ══ PANEL 2: EXTRACT STYLE 📸 ══ -->
+      <div class="tool-panel" id="panel-bgremove">
+
+        <div class="sec">
+          <div class="ubox-wrap">
+            <div class="ubox" id="bgrDrop"
+                 ondragover="event.preventDefault();this.classList.add('drag-over')"
+                 ondragleave="this.classList.remove('drag-over')"
+                 ondrop="bgrOnDrop(event)">
+              <input type="file" id="bgrFile" accept="image/jpeg,image/png,image/webp"
+                     onchange="bgrOnPick(this.files[0])"/>
+              <span class="ubox-icon">✂️</span>
+              <div class="ubox-title" data-ar="ارفع صورة منتجك" data-en="Upload Your Product Image">ارفع صورة منتجك</div>
+              <div class="ubox-sub" data-ar="ضغطة واحدة — يزيل الخلفية ويضع خلفية بيضاء نقية جاهزة لأمازون ونون" data-en="One tap — removes background & adds pure white background ready for Amazon & Noon">ضغطة واحدة — يزيل الخلفية ويضع خلفية بيضاء نقية جاهزة لأمازون ونون</div>
+            </div>
+            <div class="ubox-prev" id="bgrPrev">
+              <span class="ubox-prev-clr" onclick="bgrClear()">✕</span>
+              <img id="bgrPrevImg" src="" alt=""/>
+            </div>
+          </div>
+        </div>
+
+        <div class="psec">
+          <div class="plabel" data-ar="مناسبة لـ" data-en="Perfect for">مناسبة لـ</div>
+          <div class="chips" style="margin-top:10px">
+            <span class="chip" style="cursor:default">أمازون UAE</span>
+            <span class="chip" style="cursor:default">نون</span>
+            <span class="chip" style="cursor:default">سوق.كوم</span>
+            <span class="chip" style="cursor:default">Meta Ads</span>
+            <span class="chip" style="cursor:default">Google Shopping</span>
+            <span class="chip" style="cursor:default">صور المتجر</span>
+          </div>
+        </div>
+
+        <div class="msgwrap"><div class="msg" id="bgrMsg"></div></div>
+
+        <div class="arow">
+          <div class="ainfo" data-ar="لا يوجد prompt — ضغطة واحدة فقط" data-en="No prompt needed — one tap only">لا يوجد prompt — ضغطة واحدة فقط</div>
+          <button class="genbtn" id="bgrBtn" onclick="bgrRun()">
+            <div class="spin"></div><span class="bstar">✂️</span>
+            <span data-ar="إزالة الخلفية" data-en="Remove Background">إزالة الخلفية</span>
+          </button>
+        </div>
+
+        <div class="resc" id="bgrResc">
+          <div class="reshd">
+            <div class="reslabel">✅ <span data-ar="تمت الإزالة بنجاح" data-en="Background Removed">تمت الإزالة بنجاح</span></div>
+            <button class="dlbtn" onclick="bgrDl()">⬇ <span data-ar="تحميل" data-en="Download">تحميل</span></button>
+          </div>
+          <div class="slider-wrap" id="bgrSlider">
+            <img id="bgrOimg" src="" alt="before"/>
+            <div class="slider-after" id="bgrAfterDiv" style="width:50%">
+              <img id="bgrRimg" src="" alt="after"/>
+            </div>
+            <div class="slider-line" id="bgrSliderLine" style="left:50%"></div>
+            <div class="slider-btn" id="bgrSliderBtn" style="left:50%">⇔</div>
+            <span class="slider-label before" data-ar="الأصل" data-en="Original">الأصل</span>
+            <span class="slider-label after" data-ar="بيضاء ✦" data-en="White ✦">بيضاء ✦</span>
+          </div>
+          <div class="share-row">
+            <button class="share-btn share-btn-wa" onclick="shareWA()">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+              <span data-ar="شارك واتساب" data-en="WhatsApp">شارك واتساب</span>
+            </button>
+            <button class="share-btn share-btn-copy" onclick="copyLink(this)">🔗 <span data-ar="نسخ الرابط" data-en="Copy Link">نسخ الرابط</span></button>
+          </div>
+        </div>
+
+      </div><!-- END panel-bgremove -->
+
+
+      <!-- ══ PANEL 3: SWAP PRODUCT 🔄 ══ -->
+      <div class="tool-panel" id="panel-swap">
+        <div class="sec">
+          <div class="dual-grid">
+            <div>
+              <div class="dual-ubox" id="swDrop1"
+                   ondragover="event.preventDefault();this.classList.add('drag-over')"
+                   ondragleave="this.classList.remove('drag-over')"
+                   ondrop="swOnDrop(event,1)">
+                <input type="file" id="swFile1" accept="image/jpeg,image/png,image/webp"
+                       onchange="swOnPick(this.files[0],1)"/>
+                <span class="dual-badge" data-ar="منتجك" data-en="Your Product">منتجك</span>
+                <span class="dual-ubox-icon">📦</span>
+                <div class="dual-ubox-title" data-ar="ارفع صورة منتجك" data-en="Upload Your Product">ارفع صورة منتجك</div>
+                <div class="dual-ubox-sub" data-ar="المنتج الذي تريد نقله للبيئة الجديدة" data-en="The product you want placed in the new scene">المنتج الذي تريد نقله</div>
+              </div>
+              <div class="dual-prev" id="swPrev1"><span class="dual-prev-clr" onclick="swClear(1)">✕</span><img id="swPrevImg1" src="" alt=""/></div>
+            </div>
+            <div>
+              <div class="dual-ubox" id="swDrop2"
+                   ondragover="event.preventDefault();this.classList.add('drag-over')"
+                   ondragleave="this.classList.remove('drag-over')"
+                   ondrop="swOnDrop(event,2)">
+                <input type="file" id="swFile2" accept="image/jpeg,image/png,image/webp"
+                       onchange="swOnPick(this.files[0],2)"/>
+                <span class="dual-badge" data-ar="المشهد المرجعي" data-en="Reference Scene">المشهد المرجعي</span>
+                <span class="dual-ubox-icon">🖼️</span>
+                <div class="dual-ubox-title" data-ar="ارفع الصورة المرجعية" data-en="Upload Reference Image">ارفع الصورة المرجعية</div>
+                <div class="dual-ubox-sub" data-ar="البيئة والمشهد الذي تريد منتجك فيه" data-en="The environment & scene you want your product in">المشهد الذي تريد منتجك فيه</div>
+              </div>
+              <div class="dual-prev" id="swPrev2"><span class="dual-prev-clr" onclick="swClear(2)">✕</span><img id="swPrevImg2" src="" alt=""/></div>
+            </div>
+          </div>
+        </div>
+        <div class="psec">
+          <div class="plabel-row">
+            <div class="plabel" data-ar="وصف إضافي (اختياري)" data-en="Additional description (optional)">وصف إضافي (اختياري)</div>
+          </div>
+          <textarea class="ptxt" id="swPromptTxt" placeholder="مثال: منتجي على نفس القاعدة الرخامية بنفس الإضاءة الذهبية..."></textarea>
+        </div>
+        <div class="msgwrap"><div class="msg" id="swMsg"></div></div>
+        <div class="arow">
+          <div class="ainfo" data-ar="يولّد صورة فعلية بمنتجك داخل مشهد الصورة المرجعية" data-en="Generates a real image with your product inside the reference scene">يولّد صورة فعلية بمنتجك داخل المشهد</div>
+          <button class="genbtn" id="swBtn" onclick="swRun()">
+            <div class="spin"></div><span class="bstar">🔄</span>
+            <span data-ar="تبديل المنتج" data-en="Swap Product">تبديل المنتج</span>
+          </button>
+        </div>
+        <div class="resc" id="swResc">
+          <div class="reshd">
+            <div class="reslabel">✅ <span data-ar="تم التبديل بنجاح" data-en="Swap Complete">تم التبديل بنجاح</span></div>
+            <button class="dlbtn" onclick="swDl()">⬇ <span data-ar="تحميل" data-en="Download">تحميل</span></button>
+          </div>
+          <div class="slider-wrap" id="swSlider">
+            <img id="swOimg" src="" alt="before"/>
+            <div class="slider-after" id="swAfterDiv" style="width:50%">
+              <img id="swRimg" src="" alt="after"/>
+            </div>
+            <div class="slider-line" id="swSliderLine" style="left:50%"></div>
+            <div class="slider-btn" id="swSliderBtn" style="left:50%">⇔</div>
+            <span class="slider-label before" data-ar="الأصل" data-en="Original">الأصل</span>
+            <span class="slider-label after" data-ar="المبدّل ✦" data-en="Swapped ✦">المبدّل ✦</span>
+          </div>
+          <div class="share-row">
+            <button class="share-btn share-btn-wa" onclick="shareWA()">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+              <span data-ar="شارك واتساب" data-en="WhatsApp">شارك واتساب</span>
+            </button>
+            <button class="share-btn share-btn-copy" onclick="copyLink(this)">🔗 <span data-ar="نسخ الرابط" data-en="Copy Link">نسخ الرابط</span></button>
+          </div>
+        </div>
+      </div><!-- END panel-swap -->
+
+
+      <!-- ══ PANEL 4: GENERATE PROMPT 🎯 ══ -->
+      <div class="tool-panel" id="panel-infographic">
+
+        <div class="sec">
+          <div class="ubox-wrap">
+            <div class="ubox" id="infDrop"
+                 ondragover="event.preventDefault();this.classList.add('drag-over')"
+                 ondragleave="this.classList.remove('drag-over')"
+                 ondrop="infOnDrop(event)">
+              <input type="file" id="infFile" accept="image/jpeg,image/png,image/webp"
+                     onchange="infOnPick(this.files[0])"/>
+              <span class="ubox-icon">📊</span>
+              <div class="ubox-title" data-ar="ارفع صورة منتجك" data-en="Upload Your Product Image">ارفع صورة منتجك</div>
+              <div class="ubox-sub" data-ar="يصمم إنفوجرافيك احترافي بالعربي مع callouts وبادجات — جاهز لأمازون A+ ونون" data-en="Designs a professional Arabic infographic with callouts & badges — ready for Amazon A+ & Noon">يصمم إنفوجرافيك احترافي بالعربي مع callouts وبادجات — جاهز لأمازون A+ ونون</div>
+            </div>
+            <div class="ubox-prev" id="infPrev">
+              <span class="ubox-prev-clr" onclick="infClear()">✕</span>
+              <img id="infPrevImg" src="" alt=""/>
+            </div>
+          </div>
+        </div>
+
+        <div class="psec">
+          <div class="plabel-row">
+            <div class="plabel" data-ar="مميزات المنتج — كل ميزة في سطر" data-en="Product features — one per line">مميزات المنتج — كل ميزة في سطر</div>
+          </div>
+          <textarea class="ptxt" id="infFeaturesTxt" style="min-height:140px"
+            placeholder="مثال:&#10;فولاذ 304 خالٍ من BPA&#10;حافظ حرارة 12 ساعة&#10;سعة 750 مل&#10;ضمان سنتين&#10;خفيف الوزن 320 غرام"></textarea>
+          <div class="chips" id="inf-chips-ar" style="margin-top:10px">
+            <span class="chip" onclick="infChip(this)">غطاء مضاد للتسرب</span>
+            <span class="chip" onclick="infChip(this)">مواد طبية معتمدة</span>
+            <span class="chip" onclick="infChip(this)">خفيف الوزن</span>
+            <span class="chip" onclick="infChip(this)">ضمان سنتين</span>
+            <span class="chip" onclick="infChip(this)">شحن مجاني</span>
+          </div>
+          <div class="chips" id="inf-chips-en" style="display:none;margin-top:10px">
+            <span class="chip" onclick="infChip(this)">Leak-proof lid</span>
+            <span class="chip" onclick="infChip(this)">Medical grade material</span>
+            <span class="chip" onclick="infChip(this)">Lightweight design</span>
+            <span class="chip" onclick="infChip(this)">2-year warranty</span>
+            <span class="chip" onclick="infChip(this)">Free shipping</span>
+          </div>
+        </div>
+
+        <div class="msgwrap"><div class="msg" id="infMsg"></div></div>
+
+        <div class="arow">
+          <div class="ainfo" data-ar="يصمم إنفوجرافيك كامل جاهز للرفع مباشرة" data-en="Designs complete infographic ready to upload">يصمم إنفوجرافيك كامل جاهز للرفع</div>
+          <button class="genbtn" id="infBtn" onclick="infRun()">
+            <div class="spin"></div><span class="bstar">📊</span>
+            <span data-ar="توليد الإنفوجرافيك" data-en="Generate Infographic">توليد الإنفوجرافيك</span>
+          </button>
+        </div>
+
+        <div class="resc" id="infResc">
+          <div class="reshd">
+            <div class="reslabel">✅ <span data-ar="الإنفوجرافيك جاهز" data-en="Infographic Ready">الإنفوجرافيك جاهز</span></div>
+            <button class="dlbtn" onclick="infDl()">⬇ <span data-ar="تحميل" data-en="Download">تحميل</span></button>
+          </div>
+          <div class="slider-wrap" id="infSlider">
+            <img id="infOimg" src="" alt="before"/>
+            <div class="slider-after" id="infAfterDiv" style="width:50%">
+              <img id="infRimg" src="" alt="after"/>
+            </div>
+            <div class="slider-line" id="infSliderLine" style="left:50%"></div>
+            <div class="slider-btn" id="infSliderBtn" style="left:50%">⇔</div>
+            <span class="slider-label before" data-ar="الأصل" data-en="Original">الأصل</span>
+            <span class="slider-label after" data-ar="إنفوجرافيك ✦" data-en="Infographic ✦">إنفوجرافيك ✦</span>
+          </div>
+          <div class="share-row">
+            <button class="share-btn share-btn-wa" onclick="shareWA()">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+              <span data-ar="شارك واتساب" data-en="WhatsApp">شارك واتساب</span>
+            </button>
+            <button class="share-btn share-btn-copy" onclick="copyLink(this)">🔗 <span data-ar="نسخ الرابط" data-en="Copy Link">نسخ الرابط</span></button>
+          </div>
+        </div>
+
+      </div><!-- END panel-infographic -->
+
+    </div><!-- END appcard -->
+  </div><!-- END appwrap -->
 </section>
 
 <section class="tools">
@@ -2010,7 +2237,7 @@ html.light-mode .flink:hover {
 
     <div class="perks">
       <div class="perks-t">✦ <span data-ar="مزايا الحساب المجاني" data-en="Free account perks">مزايا الحساب المجاني</span></div>
-      <div class="perk">🎨 <span data-ar="3 صور يومياً مجاناً" data-en="3 free edits daily">3 صور يومياً مجاناً</span></div>
+      <div class="perk">🎨 <span data-ar="3 صور مجاناً شهرياً" data-en="3 free edits monthly">3 صور مجاناً شهرياً</span></div>
       <div class="perk">⚡ <span data-ar="أولوية في المعالجة" data-en="Priority processing">أولوية في المعالجة</span></div>
       <div class="perk">🛠️ <span data-ar="وصول مبكر لأدوات Maven" data-en="Early access to Maven tools">وصول مبكر لأدوات Maven</span></div>
     </div>
@@ -2387,10 +2614,10 @@ async function gen(){
         return;
       }
       if(data.requiresAuth){
-        showMsg('info',lang==='ar'?'🎉 استهلكت الكريديت المجاني — سجّل للحصول على 3 صور يومياً!':'🎉 Free credit used — sign up for 3 free daily edits!');
+        showMsg('info',lang==='ar'?'🎉 استهلكت الكريديت المجاني — سجّل للحصول على 3 صور مجاناً شهرياً!':'🎉 Free credit used — sign up for 3 free monthly edits!');
         setTimeout(()=>openM(),8000);
       } else if(data.error === 'Daily limit reached') {
-        showMsg('info',lang==='ar'?'✅ استهلكت صورك الـ 3 لليوم — تعالى بكرا للمزيد!':'✅ You used all 3 daily edits — come back tomorrow!');
+        showMsg('info',lang==='ar'?'✅ استهلكت صورك الـ 3 المجانية — ترقّى للمزيد!':'✅ You\'ve used all 3 free edits — upgrade for more!');
       } else {
         showMsg('err',data.error_ar||data.error||(lang==='ar'?'حدث خطأ':'Something went wrong'));
       }
@@ -2866,69 +3093,6 @@ document.addEventListener('DOMContentLoaded', function() {
     </div>
   </div>
 </div>
-
-<!-- TOOL PAGES -->
-<div class="tools-wrapper" id="toolsWrapper">
-  <div class="tool-page" id="editTool">
-    <div class="tool-container">
-      <div class="tool-header">
-        <button class="tool-back" onclick="closeTool()">←</button>
-        <div><h2>✏️ تعديل الصورة</h2><p class="tool-subtitle">صورة + وصف</p></div>
-      </div>
-      <div class="upload-zone" id="editUploadZone" ondrop="handleEditDrop(event)" ondragover="event.preventDefault();this.classList.add('dragover')" ondragleave="this.classList.remove('dragover')">
-        <input type="file" id="editImageInput" accept="image/*" style="display:none" onchange="handleEditImageSelect(event)">
-        <span class="upload-icon">📸</span><span class="upload-text">اسحب الصورة</span>
-      </div>
-      <div id="editImagePreview" class="image-preview" style="display:none"><img id="editPreviewImg" src=""><button class="image-remove" onclick="clearEditImage()">✕</button></div>
-      <div class="form-group"><label>الوصف</label><textarea id="editPrompt" class="form-textarea" maxlength="500"></textarea><div class="char-count"><span id="editCharCount">0</span>/500</div></div>
-      <button class="btn primary" id="editBtn" onclick="processEditImage()">معالجة</button>
-      <div id="editResult" class="result-section"><div class="result-image"><img id="editResultImg" src=""></div><div class="result-actions"><button class="btn-secondary" onclick="downloadResult('edit')">⬇️ تحميل</button></div></div>
-    </div>
-  </div>
-  <div class="tool-page" id="extractTool">
-    <div class="tool-container">
-      <div class="tool-header">
-        <button class="tool-back" onclick="closeTool()">←</button>
-        <div><h2>📸 استخراج الأسلوب</h2><p class="tool-subtitle">صورة → برومت</p></div>
-      </div>
-      <div class="upload-zone" id="extractUploadZone" ondrop="handleExtractDrop(event)" ondragover="event.preventDefault();this.classList.add('dragover')" ondragleave="this.classList.remove('dragover')">
-        <input type="file" id="extractImageInput" accept="image/*" style="display:none" onchange="handleExtractImageSelect(event)">
-        <span class="upload-icon">🎬</span><span class="upload-text">اسحب الصورة</span>
-      </div>
-      <div id="extractImagePreview" class="image-preview" style="display:none"><img id="extractPreviewImg" src=""><button class="image-remove" onclick="clearExtractImage()">✕</button></div>
-      <button class="btn primary" id="extractBtn" onclick="processExtractStyle()">تحليل</button>
-      <div id="extractResult" class="result-section"><div class="result-text" id="extractResultText"></div><div class="result-actions"><button class="btn-secondary" onclick="copyToClipboard('extract')">📋 نسخ</button></div></div>
-    </div>
-  </div>
-  <div class="tool-page" id="swapTool">
-    <div class="tool-container">
-      <div class="tool-header">
-        <button class="tool-back" onclick="closeTool()">←</button>
-        <div><h2>🔄 استبدال المنتج</h2><p class="tool-subtitle">صورتان</p></div>
-      </div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px">
-        <div><div class="upload-zone" id="swapUserUploadZone" ondrop="handleSwapUserDrop(event)" ondragover="event.preventDefault();this.classList.add('dragover')" ondragleave="this.classList.remove('dragover')"><input type="file" id="swapUserInput" accept="image/*" style="display:none" onchange="handleSwapUserSelect(event)"><span class="upload-icon">📦</span><span class="upload-text">صورتك</span></div><div id="swapUserPreview" class="image-preview" style="display:none"><img id="swapUserImg" src=""><button class="image-remove" onclick="clearSwapUser()">✕</button></div></div>
-        <div><div class="upload-zone" id="swapRefUploadZone" ondrop="handleSwapRefDrop(event)" ondragover="event.preventDefault();this.classList.add('dragover')" ondragleave="this.classList.remove('dragover')"><input type="file" id="swapRefInput" accept="image/*" style="display:none" onchange="handleSwapRefSelect(event)"><span class="upload-icon">🎬</span><span class="upload-text">صورة مرجعية</span></div><div id="swapRefPreview" class="image-preview" style="display:none"><img id="swapRefImg" src=""><button class="image-remove" onclick="clearSwapRef()">✕</button></div></div>
-      </div>
-      <button class="btn primary" id="swapBtn" onclick="processSwapProduct()" style="margin-top:20px">استبدال</button>
-      <div id="swapResult" class="result-section"><div class="result-text" id="swapResultText"></div><div class="result-actions"><button class="btn-secondary" onclick="copyToClipboard('swap')">📋 نسخ</button></div></div>
-    </div>
-  </div>
-  <div class="tool-page" id="generateTool">
-    <div class="tool-container">
-      <div class="tool-header">
-        <button class="tool-back" onclick="closeTool()">←</button>
-        <div><h2>🎯 إنشاء برومت</h2><p class="tool-subtitle">صورة + وصف</p></div>
-      </div>
-      <div class="upload-zone" id="generateUploadZone" ondrop="handleGenerateDrop(event)" ondragover="event.preventDefault();this.classList.add('dragover')" ondragleave="this.classList.remove('dragover')"><input type="file" id="generateImageInput" accept="image/*" style="display:none" onchange="handleGenerateImageSelect(event)"><span class="upload-icon">🖼️</span><span class="upload-text">اسحب الصورة</span></div>
-      <div id="generateImagePreview" class="image-preview" style="display:none"><img id="generatePreviewImg" src=""><button class="image-remove" onclick="clearGenerateImage()">✕</button></div>
-      <div class="form-group"><label>الوصف</label><textarea id="generateDesc" class="form-textarea" maxlength="500"></textarea><div class="char-count"><span id="generateCharCount">0</span>/500</div></div>
-      <button class="btn primary" id="generateBtn" onclick="processGeneratePrompt()">إنشاء</button>
-      <div id="generateResult" class="result-section"><div class="result-text" id="generateResultText"></div><div class="result-actions"><button class="btn-secondary" onclick="copyToClipboard('generate')">📋 نسخ</button></div></div>
-    </div>
-  </div>
-</div>
-
 </body>
 
 <script>
@@ -3181,37 +3345,246 @@ window.addEventListener('load', function() {
   updateLanguageText();
 });
 
-// TOOLS
-function openTool(t){document.getElementById('mainApp').style.display='none';document.getElementById('toolsWrapper').classList.add('active');document.querySelectorAll('.tool-page').forEach(p=>p.classList.remove('active'));document.getElementById(t+'Tool').classList.add('active')}
-function closeTool(){document.getElementById('mainApp').style.display='block';document.getElementById('toolsWrapper').classList.remove('active');document.querySelectorAll('.tool-page').forEach(p=>p.classList.remove('active'))}
-document.getElementById('editUploadZone')?.addEventListener('click',()=>document.getElementById('editImageInput').click());
-document.getElementById('editPrompt')?.addEventListener('input',(e)=>document.getElementById('editCharCount').textContent=e.target.value.length);
-function handleEditDrop(e){e.preventDefault();document.getElementById('editUploadZone').classList.remove('dragover');if(e.dataTransfer.files[0])handleEditImageSelect({target:{files:e.dataTransfer.files}})}
-function handleEditImageSelect(e){const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=(evt)=>{document.getElementById('editImagePreview').style.display='block';document.getElementById('editPreviewImg').src=evt.target.result};r.readAsDataURL(f)}
-function clearEditImage(){document.getElementById('editImageInput').value='';document.getElementById('editImagePreview').style.display='none'}
-async function processEditImage(){const f=document.getElementById('editImageInput').files[0];const p=document.getElementById('editPrompt').value;if(!f||!p.trim())return;document.getElementById('editBtn').disabled=true;const fd=new FormData();fd.append('image',f);fd.append('prompt',p);try{const res=await fetch('/api/edit',{method:'POST',body:fd,headers:{'x-session-id':sid}});const data=await res.json();if(data.success){document.getElementById('editResult').classList.add('show');document.getElementById('editResultImg').src='data:image/png;base64,'+data.edited_image;showMsg('ok','✅ تم')}else showMsg('err',data.error||'خطأ')}catch(e){showMsg('err','خطأ')}finally{document.getElementById('editBtn').disabled=false}}
-document.getElementById('extractUploadZone')?.addEventListener('click',()=>document.getElementById('extractImageInput').click());
-function handleExtractDrop(e){e.preventDefault();if(e.dataTransfer.files[0])handleExtractImageSelect({target:{files:e.dataTransfer.files}})}
-function handleExtractImageSelect(e){const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=(evt)=>{document.getElementById('extractImagePreview').style.display='block';document.getElementById('extractPreviewImg').src=evt.target.result};r.readAsDataURL(f)}
-function clearExtractImage(){document.getElementById('extractImageInput').value='';document.getElementById('extractImagePreview').style.display='none'}
-async function processExtractStyle(){const f=document.getElementById('extractImageInput').files[0];if(!f)return;document.getElementById('extractBtn').disabled=true;const fd=new FormData();fd.append('reference_image',f);try{const res=await fetch('/api/analyze-reference',{method:'POST',body:fd,headers:{'x-session-id':sid}});const data=await res.json();if(data.success){document.getElementById('extractResult').classList.add('show');document.getElementById('extractResultText').textContent=data.prompt;showMsg('ok','✅ تم')}else showMsg('err',data.error||'خطأ')}catch(e){showMsg('err','خطأ')}finally{document.getElementById('extractBtn').disabled=false}}
-document.getElementById('swapUserUploadZone')?.addEventListener('click',()=>document.getElementById('swapUserInput').click());
-document.getElementById('swapRefUploadZone')?.addEventListener('click',()=>document.getElementById('swapRefInput').click());
-function handleSwapUserDrop(e){e.preventDefault();if(e.dataTransfer.files[0])handleSwapUserSelect({target:{files:e.dataTransfer.files}})}
-function handleSwapUserSelect(e){const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=(evt)=>{document.getElementById('swapUserPreview').style.display='block';document.getElementById('swapUserImg').src=evt.target.result};r.readAsDataURL(f)}
-function handleSwapRefDrop(e){e.preventDefault();if(e.dataTransfer.files[0])handleSwapRefSelect({target:{files:e.dataTransfer.files}})}
-function handleSwapRefSelect(e){const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=(evt)=>{document.getElementById('swapRefPreview').style.display='block';document.getElementById('swapRefImg').src=evt.target.result};r.readAsDataURL(f)}
-function clearSwapUser(){document.getElementById('swapUserInput').value='';document.getElementById('swapUserPreview').style.display='none'}
-function clearSwapRef(){document.getElementById('swapRefInput').value='';document.getElementById('swapRefPreview').style.display='none'}
-async function processSwapProduct(){const f1=document.getElementById('swapUserInput').files[0];const f2=document.getElementById('swapRefInput').files[0];if(!f1||!f2)return;document.getElementById('swapBtn').disabled=true;const fd=new FormData();fd.append('user_product',f1);fd.append('reference_image',f2);fd.append('swap_prompt','استبدال');try{const res=await fetch('/api/swap-product',{method:'POST',body:fd,headers:{'x-session-id':sid}});const data=await res.json();if(data.success){document.getElementById('swapResult').classList.add('show');document.getElementById('swapResultText').textContent=data.instructions;showMsg('ok','✅ تم')}else showMsg('err',data.error||'خطأ')}catch(e){showMsg('err','خطأ')}finally{document.getElementById('swapBtn').disabled=false}}
-document.getElementById('generateUploadZone')?.addEventListener('click',()=>document.getElementById('generateImageInput').click());
-document.getElementById('generateDesc')?.addEventListener('input',(e)=>document.getElementById('generateCharCount').textContent=e.target.value.length);
-function handleGenerateDrop(e){e.preventDefault();if(e.dataTransfer.files[0])handleGenerateImageSelect({target:{files:e.dataTransfer.files}})}
-function handleGenerateImageSelect(e){const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=(evt)=>{document.getElementById('generateImagePreview').style.display='block';document.getElementById('generatePreviewImg').src=evt.target.result};r.readAsDataURL(f)}
-function clearGenerateImage(){document.getElementById('generateImageInput').value='';document.getElementById('generateImagePreview').style.display='none'}
-async function processGeneratePrompt(){const f=document.getElementById('generateImageInput').files[0];const d=document.getElementById('generateDesc').value;if(!f||!d.trim())return;document.getElementById('generateBtn').disabled=true;const fd=new FormData();fd.append('reference_image',f);fd.append('user_description',d);try{const res=await fetch('/api/generate-prompt',{method:'POST',body:fd,headers:{'x-session-id':sid}});const data=await res.json();if(data.success){document.getElementById('generateResult').classList.add('show');document.getElementById('generateResultText').textContent=data.prompt;showMsg('ok','✅ تم')}else showMsg('err',data.error||'خطأ')}catch(e){showMsg('err','خطأ')}finally{document.getElementById('generateBtn').disabled=false}}
-function downloadResult(t){const img=document.getElementById(t+'ResultImg');const link=document.createElement('a');link.href=img.src;link.download='result.png';link.click()}
-function copyToClipboard(t){const text=document.getElementById(t+'ResultText').textContent;navigator.clipboard.writeText(text).then(()=>showMsg('ok','✅ تم')).catch(()=>showMsg('err','خطأ'))}
+
+/* ════════════════════════════════════════════
+   TOOL TABS — JAVASCRIPT
+   ════════════════════════════════════════════ */
+
+/* ── 1. SWITCHER ── */
+const TOOL_IDS = ['edit','bgremove','swap','infographic'];
+let _activeTool = 'edit';
+
+function switchTool(id) {
+  if (_activeTool === id) return;
+  _activeTool = id;
+  TOOL_IDS.forEach(t => {
+    const tab   = document.getElementById('ttab-'+t);
+    const panel = document.getElementById('panel-'+t);
+    if (tab)   tab.classList.toggle('on', t === id);
+    if (panel) { if (t===id) panel.classList.add('tp-active'); else panel.classList.remove('tp-active'); }
+  });
+}
+
+/* Sync lang with tab labels */
+const _origSetLang = setLang;
+setLang = function(l) {
+  _origSetLang(l);
+  document.querySelectorAll('.ttab-label[data-ar]').forEach(el => {
+    el.textContent = l==='ar' ? el.dataset.ar : el.dataset.en;
+  });
+  document.querySelectorAll('.dual-badge[data-ar]').forEach(el => {
+    el.textContent = l==='ar' ? el.dataset.ar : el.dataset.en;
+  });
+  const infAr = document.getElementById('inf-chips-ar');
+  const infEn = document.getElementById('inf-chips-en');
+  if (infAr) infAr.style.display = l==='ar' ? '' : 'none';
+  if (infEn) infEn.style.display = l==='en' ? '' : 'none';
+  const swPH = document.getElementById('swPromptTxt');
+  if (swPH) swPH.placeholder = l==='ar'
+    ? 'مثال: منتجي على نفس القاعدة الرخامية بنفس الإضاءة الذهبية...'
+    : 'e.g. My product on the same marble base with the same golden lighting...';
+  const infPH = document.getElementById('infFeaturesTxt');
+  if (infPH) infPH.placeholder = l==='ar'
+    ? 'مثال:\nفولاذ 304 خالٍ من BPA\nحافظ حرارة 12 ساعة\nسعة 750 مل\nضمان سنتين'
+    : 'e.g.\nStainless steel 304 BPA-free\n12-hour heat retention\n750ml capacity\n2-year warranty';
+};
+
+/* ── 2. REMOVE BACKGROUND ── */
+let _bgrFile = null, _bgrRes64 = null;
+
+function bgrOnPick(f) { if(!f)return; _bgrFile=f; _tbShowPrev('bgrDrop','bgrPrev','bgrPrevImg',f); }
+function bgrOnDrop(e) { e.preventDefault(); document.getElementById('bgrDrop')?.classList.remove('drag-over'); const f=e.dataTransfer.files[0]; if(f) bgrOnPick(f); }
+function bgrClear()   { _bgrFile=null; _tbClearPrev('bgrDrop','bgrPrev','bgrPrevImg','bgrFile'); document.getElementById('bgrResc')?.classList.remove('show'); }
+
+async function bgrRun() {
+  if (!_bgrFile) { _tbMsg('bgrMsg','err', lang==='ar'?'ارفع صورة أولاً':'Upload an image first'); return; }
+  const btn = document.getElementById('bgrBtn');
+  _tbBtnLoad(btn,true); _tbMsg('bgrMsg','',''); setLoad(true);
+  try {
+    const fd = new FormData();
+    fd.append('image', _bgrFile);
+    fd.append('sessionId', sid);
+    const h = {'x-session-id':sid};
+    if(tok) h['Authorization']='Bearer '+tok;
+    const resp = await fetchWithTimeout(API+'/api/remove-bg',{method:'POST',headers:h,body:fd},60000);
+    const data = await resp.json();
+    if(!resp.ok){ _tbHandleCredErr(resp.status,'bgrMsg',data); return; }
+    _bgrRes64 = data.image;
+    const reader = new FileReader();
+    reader.onload = ev => { document.getElementById('bgrOimg').src = ev.target.result; };
+    reader.readAsDataURL(_bgrFile);
+    document.getElementById('bgrRimg').src = 'data:image/png;base64,'+data.image;
+    document.getElementById('bgrResc').classList.add('show');
+    _initGenericSlider('bgrSlider','bgrAfterDiv','bgrSliderLine','bgrSliderBtn');
+    _tbMsg('bgrMsg','ok', _tbCredLabel(data.remaining_credits));
+    updCredUI(data.remaining_credits);
+    document.getElementById('bgrResc').scrollIntoView({behavior:'smooth',block:'nearest'});
+    showWPopup();
+    if(tok) loadHistoryCache();
+  } catch(err) { _tbMsg('bgrMsg','err', err.message||(lang==='ar'?'خطأ':'Error')); }
+  finally { _tbBtnLoad(btn,false); hideLoad(); }
+}
+
+function bgrDl() {
+  if(!_bgrRes64)return;
+  const a=document.createElement('a');
+  a.href='data:image/png;base64,'+_bgrRes64;
+  a.download='loom-nobg-'+Date.now()+'.png'; a.click();
+}
+
+/* ── 3. SWAP PRODUCT ── */
+let _swFile1=null, _swFile2=null, _swRes64=null;
+
+function swOnPick(f,n) { if(!f)return; if(n===1)_swFile1=f; else _swFile2=f; _tbShowPrev('swDrop'+n,'swPrev'+n,'swPrevImg'+n,f,true); }
+function swOnDrop(e,n) { e.preventDefault(); document.getElementById('swDrop'+n)?.classList.remove('drag-over'); const f=e.dataTransfer.files[0]; if(f) swOnPick(f,n); }
+function swClear(n)    { if(n===1)_swFile1=null; else _swFile2=null; document.getElementById('swPrev'+n)?.classList.remove('show'); document.getElementById('swDrop'+n).style.display=''; document.getElementById('swPrevImg'+n).src=''; document.getElementById('swFile'+n).value=''; }
+
+async function swRun() {
+  if(!_swFile1||!_swFile2){ _tbMsg('swMsg','err',lang==='ar'?'ارفع صورتي المنتج والمرجع':'Upload both product & reference images'); return; }
+  const extraPrompt=(document.getElementById('swPromptTxt')?.value||'').trim();
+  const btn=document.getElementById('swBtn');
+  _tbBtnLoad(btn,true); _tbMsg('swMsg','',''); setLoad(true);
+  try {
+    const fd=new FormData();
+    fd.append('user_product',_swFile1); fd.append('reference_image',_swFile2);
+    fd.append('extra_prompt',extraPrompt); fd.append('sessionId',sid);
+    const h={'x-session-id':sid};
+    if(tok) h['Authorization']='Bearer '+tok;
+    const resp=await fetchWithTimeout(API+'/api/swap-generate',{method:'POST',headers:h,body:fd},120000);
+    const data=await resp.json();
+    if(!resp.ok){ _tbHandleCredErr(resp.status,'swMsg',data); return; }
+    _swRes64=data.image;
+    const reader=new FileReader();
+    reader.onload=ev=>{ document.getElementById('swOimg').src=ev.target.result; };
+    reader.readAsDataURL(_swFile1);
+    document.getElementById('swRimg').src='data:image/png;base64,'+data.image;
+    document.getElementById('swResc').classList.add('show');
+    _initSwSlider();
+    _tbMsg('swMsg','ok',_tbCredLabel(data.remaining_credits));
+    updCredUI(data.remaining_credits);
+    document.getElementById('swResc').scrollIntoView({behavior:'smooth',block:'nearest'});
+    showWPopup();
+    if(tok) loadHistoryCache();
+  } catch(err) { _tbMsg('swMsg','err',err.message||(lang==='ar'?'خطأ':'Error')); }
+  finally { _tbBtnLoad(btn,false); hideLoad(); }
+}
+
+function swDl() {
+  if(!_swRes64)return;
+  const a=document.createElement('a');
+  a.href='data:image/png;base64,'+_swRes64;
+  a.download='loom-swap-'+Date.now()+'.png'; a.click();
+}
+
+function _initSwSlider() { _initGenericSlider('swSlider','swAfterDiv','swSliderLine','swSliderBtn'); }
+
+function _initGenericSlider(wrapId, afterId, lineId, btnId) {
+  const wrap=document.getElementById(wrapId), after=document.getElementById(afterId);
+  const line=document.getElementById(lineId), btn=document.getElementById(btnId);
+  if(!wrap)return;
+  function setPos(p){ after.style.width=p+'%'; line.style.left=p+'%'; btn.style.left=p+'%'; }
+  function fromEv(e){ const r=wrap.getBoundingClientRect(),cx=e.touches?e.touches[0].clientX:e.clientX; setPos(Math.min(100,Math.max(0,((cx-r.left)/r.width)*100))); }
+  let dr=false;
+  wrap.onmousedown=()=>dr=true; wrap.onmousemove=e=>{if(dr)fromEv(e)}; wrap.onmouseup=wrap.onmouseleave=()=>dr=false;
+  wrap.addEventListener('touchstart',e=>{dr=true;fromEv(e)},{passive:true});
+  wrap.addEventListener('touchmove',e=>{if(dr)fromEv(e)},{passive:true});
+  wrap.addEventListener('touchend',()=>dr=false);
+}
+
+/* ── 4. INFOGRAPHIC ── */
+let _infFile=null, _infRes64=null;
+
+function infOnPick(f) { if(!f)return; _infFile=f; _tbShowPrev('infDrop','infPrev','infPrevImg',f); }
+function infOnDrop(e) { e.preventDefault(); document.getElementById('infDrop')?.classList.remove('drag-over'); const f=e.dataTransfer.files[0]; if(f) infOnPick(f); }
+function infClear()   { _infFile=null; _tbClearPrev('infDrop','infPrev','infPrevImg','infFile'); document.getElementById('infResc')?.classList.remove('show'); }
+function infChip(el)  {
+  const t=document.getElementById('infFeaturesTxt'); if(!t)return;
+  const v=t.value.trim();
+  t.value = v ? v+'
+'+el.textContent.trim() : el.textContent.trim();
+}
+
+async function infRun() {
+  if(!_infFile){ _tbMsg('infMsg','err',lang==='ar'?'ارفع صورة أولاً':'Upload an image first'); return; }
+  const features=(document.getElementById('infFeaturesTxt')?.value||'').trim();
+  if(!features){ _tbMsg('infMsg','err',lang==='ar'?'أدخل مميزات المنتج أولاً':'Enter product features first'); return; }
+  const btn=document.getElementById('infBtn');
+  _tbBtnLoad(btn,true); _tbMsg('infMsg','',''); setLoad(true);
+  try {
+    const fd=new FormData();
+    fd.append('image',_infFile);
+    fd.append('features',features);
+    fd.append('sessionId',sid);
+    const h={'x-session-id':sid};
+    if(tok) h['Authorization']='Bearer '+tok;
+    const resp=await fetchWithTimeout(API+'/api/infographic',{method:'POST',headers:h,body:fd},120000);
+    const data=await resp.json();
+    if(!resp.ok){ _tbHandleCredErr(resp.status,'infMsg',data); return; }
+    _infRes64=data.image;
+    const reader=new FileReader();
+    reader.onload=ev=>{ document.getElementById('infOimg').src=ev.target.result; };
+    reader.readAsDataURL(_infFile);
+    document.getElementById('infRimg').src='data:image/png;base64,'+data.image;
+    document.getElementById('infResc').classList.add('show');
+    _initGenericSlider('infSlider','infAfterDiv','infSliderLine','infSliderBtn');
+    _tbMsg('infMsg','ok',_tbCredLabel(data.remaining_credits));
+    updCredUI(data.remaining_credits);
+    document.getElementById('infResc').scrollIntoView({behavior:'smooth',block:'nearest'});
+    showWPopup();
+    if(tok) loadHistoryCache();
+  } catch(err) { _tbMsg('infMsg','err',err.message||(lang==='ar'?'خطأ':'Error')); }
+  finally { _tbBtnLoad(btn,false); hideLoad(); }
+}
+
+function infDl() {
+  if(!_infRes64)return;
+  const a=document.createElement('a');
+  a.href='data:image/png;base64,'+_infRes64;
+  a.download='loom-infographic-'+Date.now()+'.png'; a.click();
+}
+
+/* ── 5. COPY ── */
+async function loomCopy(bodyId, btn) {
+  const el=document.getElementById(bodyId); if(!el)return;
+  try {
+    await navigator.clipboard.writeText(el.textContent);
+    const orig=btn.innerHTML;
+    btn.innerHTML=lang==='ar'?'✅ تم!':'✅ Done!';
+    setTimeout(()=>btn.innerHTML=orig,2000);
+  } catch{}
+}
+
+/* ── 6. HELPERS ── */
+function _tbShowPrev(dropId,prevId,imgId,f,small){
+  const drop=document.getElementById(dropId),prev=document.getElementById(prevId),img=document.getElementById(imgId);
+  if(!drop||!prev||!img)return;
+  const r=new FileReader(); r.onload=e=>img.src=e.target.result; r.readAsDataURL(f);
+  drop.style.display='none'; prev.classList.add('show');
+}
+function _tbClearPrev(dropId,prevId,imgId,fileId){
+  const drop=document.getElementById(dropId),prev=document.getElementById(prevId),img=document.getElementById(imgId),fi=document.getElementById(fileId);
+  if(drop){drop.style.display='';drop.classList.remove('drag-over');}
+  if(prev)prev.classList.remove('show');
+  if(img)img.src='';
+  if(fi)fi.value='';
+}
+function _tbMsg(elId,type,text){
+  const el=document.getElementById(elId); if(!el)return;
+  el.textContent=text; el.className=type?'msg '+type:'msg';
+}
+function _tbBtnLoad(btn,on){
+  if(!btn)return; btn.disabled=on;
+  if(on)btn.classList.add('loading'); else btn.classList.remove('loading');
+}
+function _tbCredLabel(rem){ return '✅ '+(lang==='ar'?'تم! الكريديت المتبقي: ':'Done! Credits: ')+rem; }
+function _tbHandleCredErr(status,msgElId,data){
+  if(status===403||data?.requiresAuth){
+    _tbMsg(msgElId,'info',lang==='ar'?'🎉 استهلكت الكريديت — سجّل للمزيد!':'🎉 No credits — sign up for more!');
+    setTimeout(()=>openM(),2000);
+  } else {
+    _tbMsg(msgElId,'err',data?.error_ar||data?.error||(lang==='ar'?'حدث خطأ':'An error occurred'));
+  }
+}
 
 </script>
 
