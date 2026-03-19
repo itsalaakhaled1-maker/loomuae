@@ -848,9 +848,39 @@ app.post('/api/analyze-reference', editLimiter, upload.single('reference_image')
     // Prepare image
     const base64Image = req.file.buffer.toString('base64');
     const mimeType = req.file.mimetype;
+    const mode = req.body.mode || 'extract_style';
+    const goal = (req.body.goal || '').trim();
 
-    // Call Gemini to analyze
-    const analysisPrompt = `You are a professional product photographer analyst.
+    // Build prompt based on mode
+    let analysisPrompt;
+
+    if (mode === 'generate_prompt') {
+      // Tool 4: Generate custom prompt for user's product
+      analysisPrompt = `You are an elite AI product photography prompt engineer.
+
+Analyze this product image carefully.
+
+${goal ? `User's goal: ${goal}` : ''}
+
+Write a PRECISE, PROFESSIONAL editing prompt (under 110 words) that:
+1. Identifies the best background scene/environment for this exact product category
+2. Specifies lighting direction, softness, and shadow style
+3. Defines surface/texture for the product to rest on
+4. Sets mood and color palette that flatters the product
+5. Includes composition and depth-of-field style
+6. Ends with quality keywords: photorealistic, commercial photography, 8K, product hero shot
+
+RULES:
+- Do NOT describe the product itself — only what surrounds it
+- Keep the product 100% unchanged
+- Respond in the SAME LANGUAGE as the user's goal (Arabic if Arabic goal, English if English goal)
+- If no goal provided, respond in Arabic
+- Start directly with the prompt — no preamble
+- Begin with: "برومت:" or "PROMPT:" depending on language`;
+
+    } else {
+      // Tool 2: Extract photography style (original behavior)
+      analysisPrompt = `You are a professional product photographer analyst.
 
 Analyze this reference product image and extract ONLY the photography style details.
 
@@ -871,6 +901,7 @@ Format your response as a detailed, actionable photography prompt that a differe
 The prompt should be ready to use directly in an image generation API or as instructions for a photographer.
 
 Start with: "PHOTOGRAPHY STYLE PROMPT:"`;
+    }
 
     const response = await model.generateContent([
       {
@@ -1084,138 +1115,468 @@ Format as: "PRODUCT SWAP INSTRUCTIONS:"`;
   }
 });
 
-// ─── Explicit static HTML routes ────────────────────────────────────────────
-app.get('/admin.html', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'admin.html'));
-})
 
-// ════════════════════════════════════════════════════════════════════════════
-// GENERATE PROMPT - إنشاء برومت احترافي
-// ════════════════════════════════════════════════════════════════════════════
-app.post('/api/generate-prompt', editLimiter, upload.single('reference_image'), async (req, res) => {
+
+// ═══════════════════════════════════════════════════════════════════════
+// TOOL 3: SWAP GENERATE — يولّد صورة فعلية بدمج المنتج في المشهد المرجعي
+// ═══════════════════════════════════════════════════════════════════════
+
+app.post('/api/swap-generate', editLimiter, upload.fields([
+  { name: 'user_product',    maxCount: 1 },
+  { name: 'reference_image', maxCount: 1 }
+]), async (req, res) => {
   try {
-    // تحقق من المدخلات
-    if (!req.file) {
-      return res.status(400).json({ error: 'No image provided', error_ar: 'لم يتم اختيار صورة' });
+    if (!req.files['user_product'] || !req.files['reference_image']) {
+      return res.status(400).json({ error: 'Both images required' });
     }
 
-    const userDescription = req.body.user_description || '';
-    if (!userDescription.trim()) {
-      return res.status(400).json({ error: 'Description required', error_ar: 'الوصف مطلوب' });
+    const extraPrompt = (req.body.extra_prompt || '').trim();
+    const { user, tokenProvided } = await getUser(req);
+    const sessionId = req.headers['x-session-id'] || req.body.sessionId;
+
+    if (tokenProvided && !user) {
+      return res.status(401).json({ error: 'Session expired', error_ar: 'انتهت الجلسة' });
     }
 
-    // احصل على المستخدم والكريديت
-    const { user } = await getUser(req);
-    const sessionId = req.headers['x-session-id'] || null;
-    
-    let canGenerate = false;
     if (user) {
       const credits = await checkUserCredits(user.id);
-      canGenerate = credits.canEdit;
-    } else if (sessionId) {
-      canGenerate = await checkAnonymousCredit(sessionId);
+      if (!credits.canEdit) {
+        return res.status(403).json({ error: 'No credits available', remaining: 0, plan: credits.plan });
+      }
+    } else {
+      const sid = sessionId;
+      if (!sid) return res.status(400).json({ error: 'Session ID required' });
+      const cred = await checkAnonymousCredit(sid);
+      if (!cred.canEdit) {
+        return res.status(403).json({ error: 'Free credit used', requiresAuth: true });
+      }
     }
 
-    if (!canGenerate) {
-      return res.status(403).json({ 
-        error: 'No credits available',
-        error_ar: 'لا توجد كريديتات متاحة',
-        requiresAuth: true 
+    const productBase64   = req.files['user_product'][0].buffer.toString('base64');
+    const productMime     = req.files['user_product'][0].mimetype;
+    const referenceBase64 = req.files['reference_image'][0].buffer.toString('base64');
+    const referenceMime   = req.files['reference_image'][0].mimetype;
+
+    const swapPrompt = `You are an expert AI product photo editor.
+
+You are given TWO images:
+1. USER'S PRODUCT — the product that must appear in the final image
+2. REFERENCE SCENE — the background, environment, lighting and composition to replicate
+
+YOUR TASK: Generate a NEW photorealistic image where the USER'S PRODUCT is placed naturally in the EXACT same scene as the reference image.
+
+CRITICAL RULES — NEVER BREAK:
+1. The USER'S PRODUCT must appear 100% identical — same label, colors, shape, logo, every detail
+2. The background, lighting, shadows, textures and composition must match the reference scene exactly
+3. The product placement must look natural and physically realistic
+4. Match the camera angle and perspective from the reference image
+5. The product label must always face the camera and be fully readable
+6. Shadows and reflections must be consistent with the reference lighting
+7. Final image must be photorealistic commercial photography quality
+
+${extraPrompt ? `Additional instruction: ${extraPrompt}` : ''}
+
+OUTPUT: A single photorealistic product image at commercial photography quality. The product from image 1 placed in the scene from image 2.`;
+
+    const GEMINI_KEY = process.env.GEMINI_API_KEY;
+    const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.1-flash-image-preview:generateContent?key=${GEMINI_KEY}`;
+
+    const geminiRes = await fetch(apiUrl, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        contents: [{
+          role: 'user',
+          parts: [
+            { text: 'IMAGE 1 — USER PRODUCT (must remain identical):' },
+            { inline_data: { mime_type: productMime,   data: productBase64   } },
+            { text: 'IMAGE 2 — REFERENCE SCENE (background/environment to replicate):' },
+            { inline_data: { mime_type: referenceMime, data: referenceBase64 } },
+            { text: swapPrompt }
+          ]
+        }],
+        generationConfig: { responseModalities: ['TEXT', 'IMAGE'] }
+      })
+    });
+
+    const geminiData = await geminiRes.json();
+
+    if (!geminiRes.ok) {
+      console.error('Gemini swap-generate error:', JSON.stringify(geminiData?.error));
+      await logEvent({ event_type: 'swap_generate', user_id: user?.id || null, success: false });
+      return res.status(500).json({ error: 'Image generation failed', details: geminiData?.error?.message });
+    }
+
+    let editedImageBase64 = null;
+    const parts = geminiData?.candidates?.[0]?.content?.parts || [];
+    for (const part of parts) {
+      if (part.inline_data?.data) editedImageBase64 = part.inline_data.data;
+      else if (part.inlineData?.data) editedImageBase64 = part.inlineData.data;
+    }
+
+    if (!editedImageBase64) {
+      await logEvent({ event_type: 'swap_generate', user_id: user?.id || null, success: false });
+      return res.status(500).json({ error: 'No image returned. Please try again.' });
+    }
+
+    if (user) {
+      await useUserCredit(user.id);
+      const newCredits = await checkUserCredits(user.id);
+      await logEvent({ event_type: 'swap_generate', user_id: user.id, plan: newCredits.plan, success: true });
+
+      try {
+        await supabase.from('edit_history').insert({
+          user_id: user.id,
+          prompt: `[SWAP] ${extraPrompt || 'Product swap from reference'}`.trim(),
+          original_img: null,
+          edited_img: editedImageBase64,
+        });
+        const { data: oldRows } = await supabase
+          .from('edit_history').select('id')
+          .eq('user_id', user.id)
+          .order('created_at', { ascending: false })
+          .range(10, 999);
+        if (oldRows?.length) {
+          await supabase.from('edit_history').delete().in('id', oldRows.map(r => r.id));
+        }
+      } catch(e) { /* non-critical */ }
+
+      return res.json({
+        success: true,
+        image: editedImageBase64,
+        mimeType: 'image/png',
+        remaining_credits: newCredits.remaining,
+        total_credits: newCredits.total_credits,
+        plan: newCredits.plan
+      });
+
+    } else {
+      const sid = sessionId;
+      await useAnonymousCredit(sid);
+      await logEvent({ event_type: 'swap_generate', session_id: sid, plan: 'anonymous', success: true });
+      return res.json({
+        success: true,
+        image: editedImageBase64,
+        mimeType: 'image/png',
+        remaining_credits: 0,
+        total_credits: 1,
+        requiresAuthForMore: true
       });
     }
 
-    // احصل على الـ image كـ base64
-    const base64Image = req.file.buffer.toString('base64');
-    const mimeType = req.file.mimetype;
-
-    // اختر مفتاح Gemini API
-    const apiKey = getGeminiKey();
-    const genAI = new GoogleGenerativeAI(apiKey);
-    const model = genAI.getGenerativeModel({ model: 'gemini-2.0-flash' });
-
-    // إنشاء برومت لـ Gemini
-    const generationPrompt = `You are an expert AI image prompt engineer.
-
-Reference Image Analysis:
-- Extract the photography style, lighting, composition, and mood from the reference image
-- Note the color palette, textures, and visual elements
-
-User Request:
-"${userDescription}"
-
-Your Task:
-Create a professional, detailed image generation prompt that:
-1. Incorporates the style of the reference image
-2. Fulfills the user's specific requirements
-3. Is suitable for AI image generation (Midjourney, DALL-E, Stable Diffusion)
-4. Includes technical photography details (lighting, camera angle, composition)
-5. Is 150-300 words in English
-
-Format your response as a single continuous prompt, starting with "PROFESSIONAL IMAGE PROMPT:"`;
-
-    // استدعي Gemini API
-    const response = await model.generateContent([
-      {
-        inlineData: {
-          data: base64Image,
-          mimeType: mimeType
-        }
-      },
-      { text: generationPrompt }
-    ]);
-
-    const generatedPrompt = response.response.text();
-
-    // اخصم كريديت
-    if (user) {
-      await useUserCredit(user.id);
-    } else if (sessionId) {
-      await useAnonymousCredit(sessionId);
-    }
-
-    // سجل الحدث
-    await logEvent({
-      event_type: 'prompt_generation',
-      user_id: user?.id || null,
-      session_id: sessionId,
-      success: true
-    });
-
-    // احصل على الكريديتات المتبقية
-    let remainingCredits = 'anonymous';
-    if (user) {
-      const updated = await checkUserCredits(user.id);
-      remainingCredits = updated.remaining;
-    }
-
-    res.json({
-      success: true,
-      prompt: generatedPrompt,
-      credit_used: 1,
-      remaining_credits: remainingCredits
-    });
-
   } catch (err) {
-    console.error('Generate prompt error:', err);
-    
-    const { user } = await getUser(req);
-    const sessionId = req.headers['x-session-id'] || null;
-    
-    await logEvent({
-      event_type: 'prompt_generation',
-      user_id: user?.id || null,
-      session_id: sessionId,
-      success: false
-    });
-
-    res.status(500).json({ 
-      error: 'Failed to generate prompt',
-      error_ar: 'فشل في إنشاء البرومت',
-      details: err.message 
-    });
+    console.error('Swap-generate error:', err.message);
+    if (err.message?.includes('SAFETY')) {
+      return res.status(400).json({ error: 'Image flagged by safety filter. Please try different images.' });
+    }
+    res.status(500).json({ error: 'Something went wrong. Please try again.', details: err.message });
   }
 });
-;
+
+// ═══════════════════════════════════════════════════════════════════════
+// TOOL 2: REMOVE BACKGROUND — يزيل الخلفية ويضع خلفية بيضاء نقية
+// ═══════════════════════════════════════════════════════════════════════
+
+app.post('/api/remove-bg', editLimiter, upload.single('image'), async (req, res) => {
+  try {
+    const { sessionId } = req.body;
+    const { user, tokenProvided } = await getUser(req);
+
+    if (!req.file) return res.status(400).json({ error: 'No image uploaded' });
+    if (tokenProvided && !user) {
+      return res.status(401).json({ error: 'Session expired', error_ar: 'انتهت الجلسة، سجّل دخولك مجدداً' });
+    }
+
+    if (user) {
+      const credits = await checkUserCredits(user.id);
+      if (!credits.canEdit) {
+        await logEvent({ event_type: 'remove_bg', user_id: user.id, plan: credits.plan, success: false });
+        return res.status(403).json({ error: 'No credits available', remaining: 0, plan: credits.plan });
+      }
+    } else {
+      const sid = sessionId || req.headers['x-session-id'];
+      if (!sid) return res.status(400).json({ error: 'Session ID required' });
+      const cred = await checkAnonymousCredit(sid);
+      if (!cred.canEdit) {
+        return res.status(403).json({ error: 'Free credit used', requiresAuth: true });
+      }
+    }
+
+    const imageBase64 = req.file.buffer.toString('base64');
+    const mimeType    = req.file.mimetype;
+
+    const bgRemovePrompt = `You are an expert AI photo editor specializing in e-commerce product photography for Amazon UAE and Noon marketplace.
+
+Remove the background from this product image completely.
+
+CRITICAL RULES:
+1. Replace the background with pure white (#FFFFFF) — perfectly clean solid white
+2. The product itself must remain 100% IDENTICAL — same colors, shape, labels, logo, every single detail
+3. Product edges must be clean, sharp, and natural — no harsh cutout effect, no fringing
+4. Remove ALL shadows, reflections, and environmental elements from the background area
+5. Keep a very subtle natural shadow directly under the product for realism (optional, only if it looks natural)
+6. Result must meet Amazon UAE and Noon marketplace standards for product listing images
+
+OUTPUT: Return only the edited image with pure white background. Professional commercial photography quality.`;
+
+    const GEMINI_KEY = process.env.GEMINI_API_KEY;
+    const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.1-flash-image-preview:generateContent?key=${GEMINI_KEY}`;
+
+    const geminiRes = await fetch(apiUrl, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        contents: [{
+          role: 'user',
+          parts: [
+            { text: bgRemovePrompt },
+            { inline_data: { mime_type: mimeType, data: imageBase64 } }
+          ]
+        }],
+        generationConfig: { responseModalities: ['TEXT', 'IMAGE'] }
+      })
+    });
+
+    const geminiData = await geminiRes.json();
+
+    if (!geminiRes.ok) {
+      console.error('Remove BG Gemini error:', JSON.stringify(geminiData?.error));
+      await logEvent({ event_type: 'remove_bg', user_id: user?.id || null, success: false });
+      return res.status(500).json({ error: 'Background removal failed', details: geminiData?.error?.message });
+    }
+
+    let editedImageBase64 = null;
+    const parts = geminiData?.candidates?.[0]?.content?.parts || [];
+    for (const part of parts) {
+      if (part.inline_data?.data)  editedImageBase64 = part.inline_data.data;
+      else if (part.inlineData?.data) editedImageBase64 = part.inlineData.data;
+    }
+
+    if (!editedImageBase64) {
+      await logEvent({ event_type: 'remove_bg', user_id: user?.id || null, success: false });
+      return res.status(500).json({ error: 'No image returned. Please try again.' });
+    }
+
+    if (user) {
+      await useUserCredit(user.id);
+      const newCredits = await checkUserCredits(user.id);
+      await logEvent({ event_type: 'remove_bg', user_id: user.id, plan: newCredits.plan, success: true });
+      try {
+        await supabase.from('edit_history').insert({
+          user_id: user.id,
+          prompt: '[REMOVE BG] خلفية بيضاء نقية',
+          original_img: null,
+          edited_img: editedImageBase64,
+        });
+        const { data: oldRows } = await supabase
+          .from('edit_history').select('id')
+          .eq('user_id', user.id)
+          .order('created_at', { ascending: false })
+          .range(10, 999);
+        if (oldRows?.length) {
+          await supabase.from('edit_history').delete().in('id', oldRows.map(r => r.id));
+        }
+      } catch(e) { /* non-critical */ }
+
+      return res.json({
+        success: true,
+        image: editedImageBase64,
+        mimeType: 'image/png',
+        remaining_credits: newCredits.remaining,
+        total_credits: newCredits.total_credits,
+        plan: newCredits.plan
+      });
+    } else {
+      const sid = sessionId || req.headers['x-session-id'];
+      await useAnonymousCredit(sid);
+      await logEvent({ event_type: 'remove_bg', session_id: sid, plan: 'anonymous', success: true });
+      return res.json({
+        success: true,
+        image: editedImageBase64,
+        mimeType: 'image/png',
+        remaining_credits: 0,
+        total_credits: 1,
+        requiresAuthForMore: true
+      });
+    }
+
+  } catch (err) {
+    console.error('Remove BG error:', err.message);
+    if (err.message?.includes('SAFETY')) {
+      return res.status(400).json({ error: 'Image flagged by safety filter. Please try a different image.' });
+    }
+    res.status(500).json({ error: 'Something went wrong. Please try again.', details: err.message });
+  }
+});
+
+// ═══════════════════════════════════════════════════════════════════════
+// TOOL 4: INFOGRAPHIC — يولّد إنفوجرافيك احترافي بالعربي
+// ═══════════════════════════════════════════════════════════════════════
+
+app.post('/api/infographic', editLimiter, upload.single('image'), async (req, res) => {
+  try {
+    const { features, sessionId } = req.body;
+    const { user, tokenProvided } = await getUser(req);
+
+    if (!req.file) return res.status(400).json({ error: 'No image uploaded' });
+    if (!features || features.trim().length < 3) {
+      return res.status(400).json({ error: 'Product features required', error_ar: 'أدخل مميزات المنتج أولاً' });
+    }
+    if (tokenProvided && !user) {
+      return res.status(401).json({ error: 'Session expired', error_ar: 'انتهت الجلسة، سجّل دخولك مجدداً' });
+    }
+
+    if (user) {
+      const credits = await checkUserCredits(user.id);
+      if (!credits.canEdit) {
+        await logEvent({ event_type: 'infographic', user_id: user.id, plan: credits.plan, success: false });
+        return res.status(403).json({ error: 'No credits available', remaining: 0, plan: credits.plan });
+      }
+    } else {
+      const sid = sessionId || req.headers['x-session-id'];
+      if (!sid) return res.status(400).json({ error: 'Session ID required' });
+      const cred = await checkAnonymousCredit(sid);
+      if (!cred.canEdit) {
+        return res.status(403).json({ error: 'Free credit used', requiresAuth: true });
+      }
+    }
+
+    const imageBase64 = req.file.buffer.toString('base64');
+    const mimeType    = req.file.mimetype;
+
+    const featureLines = features.trim().split('\n').filter(l => l.trim()).map(l => l.trim());
+    const featuresFormatted = featureLines.map((f, i) => `${i+1}. ${f}`).join('\n');
+
+    const infographicPrompt = `You are a professional e-commerce graphic designer creating Amazon A+ content and product infographics for the UAE market.
+
+Create a COMPLETE professional product infographic image.
+
+DESIGN REQUIREMENTS:
+- Pure white (#FFFFFF) background — clean and bright
+- The product is CENTERED and prominently displayed
+- Add ${Math.min(featureLines.length, 6)} callout lines pointing to different parts of the product
+- Each callout consists of: a thin elegant line + a rounded text box with title and subtitle
+- Text boxes: white background, subtle light gray border, rounded corners
+- Overall design: premium, clean, modern — Amazon A+ content quality standard
+
+PRODUCT FEATURES (write these as callout labels in Arabic):
+${featuresFormatted}
+
+TYPOGRAPHY & LANGUAGE:
+- Write ALL text in Arabic
+- Arabic text must be right-to-left aligned
+- Callout titles: bold Arabic, ~15px
+- Callout subtitles: regular Arabic, ~11px, muted gray color
+- Font: clean modern Arabic typeface
+
+CALLOUT PLACEMENT:
+- Distribute callouts evenly: some on the right side, some on the left side
+- Top callouts point to upper product features (lid, cap, top area)
+- Bottom callouts point to lower features (base, bottom, material)
+- Lines should be thin (1px) and elegant
+- Leave generous space around the product
+
+PRODUCT RULE (MOST IMPORTANT):
+- The product itself must remain 100% IDENTICAL — same colors, shape, labels, text, logo
+- Do NOT modify anything about the product appearance
+
+OUTPUT: Return the complete infographic image. White background, product centered, Arabic callouts, professional e-commerce quality.`;
+
+    const GEMINI_KEY = process.env.GEMINI_API_KEY;
+    const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.1-flash-image-preview:generateContent?key=${GEMINI_KEY}`;
+
+    const geminiRes = await fetch(apiUrl, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        contents: [{
+          role: 'user',
+          parts: [
+            { text: infographicPrompt },
+            { inline_data: { mime_type: mimeType, data: imageBase64 } }
+          ]
+        }],
+        generationConfig: { responseModalities: ['TEXT', 'IMAGE'] }
+      })
+    });
+
+    const geminiData = await geminiRes.json();
+
+    if (!geminiRes.ok) {
+      console.error('Infographic Gemini error:', JSON.stringify(geminiData?.error));
+      await logEvent({ event_type: 'infographic', user_id: user?.id || null, success: false });
+      return res.status(500).json({ error: 'Infographic generation failed', details: geminiData?.error?.message });
+    }
+
+    let editedImageBase64 = null;
+    const resParts = geminiData?.candidates?.[0]?.content?.parts || [];
+    for (const part of resParts) {
+      if (part.inline_data?.data)  editedImageBase64 = part.inline_data.data;
+      else if (part.inlineData?.data) editedImageBase64 = part.inlineData.data;
+    }
+
+    if (!editedImageBase64) {
+      await logEvent({ event_type: 'infographic', user_id: user?.id || null, success: false });
+      return res.status(500).json({ error: 'No image returned. Please try again.' });
+    }
+
+    if (user) {
+      await useUserCredit(user.id);
+      const newCredits = await checkUserCredits(user.id);
+      await logEvent({ event_type: 'infographic', user_id: user.id, plan: newCredits.plan, success: true });
+      try {
+        const featuresSummary = featureLines.slice(0,3).join(' | ');
+        await supabase.from('edit_history').insert({
+          user_id: user.id,
+          prompt: `[INFOGRAPHIC] ${featuresSummary}`.substring(0, 200),
+          original_img: null,
+          edited_img: editedImageBase64,
+        });
+        const { data: oldRows } = await supabase
+          .from('edit_history').select('id')
+          .eq('user_id', user.id)
+          .order('created_at', { ascending: false })
+          .range(10, 999);
+        if (oldRows?.length) {
+          await supabase.from('edit_history').delete().in('id', oldRows.map(r => r.id));
+        }
+      } catch(e) { /* non-critical */ }
+
+      return res.json({
+        success: true,
+        image: editedImageBase64,
+        mimeType: 'image/png',
+        remaining_credits: newCredits.remaining,
+        total_credits: newCredits.total_credits,
+        plan: newCredits.plan
+      });
+    } else {
+      const sid = sessionId || req.headers['x-session-id'];
+      await useAnonymousCredit(sid);
+      await logEvent({ event_type: 'infographic', session_id: sid, plan: 'anonymous', success: true });
+      return res.json({
+        success: true,
+        image: editedImageBase64,
+        mimeType: 'image/png',
+        remaining_credits: 0,
+        total_credits: 1,
+        requiresAuthForMore: true
+      });
+    }
+
+  } catch (err) {
+    console.error('Infographic error:', err.message);
+    if (err.message?.includes('SAFETY')) {
+      return res.status(400).json({ error: 'Image flagged by safety filter. Please try a different image.' });
+    }
+    res.status(500).json({ error: 'Something went wrong. Please try again.', details: err.message });
+  }
+});
+
+// ─── Explicit static HTML routes ────────────────────────────────────────────
+app.get('/admin.html', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'admin.html'));
+});
 app.get('/privacy.html', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'privacy.html'));
 });
