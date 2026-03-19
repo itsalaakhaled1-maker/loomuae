@@ -1100,7 +1100,48 @@ html.light-mode .flink:hover {
   footer{flex-direction:column;text-align:center}
   .flinks{justify-content:center}
 }
-  </style>
+  
+/* ════════════════════════════════════════════════════════════════════════════
+   TOOLS - الأدوات الـ 4
+   ════════════════════════════════════════════════════════════════════════════ */
+
+.tools-wrapper{position:fixed;inset:62px 0 0;z-index:100;display:none;background:var(--bg)}
+.tools-wrapper.active{display:flex;flex-direction:column}
+.tool-page{display:none;flex:1;overflow-y:auto;animation:slideUp .3s var(--ease)}
+.tool-page.active{display:block}
+.tool-container{max-width:900px;margin:0 auto;padding:40px 20px;width:100%}
+.tool-header{display:flex;align-items:center;gap:16px;margin-bottom:32px;padding-bottom:20px;border-bottom:1px solid var(--border)}
+.tool-back{background:none;border:none;width:40px;height:40px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--muted2);font-size:20px;transition:all var(--t)}
+.tool-back:hover{color:var(--amber)}
+.tool-header h2{font-size:28px;font-weight:700;color:var(--white);margin:0}
+.tool-subtitle{font-size:13px;color:var(--muted2);margin-top:4px}
+.upload-zone{border:2px dashed var(--border-hi);border-radius:var(--r-lg);padding:40px;text-align:center;cursor:pointer;transition:all var(--t);background:rgba(245,200,66,0.02);margin-bottom:20px}
+.upload-zone:hover{border-color:var(--amber);background:rgba(245,200,66,0.05)}
+.upload-zone.dragover{border-color:var(--amber);background:rgba(245,200,66,0.1)}
+.upload-icon{font-size:40px;display:block;margin-bottom:16px}
+.upload-text{display:block;font-size:16px;font-weight:600;color:var(--white);margin-bottom:6px}
+.upload-hint{display:block;font-size:12px;color:var(--muted)}
+.image-preview{position:relative;margin:16px 0;border-radius:var(--r-lg);overflow:hidden;background:var(--bg3);border:1px solid var(--border)}
+.image-preview img{width:100%;height:auto;display:block;max-height:400px;object-fit:contain}
+.image-remove{position:absolute;top:10px;right:10px;width:36px;height:36px;background:rgba(255,80,80,0.9);border:none;border-radius:50%;color:white;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all var(--t)}
+.image-remove:hover{background:#ff6060;transform:scale(1.1)}
+.form-group{margin-bottom:24px}
+.form-group label{display:block;margin-bottom:8px;font-size:14px;font-weight:600;color:var(--white)}
+.form-textarea{width:100%;padding:12px 16px;background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);color:var(--white);font-family:inherit;font-size:14px;min-height:100px;resize:vertical;transition:all var(--t)}
+.form-textarea:focus{outline:none;border-color:var(--amber);background:rgba(245,200,66,0.02);box-shadow:0 0 0 3px rgba(245,200,66,0.1)}
+.char-count{font-size:11px;color:var(--muted);margin-top:6px;text-align:right}
+.result-section{margin-top:40px;padding-top:40px;border-top:1px solid var(--border);display:none;animation:fadeIn 0.3s}
+.result-section.show{display:block}
+.result-image{margin-bottom:24px;border-radius:var(--r-lg);overflow:hidden;background:var(--bg3);border:1px solid var(--border)}
+.result-image img{width:100%;height:auto;display:block}
+.result-text{background:var(--bg3);border:1px solid var(--border);border-radius:var(--r-lg);padding:20px;margin-bottom:20px;max-height:300px;overflow-y:auto;white-space:pre-wrap;word-break:break-word;font-size:13px;line-height:1.6;color:var(--white);font-family:'DM Sans',monospace}
+.result-actions{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin-top:20px}
+.btn-secondary{padding:10px 16px;background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);color:var(--white);font-family:inherit;font-size:13px;font-weight:700;cursor:pointer;transition:all var(--t)}
+.btn-secondary:hover{border-color:var(--amber);color:var(--amber);background:rgba(245,200,66,0.05)}
+@keyframes slideUp{from{transform:translateY(20px);opacity:0}to{transform:translateY(0);opacity:1}}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+
+</style>
   <script src="https://gumroad.com/js/gumroad.js"></script>
 </head>
 <body>
@@ -1231,11 +1272,43 @@ html.light-mode .flink:hover {
   <p class="hsub" id="hsubAr">ارفع صورة منتجك، صف التعديل المطلوب، واحصل على نتيجة احترافية في ثوانٍ</p>
   <p class="hsub" id="hsubEn" style="display:none">Upload your product photo, describe the edit you want, and get a studio-quality result in seconds.</p>
 
-  <div class="hstats">
-    <div class="hstat"><span class="hstat-v">10s</span><span class="hstat-l" data-ar="وقت المعالجة" data-en="Processing time">وقت المعالجة</span></div>
-    <div class="hstat"><span class="hstat-v">AR+EN</span><span class="hstat-l" data-ar="دعم ثنائي اللغة" data-en="Bilingual support">دعم ثنائي اللغة</span></div>
-    <div class="hstat"><span class="hstat-v">3/day</span><span class="hstat-l" data-ar="صور مجانية يومياً" data-en="Free daily credits">صور مجانية يومياً</span></div>
-  </div>
+  <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:20px;margin:40px 0;padding:20px;background:linear-gradient(135deg,rgba(245,200,66,0.05),rgba(245,200,66,0.02));border-radius:28px;border:1px solid rgba(245,200,66,0.1)">
+  <!-- TOOL 1: EDIT IMAGE -->
+  <button onclick="openTool('edit')" style="padding:32px;border:1.5px solid rgba(245,200,66,0.2);border-radius:20px;background:linear-gradient(135deg,rgba(245,200,66,0.08),rgba(245,200,66,0.03));cursor:pointer;transition:all 0.35s cubic-bezier(0.4,0,0.2,1);display:flex;flex-direction:column;align-items:center;gap:16px;text-align:center;color:var(--white);font-family:inherit;font-weight:600;box-shadow:0 8px 24px rgba(0,0,0,0.15),inset 0 1px 0 rgba(245,200,66,0.1);position:relative;overflow:hidden" onmouseover="this.style.border='1.5px solid rgba(245,200,66,0.4)';this.style.background='linear-gradient(135deg,rgba(245,200,66,0.15),rgba(245,200,66,0.08))';this.style.boxShadow='0 16px 48px rgba(245,200,66,0.25),inset 0 1px 0 rgba(245,200,66,0.2)';this.style.transform='translateY(-4px)'" onmouseout="this.style.border='1.5px solid rgba(245,200,66,0.2)';this.style.background='linear-gradient(135deg,rgba(245,200,66,0.08),rgba(245,200,66,0.03))';this.style.boxShadow='0 8px 24px rgba(0,0,0,0.15),inset 0 1px 0 rgba(245,200,66,0.1)';this.style.transform='translateY(0)'">
+    <span style="font-size:40px;filter:drop-shadow(0 2px 4px rgba(0,0,0,0.2))">✏️</span>
+    <div>
+      <span style="font-weight:700;font-size:16px;display:block;margin-bottom:6px">تعديل الصورة</span>
+      <span style="font-size:12px;color:rgba(255,255,255,0.6);font-weight:500">صورة + وصف</span>
+    </div>
+  </button>
+
+  <!-- TOOL 2: EXTRACT STYLE -->
+  <button onclick="openTool('extract')" style="padding:32px;border:1.5px solid rgba(245,200,66,0.2);border-radius:20px;background:linear-gradient(135deg,rgba(245,200,66,0.08),rgba(245,200,66,0.03));cursor:pointer;transition:all 0.35s cubic-bezier(0.4,0,0.2,1);display:flex;flex-direction:column;align-items:center;gap:16px;text-align:center;color:var(--white);font-family:inherit;font-weight:600;box-shadow:0 8px 24px rgba(0,0,0,0.15),inset 0 1px 0 rgba(245,200,66,0.1);position:relative;overflow:hidden" onmouseover="this.style.border='1.5px solid rgba(245,200,66,0.4)';this.style.background='linear-gradient(135deg,rgba(245,200,66,0.15),rgba(245,200,66,0.08))';this.style.boxShadow='0 16px 48px rgba(245,200,66,0.25),inset 0 1px 0 rgba(245,200,66,0.2)';this.style.transform='translateY(-4px)'" onmouseout="this.style.border='1.5px solid rgba(245,200,66,0.2)';this.style.background='linear-gradient(135deg,rgba(245,200,66,0.08),rgba(245,200,66,0.03))';this.style.boxShadow='0 8px 24px rgba(0,0,0,0.15),inset 0 1px 0 rgba(245,200,66,0.1)';this.style.transform='translateY(0)'">
+    <span style="font-size:40px;filter:drop-shadow(0 2px 4px rgba(0,0,0,0.2))">📸</span>
+    <div>
+      <span style="font-weight:700;font-size:16px;display:block;margin-bottom:6px">استخراج الأسلوب</span>
+      <span style="font-size:12px;color:rgba(255,255,255,0.6);font-weight:500">صورة → برومت</span>
+    </div>
+  </button>
+
+  <!-- TOOL 3: SWAP PRODUCT -->
+  <button onclick="openTool('swap')" style="padding:32px;border:1.5px solid rgba(245,200,66,0.2);border-radius:20px;background:linear-gradient(135deg,rgba(245,200,66,0.08),rgba(245,200,66,0.03));cursor:pointer;transition:all 0.35s cubic-bezier(0.4,0,0.2,1);display:flex;flex-direction:column;align-items:center;gap:16px;text-align:center;color:var(--white);font-family:inherit;font-weight:600;box-shadow:0 8px 24px rgba(0,0,0,0.15),inset 0 1px 0 rgba(245,200,66,0.1);position:relative;overflow:hidden" onmouseover="this.style.border='1.5px solid rgba(245,200,66,0.4)';this.style.background='linear-gradient(135deg,rgba(245,200,66,0.15),rgba(245,200,66,0.08))';this.style.boxShadow='0 16px 48px rgba(245,200,66,0.25),inset 0 1px 0 rgba(245,200,66,0.2)';this.style.transform='translateY(-4px)'" onmouseout="this.style.border='1.5px solid rgba(245,200,66,0.2)';this.style.background='linear-gradient(135deg,rgba(245,200,66,0.08),rgba(245,200,66,0.03))';this.style.boxShadow='0 8px 24px rgba(0,0,0,0.15),inset 0 1px 0 rgba(245,200,66,0.1)';this.style.transform='translateY(0)'">
+    <span style="font-size:40px;filter:drop-shadow(0 2px 4px rgba(0,0,0,0.2))">🔄</span>
+    <div>
+      <span style="font-weight:700;font-size:16px;display:block;margin-bottom:6px">استبدال المنتج</span>
+      <span style="font-size:12px;color:rgba(255,255,255,0.6);font-weight:500">صورتان → صورة</span>
+    </div>
+  </button>
+
+  <!-- TOOL 4: GENERATE PROMPT -->
+  <button onclick="openTool('generate')" style="padding:32px;border:1.5px solid rgba(245,200,66,0.2);border-radius:20px;background:linear-gradient(135deg,rgba(245,200,66,0.08),rgba(245,200,66,0.03));cursor:pointer;transition:all 0.35s cubic-bezier(0.4,0,0.2,1);display:flex;flex-direction:column;align-items:center;gap:16px;text-align:center;color:var(--white);font-family:inherit;font-weight:600;box-shadow:0 8px 24px rgba(0,0,0,0.15),inset 0 1px 0 rgba(245,200,66,0.1);position:relative;overflow:hidden" onmouseover="this.style.border='1.5px solid rgba(245,200,66,0.4)';this.style.background='linear-gradient(135deg,rgba(245,200,66,0.15),rgba(245,200,66,0.08))';this.style.boxShadow='0 16px 48px rgba(245,200,66,0.25),inset 0 1px 0 rgba(245,200,66,0.2)';this.style.transform='translateY(-4px)'" onmouseout="this.style.border='1.5px solid rgba(245,200,66,0.2)';this.style.background='linear-gradient(135deg,rgba(245,200,66,0.08),rgba(245,200,66,0.03))';this.style.boxShadow='0 8px 24px rgba(0,0,0,0.15),inset 0 1px 0 rgba(245,200,66,0.1)';this.style.transform='translateY(0)'">
+    <span style="font-size:40px;filter:drop-shadow(0 2px 4px rgba(0,0,0,0.2))">🎯</span>
+    <div>
+      <span style="font-weight:700;font-size:16px;display:block;margin-bottom:6px">إنشاء برومت</span>
+      <span style="font-size:12px;color:rgba(255,255,255,0.6);font-weight:500">صورة + وصف</span>
+    </div>
+  </button>
+</div>
 
   <div class="appwrap">
     <div class="appcard">
@@ -1409,7 +1482,48 @@ html.light-mode .flink:hover {
     #pricingCards > div {
       box-shadow: 0 4px 20px rgba(0,0,0,0.3);
     }
-  </style>
+  
+/* ════════════════════════════════════════════════════════════════════════════
+   TOOLS - الأدوات الـ 4
+   ════════════════════════════════════════════════════════════════════════════ */
+
+.tools-wrapper{position:fixed;inset:62px 0 0;z-index:100;display:none;background:var(--bg)}
+.tools-wrapper.active{display:flex;flex-direction:column}
+.tool-page{display:none;flex:1;overflow-y:auto;animation:slideUp .3s var(--ease)}
+.tool-page.active{display:block}
+.tool-container{max-width:900px;margin:0 auto;padding:40px 20px;width:100%}
+.tool-header{display:flex;align-items:center;gap:16px;margin-bottom:32px;padding-bottom:20px;border-bottom:1px solid var(--border)}
+.tool-back{background:none;border:none;width:40px;height:40px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--muted2);font-size:20px;transition:all var(--t)}
+.tool-back:hover{color:var(--amber)}
+.tool-header h2{font-size:28px;font-weight:700;color:var(--white);margin:0}
+.tool-subtitle{font-size:13px;color:var(--muted2);margin-top:4px}
+.upload-zone{border:2px dashed var(--border-hi);border-radius:var(--r-lg);padding:40px;text-align:center;cursor:pointer;transition:all var(--t);background:rgba(245,200,66,0.02);margin-bottom:20px}
+.upload-zone:hover{border-color:var(--amber);background:rgba(245,200,66,0.05)}
+.upload-zone.dragover{border-color:var(--amber);background:rgba(245,200,66,0.1)}
+.upload-icon{font-size:40px;display:block;margin-bottom:16px}
+.upload-text{display:block;font-size:16px;font-weight:600;color:var(--white);margin-bottom:6px}
+.upload-hint{display:block;font-size:12px;color:var(--muted)}
+.image-preview{position:relative;margin:16px 0;border-radius:var(--r-lg);overflow:hidden;background:var(--bg3);border:1px solid var(--border)}
+.image-preview img{width:100%;height:auto;display:block;max-height:400px;object-fit:contain}
+.image-remove{position:absolute;top:10px;right:10px;width:36px;height:36px;background:rgba(255,80,80,0.9);border:none;border-radius:50%;color:white;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all var(--t)}
+.image-remove:hover{background:#ff6060;transform:scale(1.1)}
+.form-group{margin-bottom:24px}
+.form-group label{display:block;margin-bottom:8px;font-size:14px;font-weight:600;color:var(--white)}
+.form-textarea{width:100%;padding:12px 16px;background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);color:var(--white);font-family:inherit;font-size:14px;min-height:100px;resize:vertical;transition:all var(--t)}
+.form-textarea:focus{outline:none;border-color:var(--amber);background:rgba(245,200,66,0.02);box-shadow:0 0 0 3px rgba(245,200,66,0.1)}
+.char-count{font-size:11px;color:var(--muted);margin-top:6px;text-align:right}
+.result-section{margin-top:40px;padding-top:40px;border-top:1px solid var(--border);display:none;animation:fadeIn 0.3s}
+.result-section.show{display:block}
+.result-image{margin-bottom:24px;border-radius:var(--r-lg);overflow:hidden;background:var(--bg3);border:1px solid var(--border)}
+.result-image img{width:100%;height:auto;display:block}
+.result-text{background:var(--bg3);border:1px solid var(--border);border-radius:var(--r-lg);padding:20px;margin-bottom:20px;max-height:300px;overflow-y:auto;white-space:pre-wrap;word-break:break-word;font-size:13px;line-height:1.6;color:var(--white);font-family:'DM Sans',monospace}
+.result-actions{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin-top:20px}
+.btn-secondary{padding:10px 16px;background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);color:var(--white);font-family:inherit;font-size:13px;font-weight:700;cursor:pointer;transition:all var(--t)}
+.btn-secondary:hover{border-color:var(--amber);color:var(--amber);background:rgba(245,200,66,0.05)}
+@keyframes slideUp{from{transform:translateY(20px);opacity:0}to{transform:translateY(0);opacity:1}}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+
+</style>
 
   <p style="
     color: rgba(255,255,255,0.45);
@@ -1447,7 +1561,48 @@ html.light-mode .flink:hover {
         scroll-snap-align: center;
       }
     }
-  </style>
+  
+/* ════════════════════════════════════════════════════════════════════════════
+   TOOLS - الأدوات الـ 4
+   ════════════════════════════════════════════════════════════════════════════ */
+
+.tools-wrapper{position:fixed;inset:62px 0 0;z-index:100;display:none;background:var(--bg)}
+.tools-wrapper.active{display:flex;flex-direction:column}
+.tool-page{display:none;flex:1;overflow-y:auto;animation:slideUp .3s var(--ease)}
+.tool-page.active{display:block}
+.tool-container{max-width:900px;margin:0 auto;padding:40px 20px;width:100%}
+.tool-header{display:flex;align-items:center;gap:16px;margin-bottom:32px;padding-bottom:20px;border-bottom:1px solid var(--border)}
+.tool-back{background:none;border:none;width:40px;height:40px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--muted2);font-size:20px;transition:all var(--t)}
+.tool-back:hover{color:var(--amber)}
+.tool-header h2{font-size:28px;font-weight:700;color:var(--white);margin:0}
+.tool-subtitle{font-size:13px;color:var(--muted2);margin-top:4px}
+.upload-zone{border:2px dashed var(--border-hi);border-radius:var(--r-lg);padding:40px;text-align:center;cursor:pointer;transition:all var(--t);background:rgba(245,200,66,0.02);margin-bottom:20px}
+.upload-zone:hover{border-color:var(--amber);background:rgba(245,200,66,0.05)}
+.upload-zone.dragover{border-color:var(--amber);background:rgba(245,200,66,0.1)}
+.upload-icon{font-size:40px;display:block;margin-bottom:16px}
+.upload-text{display:block;font-size:16px;font-weight:600;color:var(--white);margin-bottom:6px}
+.upload-hint{display:block;font-size:12px;color:var(--muted)}
+.image-preview{position:relative;margin:16px 0;border-radius:var(--r-lg);overflow:hidden;background:var(--bg3);border:1px solid var(--border)}
+.image-preview img{width:100%;height:auto;display:block;max-height:400px;object-fit:contain}
+.image-remove{position:absolute;top:10px;right:10px;width:36px;height:36px;background:rgba(255,80,80,0.9);border:none;border-radius:50%;color:white;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all var(--t)}
+.image-remove:hover{background:#ff6060;transform:scale(1.1)}
+.form-group{margin-bottom:24px}
+.form-group label{display:block;margin-bottom:8px;font-size:14px;font-weight:600;color:var(--white)}
+.form-textarea{width:100%;padding:12px 16px;background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);color:var(--white);font-family:inherit;font-size:14px;min-height:100px;resize:vertical;transition:all var(--t)}
+.form-textarea:focus{outline:none;border-color:var(--amber);background:rgba(245,200,66,0.02);box-shadow:0 0 0 3px rgba(245,200,66,0.1)}
+.char-count{font-size:11px;color:var(--muted);margin-top:6px;text-align:right}
+.result-section{margin-top:40px;padding-top:40px;border-top:1px solid var(--border);display:none;animation:fadeIn 0.3s}
+.result-section.show{display:block}
+.result-image{margin-bottom:24px;border-radius:var(--r-lg);overflow:hidden;background:var(--bg3);border:1px solid var(--border)}
+.result-image img{width:100%;height:auto;display:block}
+.result-text{background:var(--bg3);border:1px solid var(--border);border-radius:var(--r-lg);padding:20px;margin-bottom:20px;max-height:300px;overflow-y:auto;white-space:pre-wrap;word-break:break-word;font-size:13px;line-height:1.6;color:var(--white);font-family:'DM Sans',monospace}
+.result-actions{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin-top:20px}
+.btn-secondary{padding:10px 16px;background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);color:var(--white);font-family:inherit;font-size:13px;font-weight:700;cursor:pointer;transition:all var(--t)}
+.btn-secondary:hover{border-color:var(--amber);color:var(--amber);background:rgba(245,200,66,0.05)}
+@keyframes slideUp{from{transform:translateY(20px);opacity:0}to{transform:translateY(0);opacity:1}}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+
+</style>
 
     <!-- FREE CARD -->
     <div style="
@@ -2711,6 +2866,69 @@ document.addEventListener('DOMContentLoaded', function() {
     </div>
   </div>
 </div>
+
+<!-- TOOL PAGES -->
+<div class="tools-wrapper" id="toolsWrapper">
+  <div class="tool-page" id="editTool">
+    <div class="tool-container">
+      <div class="tool-header">
+        <button class="tool-back" onclick="closeTool()">←</button>
+        <div><h2>✏️ تعديل الصورة</h2><p class="tool-subtitle">صورة + وصف</p></div>
+      </div>
+      <div class="upload-zone" id="editUploadZone" ondrop="handleEditDrop(event)" ondragover="event.preventDefault();this.classList.add('dragover')" ondragleave="this.classList.remove('dragover')">
+        <input type="file" id="editImageInput" accept="image/*" style="display:none" onchange="handleEditImageSelect(event)">
+        <span class="upload-icon">📸</span><span class="upload-text">اسحب الصورة</span>
+      </div>
+      <div id="editImagePreview" class="image-preview" style="display:none"><img id="editPreviewImg" src=""><button class="image-remove" onclick="clearEditImage()">✕</button></div>
+      <div class="form-group"><label>الوصف</label><textarea id="editPrompt" class="form-textarea" maxlength="500"></textarea><div class="char-count"><span id="editCharCount">0</span>/500</div></div>
+      <button class="btn primary" id="editBtn" onclick="processEditImage()">معالجة</button>
+      <div id="editResult" class="result-section"><div class="result-image"><img id="editResultImg" src=""></div><div class="result-actions"><button class="btn-secondary" onclick="downloadResult('edit')">⬇️ تحميل</button></div></div>
+    </div>
+  </div>
+  <div class="tool-page" id="extractTool">
+    <div class="tool-container">
+      <div class="tool-header">
+        <button class="tool-back" onclick="closeTool()">←</button>
+        <div><h2>📸 استخراج الأسلوب</h2><p class="tool-subtitle">صورة → برومت</p></div>
+      </div>
+      <div class="upload-zone" id="extractUploadZone" ondrop="handleExtractDrop(event)" ondragover="event.preventDefault();this.classList.add('dragover')" ondragleave="this.classList.remove('dragover')">
+        <input type="file" id="extractImageInput" accept="image/*" style="display:none" onchange="handleExtractImageSelect(event)">
+        <span class="upload-icon">🎬</span><span class="upload-text">اسحب الصورة</span>
+      </div>
+      <div id="extractImagePreview" class="image-preview" style="display:none"><img id="extractPreviewImg" src=""><button class="image-remove" onclick="clearExtractImage()">✕</button></div>
+      <button class="btn primary" id="extractBtn" onclick="processExtractStyle()">تحليل</button>
+      <div id="extractResult" class="result-section"><div class="result-text" id="extractResultText"></div><div class="result-actions"><button class="btn-secondary" onclick="copyToClipboard('extract')">📋 نسخ</button></div></div>
+    </div>
+  </div>
+  <div class="tool-page" id="swapTool">
+    <div class="tool-container">
+      <div class="tool-header">
+        <button class="tool-back" onclick="closeTool()">←</button>
+        <div><h2>🔄 استبدال المنتج</h2><p class="tool-subtitle">صورتان</p></div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px">
+        <div><div class="upload-zone" id="swapUserUploadZone" ondrop="handleSwapUserDrop(event)" ondragover="event.preventDefault();this.classList.add('dragover')" ondragleave="this.classList.remove('dragover')"><input type="file" id="swapUserInput" accept="image/*" style="display:none" onchange="handleSwapUserSelect(event)"><span class="upload-icon">📦</span><span class="upload-text">صورتك</span></div><div id="swapUserPreview" class="image-preview" style="display:none"><img id="swapUserImg" src=""><button class="image-remove" onclick="clearSwapUser()">✕</button></div></div>
+        <div><div class="upload-zone" id="swapRefUploadZone" ondrop="handleSwapRefDrop(event)" ondragover="event.preventDefault();this.classList.add('dragover')" ondragleave="this.classList.remove('dragover')"><input type="file" id="swapRefInput" accept="image/*" style="display:none" onchange="handleSwapRefSelect(event)"><span class="upload-icon">🎬</span><span class="upload-text">صورة مرجعية</span></div><div id="swapRefPreview" class="image-preview" style="display:none"><img id="swapRefImg" src=""><button class="image-remove" onclick="clearSwapRef()">✕</button></div></div>
+      </div>
+      <button class="btn primary" id="swapBtn" onclick="processSwapProduct()" style="margin-top:20px">استبدال</button>
+      <div id="swapResult" class="result-section"><div class="result-text" id="swapResultText"></div><div class="result-actions"><button class="btn-secondary" onclick="copyToClipboard('swap')">📋 نسخ</button></div></div>
+    </div>
+  </div>
+  <div class="tool-page" id="generateTool">
+    <div class="tool-container">
+      <div class="tool-header">
+        <button class="tool-back" onclick="closeTool()">←</button>
+        <div><h2>🎯 إنشاء برومت</h2><p class="tool-subtitle">صورة + وصف</p></div>
+      </div>
+      <div class="upload-zone" id="generateUploadZone" ondrop="handleGenerateDrop(event)" ondragover="event.preventDefault();this.classList.add('dragover')" ondragleave="this.classList.remove('dragover')"><input type="file" id="generateImageInput" accept="image/*" style="display:none" onchange="handleGenerateImageSelect(event)"><span class="upload-icon">🖼️</span><span class="upload-text">اسحب الصورة</span></div>
+      <div id="generateImagePreview" class="image-preview" style="display:none"><img id="generatePreviewImg" src=""><button class="image-remove" onclick="clearGenerateImage()">✕</button></div>
+      <div class="form-group"><label>الوصف</label><textarea id="generateDesc" class="form-textarea" maxlength="500"></textarea><div class="char-count"><span id="generateCharCount">0</span>/500</div></div>
+      <button class="btn primary" id="generateBtn" onclick="processGeneratePrompt()">إنشاء</button>
+      <div id="generateResult" class="result-section"><div class="result-text" id="generateResultText"></div><div class="result-actions"><button class="btn-secondary" onclick="copyToClipboard('generate')">📋 نسخ</button></div></div>
+    </div>
+  </div>
+</div>
+
 </body>
 
 <script>
@@ -2962,6 +3180,39 @@ window.addEventListener('load', function() {
   
   updateLanguageText();
 });
+
+// TOOLS
+function openTool(t){document.getElementById('mainApp').style.display='none';document.getElementById('toolsWrapper').classList.add('active');document.querySelectorAll('.tool-page').forEach(p=>p.classList.remove('active'));document.getElementById(t+'Tool').classList.add('active')}
+function closeTool(){document.getElementById('mainApp').style.display='block';document.getElementById('toolsWrapper').classList.remove('active');document.querySelectorAll('.tool-page').forEach(p=>p.classList.remove('active'))}
+document.getElementById('editUploadZone')?.addEventListener('click',()=>document.getElementById('editImageInput').click());
+document.getElementById('editPrompt')?.addEventListener('input',(e)=>document.getElementById('editCharCount').textContent=e.target.value.length);
+function handleEditDrop(e){e.preventDefault();document.getElementById('editUploadZone').classList.remove('dragover');if(e.dataTransfer.files[0])handleEditImageSelect({target:{files:e.dataTransfer.files}})}
+function handleEditImageSelect(e){const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=(evt)=>{document.getElementById('editImagePreview').style.display='block';document.getElementById('editPreviewImg').src=evt.target.result};r.readAsDataURL(f)}
+function clearEditImage(){document.getElementById('editImageInput').value='';document.getElementById('editImagePreview').style.display='none'}
+async function processEditImage(){const f=document.getElementById('editImageInput').files[0];const p=document.getElementById('editPrompt').value;if(!f||!p.trim())return;document.getElementById('editBtn').disabled=true;const fd=new FormData();fd.append('image',f);fd.append('prompt',p);try{const res=await fetch('/api/edit',{method:'POST',body:fd,headers:{'x-session-id':sid}});const data=await res.json();if(data.success){document.getElementById('editResult').classList.add('show');document.getElementById('editResultImg').src='data:image/png;base64,'+data.edited_image;showMsg('ok','✅ تم')}else showMsg('err',data.error||'خطأ')}catch(e){showMsg('err','خطأ')}finally{document.getElementById('editBtn').disabled=false}}
+document.getElementById('extractUploadZone')?.addEventListener('click',()=>document.getElementById('extractImageInput').click());
+function handleExtractDrop(e){e.preventDefault();if(e.dataTransfer.files[0])handleExtractImageSelect({target:{files:e.dataTransfer.files}})}
+function handleExtractImageSelect(e){const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=(evt)=>{document.getElementById('extractImagePreview').style.display='block';document.getElementById('extractPreviewImg').src=evt.target.result};r.readAsDataURL(f)}
+function clearExtractImage(){document.getElementById('extractImageInput').value='';document.getElementById('extractImagePreview').style.display='none'}
+async function processExtractStyle(){const f=document.getElementById('extractImageInput').files[0];if(!f)return;document.getElementById('extractBtn').disabled=true;const fd=new FormData();fd.append('reference_image',f);try{const res=await fetch('/api/analyze-reference',{method:'POST',body:fd,headers:{'x-session-id':sid}});const data=await res.json();if(data.success){document.getElementById('extractResult').classList.add('show');document.getElementById('extractResultText').textContent=data.prompt;showMsg('ok','✅ تم')}else showMsg('err',data.error||'خطأ')}catch(e){showMsg('err','خطأ')}finally{document.getElementById('extractBtn').disabled=false}}
+document.getElementById('swapUserUploadZone')?.addEventListener('click',()=>document.getElementById('swapUserInput').click());
+document.getElementById('swapRefUploadZone')?.addEventListener('click',()=>document.getElementById('swapRefInput').click());
+function handleSwapUserDrop(e){e.preventDefault();if(e.dataTransfer.files[0])handleSwapUserSelect({target:{files:e.dataTransfer.files}})}
+function handleSwapUserSelect(e){const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=(evt)=>{document.getElementById('swapUserPreview').style.display='block';document.getElementById('swapUserImg').src=evt.target.result};r.readAsDataURL(f)}
+function handleSwapRefDrop(e){e.preventDefault();if(e.dataTransfer.files[0])handleSwapRefSelect({target:{files:e.dataTransfer.files}})}
+function handleSwapRefSelect(e){const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=(evt)=>{document.getElementById('swapRefPreview').style.display='block';document.getElementById('swapRefImg').src=evt.target.result};r.readAsDataURL(f)}
+function clearSwapUser(){document.getElementById('swapUserInput').value='';document.getElementById('swapUserPreview').style.display='none'}
+function clearSwapRef(){document.getElementById('swapRefInput').value='';document.getElementById('swapRefPreview').style.display='none'}
+async function processSwapProduct(){const f1=document.getElementById('swapUserInput').files[0];const f2=document.getElementById('swapRefInput').files[0];if(!f1||!f2)return;document.getElementById('swapBtn').disabled=true;const fd=new FormData();fd.append('user_product',f1);fd.append('reference_image',f2);fd.append('swap_prompt','استبدال');try{const res=await fetch('/api/swap-product',{method:'POST',body:fd,headers:{'x-session-id':sid}});const data=await res.json();if(data.success){document.getElementById('swapResult').classList.add('show');document.getElementById('swapResultText').textContent=data.instructions;showMsg('ok','✅ تم')}else showMsg('err',data.error||'خطأ')}catch(e){showMsg('err','خطأ')}finally{document.getElementById('swapBtn').disabled=false}}
+document.getElementById('generateUploadZone')?.addEventListener('click',()=>document.getElementById('generateImageInput').click());
+document.getElementById('generateDesc')?.addEventListener('input',(e)=>document.getElementById('generateCharCount').textContent=e.target.value.length);
+function handleGenerateDrop(e){e.preventDefault();if(e.dataTransfer.files[0])handleGenerateImageSelect({target:{files:e.dataTransfer.files}})}
+function handleGenerateImageSelect(e){const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=(evt)=>{document.getElementById('generateImagePreview').style.display='block';document.getElementById('generatePreviewImg').src=evt.target.result};r.readAsDataURL(f)}
+function clearGenerateImage(){document.getElementById('generateImageInput').value='';document.getElementById('generateImagePreview').style.display='none'}
+async function processGeneratePrompt(){const f=document.getElementById('generateImageInput').files[0];const d=document.getElementById('generateDesc').value;if(!f||!d.trim())return;document.getElementById('generateBtn').disabled=true;const fd=new FormData();fd.append('reference_image',f);fd.append('user_description',d);try{const res=await fetch('/api/generate-prompt',{method:'POST',body:fd,headers:{'x-session-id':sid}});const data=await res.json();if(data.success){document.getElementById('generateResult').classList.add('show');document.getElementById('generateResultText').textContent=data.prompt;showMsg('ok','✅ تم')}else showMsg('err',data.error||'خطأ')}catch(e){showMsg('err','خطأ')}finally{document.getElementById('generateBtn').disabled=false}}
+function downloadResult(t){const img=document.getElementById(t+'ResultImg');const link=document.createElement('a');link.href=img.src;link.download='result.png';link.click()}
+function copyToClipboard(t){const text=document.getElementById(t+'ResultText').textContent;navigator.clipboard.writeText(text).then(()=>showMsg('ok','✅ تم')).catch(()=>showMsg('err','خطأ'))}
+
 </script>
 
 </html>
